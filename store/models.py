@@ -2,8 +2,8 @@ from django.db import models
 
 
 class user(models.Model):
-    firstname = models.TextField()
-    surname = models.TextField()
+    firstname = models.TextField(null=False)
+    surname = models.TextField(null=False)
     nickname = models.TextField()
     money = models.DecimalField(max_digits=6, decimal_places=2)
 
