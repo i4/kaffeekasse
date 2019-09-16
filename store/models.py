@@ -41,3 +41,9 @@ class transfer(models.Model):
     client_id = models.ForeignKey('client', on_delete=models.SET_NULL, null=True)
     time_stamp = models.TimeField(null=False, auto_now=True)
     amount = models.DecimalField(max_digits=6, decimal_places=2)
+
+class login(models.Model):
+    id = models.TextField(primary_key=True)
+    time_stamp = models.TimeField(null=False, auto_now=True)
+    user_id = models.ForeignKey('user', on_delete=models.CASCADE, null=False)
+    client_id = models.ForeignKey('client', on_delete=models.SET_NULL, null=True)
