@@ -9,3 +9,9 @@ class user(models.Model):
 
 class client(models.Model):
     mac = models.TextField(primary_key=True)
+
+class product(models.Model):
+    name = models.TextField(null=False)
+    category = models.TextField(null=False)
+    stock = models.IntegerField(null=False)
+    price = models.DecimalField(max_digits=6, decimal_places=2)
