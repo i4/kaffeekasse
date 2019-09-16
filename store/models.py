@@ -22,3 +22,11 @@ class charge(models.Model):
     client_id = models.ForeignKey('client', on_delete=models.CASCADE, null=False)
     time_stamp = models.TimeField(null=False, auto_now=True)
     amount = models.DecimalField(max_digits=6, decimal_places=2)
+
+class purchase(models.Model):
+    id = models.TextField(primary_key=True)
+    user_id = models.ForeignKey('user', on_delete=models.CASCADE, null=False)
+    product_id = models.ForeignKey('product', on_delete=models.CASCADE, null=False)
+    client_id = models.ForeignKey('client', on_delete=models.CASCADE, null=False)
+    time_stamp = models.TimeField(null=False, auto_now=True)
+    price = models.DecimalField(max_digits=6, decimal_places=2)
