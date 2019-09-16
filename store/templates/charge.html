@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block navbar_items %}
+<li class="nav-item">
+    <a class="nav-link" href="/store/buy">Shop</a>
+</li>
+<li class="nav-item active">
+    <a class="nav-link" href="#">Aufladen</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="/store/transfer">Überweisen</a>
+</li>
+{% endblock %}
+
+{% block content %}
+<form>
+  <div class="form-group">
+    <label id="amountRangeLabel" for="amountRange">Betrag: 5 €</label>
+    <input type="range" oninput="onAmountChange()" class="form-control-range" id="amountRange" min="1" max="100" step="1">
+  </div>
+
+  <button class="btn btn-i4" type="submit">Aufladen</button>
+</form>
+{% endblock %}
+
+{% block script %}
+<script>
+    function onAmountChange() {
+        // Set amount in label
+        $("#amountRangeLabel").text("Betrag: " + $("#amountRange").val() + " €");
+    }
+</script>
+{% endblock %}
