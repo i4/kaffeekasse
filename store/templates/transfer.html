@@ -14,23 +14,56 @@
 
 {% block content %}
 <form>
-    <div class="form-group">
-        <label id="amountRangeLabel" for="amountRange">Betrag: 5 €</label>
-        <input type="range" oninput="onAmountChange()" class="form-control-range" id="amountRange" min="1" max="100" step="1">
+    <div class="row">
+        {% comment %} amount numpad {% endcomment %}
+        <div class="col-sm-6 col-12 pb-4">
+            <h4>Betrag</h4>
+            <div id="amountNumpad" class="btn-group-vertical" role="group">
+                <div class="btn-group">
+                    <input class="text-center form-control-lg mb-2" id="amount">
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-outline-secondary py-3"
+                        onclick="document.getElementById('amount').value=document.getElementById('amount').value + '1';">1</button>
+                    <button type="button" class="btn btn-outline-secondary py-3"
+                        onclick="document.getElementById('amount').value=document.getElementById('amount').value + '2';">2</button>
+                    <button type="button" class="btn btn-outline-secondary py-3"
+                        onclick="document.getElementById('amount').value=document.getElementById('amount').value + '3';">3</button>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-outline-secondary py-3"
+                        onclick="document.getElementById('amount').value=document.getElementById('amount').value + '4';">4</button>
+                    <button type="button" class="btn btn-outline-secondary py-3"
+                        onclick="document.getElementById('amount').value=document.getElementById('amount').value + '5';">5</button>
+                    <button type="button" class="btn btn-outline-secondary py-3"
+                        onclick="document.getElementById('amount').value=document.getElementById('amount').value + '6';">6</button>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-outline-secondary py-3"
+                        onclick="document.getElementById('amount').value=document.getElementById('amount').value + '7';">7</button>
+                    <button type="button" class="btn btn-outline-secondary py-3"
+                        onclick="document.getElementById('amount').value=document.getElementById('amount').value + '8';">8</button>
+                    <button type="button" class="btn btn-outline-secondary py-3"
+                        onclick="document.getElementById('amount').value=document.getElementById('amount').value + '9';">9</button>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-outline-secondary py-3"
+                        onclick="document.getElementById('amount').value=document.getElementById('amount').value.slice(0, -1);">&lt;</button>
+                    <button type="button" class="btn btn-outline-secondary py-3"
+                        onclick="document.getElementById('amount').value=document.getElementById('amount').value + '0';">0</button>
+                    <button type="button" class="btn btn-outline-secondary py-3" 
+                        onclick="document.getElementById('amount').value=document.getElementById('amount').value + ',';">,</button>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="row">
-        {% comment %} User list {% endcomment %}
-        <div class="col-sm-6 col-12">
-            <ul class="list-group">
-                <button type="button" class="list-group-item list-group-item-action">Simon</button>
-                <button type="button" class="list-group-item list-group-item-action">Fabian</button>
-                <button type="button" class="list-group-item list-group-item-action">Tobias</button>
-                <button type="button" class="list-group-item list-group-item-action">Lukas</button>
-            </ul>
+        <div class="col-12">
+            <h4>Empf&auml;nger</h4>
         </div>
 
-        {% comment %} Numpad {% endcomment %}
-        <div class="col-sm-6 col-12 pb-4">
+        {% comment %} User numpad {% endcomment %}
+        <div class="col-lg-4 col-md-6 col-12 pb-4">
             <div class="btn-group-vertical" role="group">
                 <div class="btn-group">
                     <input class="text-center form-control-lg mb-2" id="user_id">
@@ -64,14 +97,19 @@
                         onclick="document.getElementById('user_id').value=document.getElementById('user_id').value.slice(0, -1);">&lt;</button>
                     <button type="button" class="btn btn-outline-secondary py-3"
                         onclick="document.getElementById('user_id').value=document.getElementById('user_id').value + '0';">0</button>
-                    <button type="button" class="btn btn-i4 py-3" onclick="">Login</button>
+                <button type="button" class="btn btn-i4 py-3" onclick="">Senden</button>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-12">
-            <button class="btn btn-i4" type="submit">&Uuml;berweisen</button>
+
+        {% comment %} User list {% endcomment %}
+        <div class="col-sm-6 col-12">
+            <ul class="list-group">
+                <button type="button" class="list-group-item list-group-item-action">Simon</button>
+                <button type="button" class="list-group-item list-group-item-action">Fabian</button>
+                <button type="button" class="list-group-item list-group-item-action">Tobias</button>
+                <button type="button" class="list-group-item list-group-item-action">Lukas</button>
+            </ul>
         </div>
     </div>
 </form>
@@ -79,9 +117,9 @@
 
 {% block script %}
 <script>
-    function onAmountChange() {
-        // Set amount in label
-        $("#amountRangeLabel").text("Betrag: " + $("#amountRange").val() + " €");
+    function onuser_idChange() {
+        // Set user_id in label
+        $("#user_idRangeLabel").text("Betrag: " + $("#user_idRange").val() + " €");
     }
 </script>
 {% endblock %}
