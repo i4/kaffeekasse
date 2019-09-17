@@ -15,8 +15,8 @@
 {% block content %}
 {% comment %} Product list {% endcomment %}
 <div class="row">
-    <div class="col-md-4 col-12">
-        <h3>H&auml;ufig gekaufte Produkte</h3>
+    <div class="col-md-3 col-12">
+        <h4>H&auml;ufig gekauft</h4>
         <ul class="list-group">
             <button type="button" class="list-group-item list-group-item-action">
                 <div class="d-flex w-100 justify-content-between">
@@ -26,15 +26,30 @@
             </button>
         </ul>
     </div>
-    <div class="col-md-4 col-12">
-        <h3>Getr&auml;nke</h3>
+    <div class="col-md-3 col-12">
+        <h4>Getr&auml;nke</h4>
         <ul class="list-group">
-            <button type="button" class="list-group-item list-group-item-action">
-                <div class="d-flex w-100 justify-content-between">
-                    <div class="mb-1">Kaffee</div>
-                    <div>1,50 &euro;</div>
-                </div>
-            </button>
+            {% for drink in drinks %}
+                <button type="button" class="list-group-item list-group-item-action">
+                    <div class="d-flex w-100 justify-content-between">
+                        <div class="mb-1">{{ drink.name }}</div>
+                        <div> {{ drink.price }} &euro;</div>
+                    </div>
+                </button>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="col-md-3 col-12">
+        <h4>Snacks</h4>
+        <ul class="list-group">
+            {% for candy in candies %}
+                <button type="button" class="list-group-item list-group-item-action">
+                    <div class="d-flex w-100 justify-content-between">
+                        <div class="mb-1">{{ candy.name }}</div>
+                        <div> {{ candy.price }} &euro;</div>
+                    </div>
+                </button>
+            {% endfor %}
         </ul>
     </div>
     <div class="col-md-3 col-12">

@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import user
+from .models import user, product
 
 # Create your views here.
 
@@ -9,7 +9,10 @@ def index(request):
 
 
 def buy(request):
-    return render(request, "buy.html", {})
+    return render(request, "buy.html", {
+        "drinks": product.objects.filter(category="drink"),
+        "candies": product.objects.filter(category="candy"),
+    })
 
 
 def charge(request):
