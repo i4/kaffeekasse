@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .models import User, Product
 from django.views.decorators.http import require_http_methods
 from django.http import HttpResponse
+from django.contrib.auth import login
 
 # Create your views here.
 
@@ -26,10 +27,7 @@ def transfer(request):
     return render(request, "transfer.html", {"Users": User.objects.all()})
 
 def test(request):
-    response = "no"
-    try:
-        u = User.objects.get(pk=1) 
-        response = "yes"
-    except User.DoesNotExist:
-       pass
-    return HttpResponse(response)
+    user = User.objects.get(pk=1)
+    login(request, user)
+    
+    return render(request, "test.html", {})
