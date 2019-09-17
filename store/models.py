@@ -11,23 +11,23 @@ class User(AbstractBaseUser):
     password = models.TextField(null=True)
     USERNAME_FIELD = 'id'
 
-class client(models.Model):
+class Client(models.Model):
     mac = models.TextField(primary_key=True)
 
-class product(models.Model):
+class Product(models.Model):
     name = models.TextField(null=False)
     category = models.TextField(null=False)
     stock = models.IntegerField(null=False)
     price = models.DecimalField(max_digits=6, decimal_places=2)
 
-class charge(models.Model):
+class Charge(models.Model):
     id = models.TextField(primary_key=True)
     user = models.ForeignKey('user', on_delete=models.CASCADE, null=False)
     client = models.ForeignKey('client', on_delete=models.SET_NULL, null=True)
     time_stamp = models.TimeField(null=False, auto_now=True)
     amount = models.DecimalField(max_digits=6, decimal_places=2)
 
-class purchase(models.Model):
+class Purchase(models.Model):
     id = models.TextField(primary_key=True)
     user = models.ForeignKey('user', on_delete=models.CASCADE, null=False)
     product = models.ForeignKey('product', on_delete=models.SET_NULL,
@@ -36,7 +36,7 @@ class purchase(models.Model):
     time_stamp = models.TimeField(null=False, auto_now=True)
     price = models.DecimalField(max_digits=6, decimal_places=2)
 
-class transfer(models.Model):
+class Transfer(models.Model):
     id = models.TextField(primary_key=True)
     sender = models.ForeignKey('user', on_delete=models.SET_NULL, null=True,
             related_name='sender')
@@ -46,7 +46,7 @@ class transfer(models.Model):
     time_stamp = models.TimeField(null=False, auto_now=True)
     amount = models.DecimalField(max_digits=6, decimal_places=2)
 
-class login(models.Model):
+class Login(models.Model):
     id = models.TextField(primary_key=True)
     time_stamp = models.TimeField(null=False, auto_now=True)
     user  = models.ForeignKey('user', on_delete=models.CASCADE, null=False)
