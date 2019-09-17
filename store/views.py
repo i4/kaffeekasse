@@ -12,8 +12,8 @@ def index(request):
 @require_http_methods(["GET"])
 def buy(request):
     return render(request, "buy.html", {
-        "drinks": product.objects.filter(category="drink"),
-        "candies": product.objects.filter(category="candy"),
+        "drinks": Product.objects.filter(category="drink"),
+        "candies": Product.objects.filter(category="candy"),
     })
 
 @require_http_methods(["GET"])
