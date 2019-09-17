@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 
 class user(AbstractBaseUser):
@@ -8,6 +8,8 @@ class user(AbstractBaseUser):
     surname = models.TextField(null=False)
     nickname = models.TextField()
     money = models.DecimalField(max_digits=6, decimal_places=2)
+    password = models.TextField(null=True)
+    USERNAME_FIELD = 'id'
 
 class client(models.Model):
     mac = models.TextField(primary_key=True)

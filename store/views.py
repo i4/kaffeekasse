@@ -28,8 +28,8 @@ def transfer(request):
 def test(request):
     response = "no"
     try:
-       user.objects.get() 
-       response = "yes"
+        u = user.objects.get(pk=1) 
+        response = "yes"
     except user.DoesNotExist:
        pass
     return HttpResponse(response)
