@@ -8,18 +8,8 @@
 
 {% block content %}
 <div class="row">
-    {% comment %} User list {% endcomment %}
-    <div class="col-sm-6 col-12">
-        <ul class="list-group">
-            <button type="button" class="list-group-item list-group-item-action">Simon</button>
-            <button type="button" class="list-group-item list-group-item-action">Fabian</button>
-            <button type="button" class="list-group-item list-group-item-action">Tobias</button>
-            <button type="button" class="list-group-item list-group-item-action">Lukas</button>
-        </ul>
-    </div>
-
     {% comment %} Numpad {% endcomment %}
-    <div class="col-sm-6 col-12 pb-4">
+    <div class="col-lg-4 col-md-6 col-12 pb-4">
         <div class="btn-group-vertical" role="group">
             <div class="btn-group">
                 <input class="text-center form-control-lg mb-2" id="user_id">
@@ -56,6 +46,15 @@
                 <button type="button" class="btn btn-i4 py-3" onclick="">Login</button>
             </div>
         </div>
+    </div>
+
+    {% comment %} User list {% endcomment %}
+    <div class="col-sm-6 col-12">
+        <ul class="list-group scroll-lg">
+            {% for user in users %}
+                <button type="button" class="list-group-item list-group-item-action">{{ user.nickname }}</button>
+            {% endfor %}
+        </ul>
     </div>
 </div>
 {% endblock %}

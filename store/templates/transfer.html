@@ -104,11 +104,10 @@
 
         {% comment %} User list {% endcomment %}
         <div class="col-sm-6 col-12">
-            <ul class="list-group">
-                <button type="button" class="list-group-item list-group-item-action">Simon</button>
-                <button type="button" class="list-group-item list-group-item-action">Fabian</button>
-                <button type="button" class="list-group-item list-group-item-action">Tobias</button>
-                <button type="button" class="list-group-item list-group-item-action">Lukas</button>
+            <ul class="list-group scroll-sm">
+                {% for user in users %}
+                    <button type="button" class="list-group-item list-group-item-action">{{ user.nickname }}</button>
+                {% endfor %}
             </ul>
         </div>
     </div>
