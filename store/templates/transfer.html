@@ -16,95 +16,93 @@
 <form>
     <div class="row">
         {% comment %} amount numpad {% endcomment %}
-        <div class="col-sm-6 col-12 pb-4">
-            <h4>Betrag</h4>
-            <div id="amountNumpad" class="btn-group-vertical" role="group">
-                <div class="btn-group">
-                    <input class="text-center form-control-lg mb-2" id="amount">
+        <div class="col-lg-4 col-md-6 col-12">
+            <div class="pb-4">
+                <h4>Betrag</h4>
+                <div id="amountNumpad" class="btn-group-vertical" role="group">
+                    <div class="btn-group">
+                        <input class="text-center form-control-lg mb-2" id="amount">
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-outline-secondary py-3"
+                            onclick="document.getElementById('amount').value=document.getElementById('amount').value + '1';">1</button>
+                        <button type="button" class="btn btn-outline-secondary py-3"
+                            onclick="document.getElementById('amount').value=document.getElementById('amount').value + '2';">2</button>
+                        <button type="button" class="btn btn-outline-secondary py-3"
+                            onclick="document.getElementById('amount').value=document.getElementById('amount').value + '3';">3</button>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-outline-secondary py-3"
+                            onclick="document.getElementById('amount').value=document.getElementById('amount').value + '4';">4</button>
+                        <button type="button" class="btn btn-outline-secondary py-3"
+                            onclick="document.getElementById('amount').value=document.getElementById('amount').value + '5';">5</button>
+                        <button type="button" class="btn btn-outline-secondary py-3"
+                            onclick="document.getElementById('amount').value=document.getElementById('amount').value + '6';">6</button>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-outline-secondary py-3"
+                            onclick="document.getElementById('amount').value=document.getElementById('amount').value + '7';">7</button>
+                        <button type="button" class="btn btn-outline-secondary py-3"
+                            onclick="document.getElementById('amount').value=document.getElementById('amount').value + '8';">8</button>
+                        <button type="button" class="btn btn-outline-secondary py-3"
+                            onclick="document.getElementById('amount').value=document.getElementById('amount').value + '9';">9</button>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-outline-secondary py-3"
+                            onclick="document.getElementById('amount').value=document.getElementById('amount').value.slice(0, -1);">&lt;</button>
+                        <button type="button" class="btn btn-outline-secondary py-3"
+                            onclick="document.getElementById('amount').value=document.getElementById('amount').value + '0';">0</button>
+                        <button type="button" class="btn btn-outline-secondary py-3" 
+                            onclick="document.getElementById('amount').value=document.getElementById('amount').value + ',';">,</button>
+                    </div>
                 </div>
-                <div class="btn-group">
-                    <button type="button" class="btn btn-outline-secondary py-3"
-                        onclick="document.getElementById('amount').value=document.getElementById('amount').value + '1';">1</button>
-                    <button type="button" class="btn btn-outline-secondary py-3"
-                        onclick="document.getElementById('amount').value=document.getElementById('amount').value + '2';">2</button>
-                    <button type="button" class="btn btn-outline-secondary py-3"
-                        onclick="document.getElementById('amount').value=document.getElementById('amount').value + '3';">3</button>
-                </div>
-                <div class="btn-group">
-                    <button type="button" class="btn btn-outline-secondary py-3"
-                        onclick="document.getElementById('amount').value=document.getElementById('amount').value + '4';">4</button>
-                    <button type="button" class="btn btn-outline-secondary py-3"
-                        onclick="document.getElementById('amount').value=document.getElementById('amount').value + '5';">5</button>
-                    <button type="button" class="btn btn-outline-secondary py-3"
-                        onclick="document.getElementById('amount').value=document.getElementById('amount').value + '6';">6</button>
-                </div>
-                <div class="btn-group">
-                    <button type="button" class="btn btn-outline-secondary py-3"
-                        onclick="document.getElementById('amount').value=document.getElementById('amount').value + '7';">7</button>
-                    <button type="button" class="btn btn-outline-secondary py-3"
-                        onclick="document.getElementById('amount').value=document.getElementById('amount').value + '8';">8</button>
-                    <button type="button" class="btn btn-outline-secondary py-3"
-                        onclick="document.getElementById('amount').value=document.getElementById('amount').value + '9';">9</button>
-                </div>
-                <div class="btn-group">
-                    <button type="button" class="btn btn-outline-secondary py-3"
-                        onclick="document.getElementById('amount').value=document.getElementById('amount').value.slice(0, -1);">&lt;</button>
-                    <button type="button" class="btn btn-outline-secondary py-3"
-                        onclick="document.getElementById('amount').value=document.getElementById('amount').value + '0';">0</button>
-                    <button type="button" class="btn btn-outline-secondary py-3" 
-                        onclick="document.getElementById('amount').value=document.getElementById('amount').value + ',';">,</button>
+            </div>
+
+            {% comment %} User numpad {% endcomment %}
+            <div class="pb-4">
+                <h4>Empf&auml;nger</h4>
+                <div class="btn-group-vertical" role="group">
+                    <div class="btn-group">
+                        <input class="text-center form-control-lg mb-2" id="user_id">
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-outline-secondary py-3"
+                            onclick="document.getElementById('user_id').value=document.getElementById('user_id').value + '1';">1</button>
+                        <button type="button" class="btn btn-outline-secondary py-3"
+                            onclick="document.getElementById('user_id').value=document.getElementById('user_id').value + '2';">2</button>
+                        <button type="button" class="btn btn-outline-secondary py-3"
+                            onclick="document.getElementById('user_id').value=document.getElementById('user_id').value + '3';">3</button>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-outline-secondary py-3"
+                            onclick="document.getElementById('user_id').value=document.getElementById('user_id').value + '4';">4</button>
+                        <button type="button" class="btn btn-outline-secondary py-3"
+                            onclick="document.getElementById('user_id').value=document.getElementById('user_id').value + '5';">5</button>
+                        <button type="button" class="btn btn-outline-secondary py-3"
+                            onclick="document.getElementById('user_id').value=document.getElementById('user_id').value + '6';">6</button>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-outline-secondary py-3"
+                            onclick="document.getElementById('user_id').value=document.getElementById('user_id').value + '7';">7</button>
+                        <button type="button" class="btn btn-outline-secondary py-3"
+                            onclick="document.getElementById('user_id').value=document.getElementById('user_id').value + '8';">8</button>
+                        <button type="button" class="btn btn-outline-secondary py-3"
+                            onclick="document.getElementById('user_id').value=document.getElementById('user_id').value + '9';">9</button>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-outline-secondary py-3"
+                            onclick="document.getElementById('user_id').value=document.getElementById('user_id').value.slice(0, -1);">&lt;</button>
+                        <button type="button" class="btn btn-outline-secondary py-3"
+                            onclick="document.getElementById('user_id').value=document.getElementById('user_id').value + '0';">0</button>
+                    <button type="button" class="btn btn-i4 py-3" onclick="">Senden</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-12">
-            <h4>Empf&auml;nger</h4>
-        </div>
-
-        {% comment %} User numpad {% endcomment %}
-        <div class="col-lg-4 col-md-6 col-12 pb-4">
-            <div class="btn-group-vertical" role="group">
-                <div class="btn-group">
-                    <input class="text-center form-control-lg mb-2" id="user_id">
-                </div>
-                <div class="btn-group">
-                    <button type="button" class="btn btn-outline-secondary py-3"
-                        onclick="document.getElementById('user_id').value=document.getElementById('user_id').value + '1';">1</button>
-                    <button type="button" class="btn btn-outline-secondary py-3"
-                        onclick="document.getElementById('user_id').value=document.getElementById('user_id').value + '2';">2</button>
-                    <button type="button" class="btn btn-outline-secondary py-3"
-                        onclick="document.getElementById('user_id').value=document.getElementById('user_id').value + '3';">3</button>
-                </div>
-                <div class="btn-group">
-                    <button type="button" class="btn btn-outline-secondary py-3"
-                        onclick="document.getElementById('user_id').value=document.getElementById('user_id').value + '4';">4</button>
-                    <button type="button" class="btn btn-outline-secondary py-3"
-                        onclick="document.getElementById('user_id').value=document.getElementById('user_id').value + '5';">5</button>
-                    <button type="button" class="btn btn-outline-secondary py-3"
-                        onclick="document.getElementById('user_id').value=document.getElementById('user_id').value + '6';">6</button>
-                </div>
-                <div class="btn-group">
-                    <button type="button" class="btn btn-outline-secondary py-3"
-                        onclick="document.getElementById('user_id').value=document.getElementById('user_id').value + '7';">7</button>
-                    <button type="button" class="btn btn-outline-secondary py-3"
-                        onclick="document.getElementById('user_id').value=document.getElementById('user_id').value + '8';">8</button>
-                    <button type="button" class="btn btn-outline-secondary py-3"
-                        onclick="document.getElementById('user_id').value=document.getElementById('user_id').value + '9';">9</button>
-                </div>
-                <div class="btn-group">
-                    <button type="button" class="btn btn-outline-secondary py-3"
-                        onclick="document.getElementById('user_id').value=document.getElementById('user_id').value.slice(0, -1);">&lt;</button>
-                    <button type="button" class="btn btn-outline-secondary py-3"
-                        onclick="document.getElementById('user_id').value=document.getElementById('user_id').value + '0';">0</button>
-                <button type="button" class="btn btn-i4 py-3" onclick="">Senden</button>
-                </div>
-            </div>
-        </div>
-
         {% comment %} User list {% endcomment %}
         <div class="col-sm-6 col-12">
-            <ul class="list-group scroll-sm">
+            <h4>Alle Empf&auml;nger</h4>
+            <ul class="list-group scroll-lg">
                 {% for user in users %}
                     <button type="button" class="list-group-item list-group-item-action">{{ user.nickname }}</button>
                 {% endfor %}
