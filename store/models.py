@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 
-class user(AbstractBaseUser):
+class User(AbstractBaseUser):
     firstname = models.TextField(null=False)
     surname = models.TextField(null=False)
     nickname = models.TextField()

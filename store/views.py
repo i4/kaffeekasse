@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import user, product
+from .models import User, product
 from django.views.decorators.http import require_http_methods
 from django.http import HttpResponse
 
@@ -7,7 +7,7 @@ from django.http import HttpResponse
 
 @require_http_methods(["GET"])
 def index(request):
-    return render(request, "index.html", {"users": user.objects.all()})
+    return render(request, "index.html", {"Users": User.objects.all()})
 
 @require_http_methods(["GET"])
 def buy(request):
@@ -23,13 +23,13 @@ def charge(request):
 
 @require_http_methods(["GET"])
 def transfer(request):
-    return render(request, "transfer.html", {"users": user.objects.all()})
+    return render(request, "transfer.html", {"Users": User.objects.all()})
 
 def test(request):
     response = "no"
     try:
-        u = user.objects.get(pk=1) 
+        u = User.objects.get(pk=1) 
         response = "yes"
-    except user.DoesNotExist:
+    except User.DoesNotExist:
        pass
     return HttpResponse(response)
