@@ -5,3 +5,15 @@
 .navbar-dark{
     background-color: #003865;
 }
+.scroll-lg{
+    max-height: 600px;
+    margin-bottom: 10px;
+    overflow:scroll;
+    -webkit-overflow-scrolling: touch;
+}
+.scroll-sm{
+    max-height: 283px;
+    margin-bottom: 10px;
+    overflow:scroll;
+    -webkit-overflow-scrolling: touch;
+}
