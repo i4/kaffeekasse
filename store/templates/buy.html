@@ -15,7 +15,7 @@
 {% block content %}
 {% comment %} Product list {% endcomment %}
 <div class="row">
-    <div class="col-md-3 col-12">
+    <div class="col-lg-3 col-md-6 col-12 pb-4">
         <h4>H&auml;ufig gekauft</h4>
         <ul class="list-group">
             <button type="button" class="list-group-item list-group-item-action">
@@ -26,7 +26,7 @@
             </button>
         </ul>
     </div>
-    <div class="col-md-3 col-12">
+    <div class="col-lg-3 col-md-6 col-12 pb-4">
         <h4>Getr&auml;nke</h4>
         <ul class="list-group">
             {% for drink in drinks %}
@@ -39,7 +39,7 @@
             {% endfor %}
         </ul>
     </div>
-    <div class="col-md-3 col-12">
+    <div class="col-lg-3 col-md-6 col-12">
         <h4>Snacks</h4>
         <ul class="list-group">
             {% for candy in candies %}
@@ -52,7 +52,7 @@
             {% endfor %}
         </ul>
     </div>
-    <div class="col-md-3 col-12">
+    <div class="col-lg-3 col-md-6 col-12">
         <h4>
             Letzte Eink&auml;ufe
             {% load static %}
