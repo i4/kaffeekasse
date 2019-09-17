@@ -37,8 +37,14 @@
             </button>
         </ul>
     </div>
-    <div class="col-md-4 col-12">
-        <h3>Snacks</h3>
+    <div class="col-md-3 col-12">
+        <h4>
+            Letzte Eink&auml;ufe
+            {% load static %}
+            <button class="btn btn-i4 btn-sm">
+                <img src="{% static "revert.svg" %}" width="20" height="20"/>
+            </button>
+        </h4>
         <ul class="list-group">
             <button type="button" class="list-group-item list-group-item-action">
                 <div class="d-flex justify-content-between">
