@@ -23,6 +23,13 @@ class UserLogic:
             return True
         return False
 
+    """
+    Collects the users that have the most log ins on a client within a given time period.
+    Returns a list of dictionaries on succes: [{'user__nickname': '...', 'user__id': '...', 'total': '...'}, ...]
+    @param client_id: the id of the client
+    @param max_users: the maximum of users that should be shown
+    @param max_days: the maximum of days that have passed since the last logisince the last loginn
+    """
     @staticmethod
     def getFrequentUsersList(client_id, max_users, max_days):
         logins = Login.objects.filter(client_id=client_id)
