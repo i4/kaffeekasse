@@ -24,7 +24,7 @@
             {% if user.is_authenticated %}
                 <span class="navbar-text text-light font-xl" id="money">
                 </span>
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="{% url 'logout' %}">
                     <img src="{% static "logout.svg" %}" width="60" height="40"/>
                 </a>
             {% endif %}
