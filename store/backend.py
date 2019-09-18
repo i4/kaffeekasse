@@ -1,4 +1,4 @@
-from .models import User, Client, Login
+from .models import *
 from django.contrib.auth import login
 from django.db.models import Count
 from django.db.models.functions import Lower
@@ -34,10 +34,19 @@ class UserLogic:
     @staticmethod
     def getFrequentUsersList(client_id, max_users, max_days):
         time_stamp = date.today() - timedelta(days=max_days)
-        logins = Login.objects.filter(client_id=client_id, time_stamp__gte=time_stamp.strftime("%d.%m.%Y") + " 00:00")
-        logins = Login.objects.select_related('user')
+        logins = Login.objects.filter(client_id=client_id, time_stamp__gte=time_stamp.strftime("%Y-%m-%d") + " 00:00")
+        logins = logins.select_related('user')
         logins = logins.values('user__nickname', 'user__id')
         logins = logins.annotate(total=Count('user__id'))
         logins = logins.order_by('total').reverse()[:max_users]
         return list(logins)
+
+
+class ProductLogic:
+
+    @staticmethod
+    def getMostBoughtProductList(client_id, max_products, max_days):
+        time_stamp = date.today() - timedelta(days=max_days)
+        products = Purchase.object.filter(client_id=client_id, time_stamp__gte=time_stamp.strftime("%Y-%m-%d") + " 00:00")
+
 
