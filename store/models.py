@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.utils import timezone
+from decimal import Decimal
 
 
 class User(AbstractBaseUser):
@@ -12,8 +13,8 @@ class User(AbstractBaseUser):
     password = models.TextField(null=True)
     USERNAME_FIELD = 'id'
 
-    def updateMoney(amount):
-        self.money += amount
+    def updateMoney(self, amount):
+        self.money += Decimal(amount)
         self.save()
 
 class Product(models.Model):
@@ -22,7 +23,7 @@ class Product(models.Model):
     stock = models.IntegerField(null=False)
     price = models.DecimalField(max_digits=6, decimal_places=2)
 
-    def updateStock(amount):
+    def updateStock(self, amount):
         self.stock += amount
         self.save()
 
