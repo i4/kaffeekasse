@@ -57,6 +57,28 @@
         function updateMoney() {
             $("#money").html(parseFloat(money).toFixed(2) + "&euro;");
         }
+
+        // Auto logout for inactivity
+        {% comment %} function idleTimer() {
+            var t;
+            window.onload = resetTimer;
+            window.onmousemove = resetTimer; // catches mouse movements
+            window.onmousedown = resetTimer; // catches mouse movements
+            window.onclick = resetTimer;     // catches mouse clicks
+            window.onscroll = resetTimer;    // catches scrolling
+            window.onkeypress = resetTimer;  //catches keyboard actions
+
+            function logout() {
+                window.location.href = '{% url "logout" %}';
+            }
+
+            function resetTimer() {
+                console.log("Reset timer")
+                clearTimeout(t);
+                t = setTimeout(logout, 1000 * auth_timeout);
+            }
+        }
+        idleTimer(); {% endcomment %}
     {% endif %}
     </script>
     {% block script %} {% endblock %}
