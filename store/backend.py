@@ -81,5 +81,8 @@ class TokenLogic:
 
     @transaction.atomic
     def get_token(self):
-        token = Token.objects.all()
-        print(token)
+        token = list(Token.objects.all())[0] 
+        print(token.token)
+        token.token += 1
+        token.save()
+        print(token.token)
