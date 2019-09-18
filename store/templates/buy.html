@@ -74,7 +74,6 @@
 
 {% block script %}
 <script>
-
     const products = {
         {% for product in products %}
         {{ product.id }}: {
@@ -82,7 +81,7 @@
             name: "{{ product.name }}",
         },
         {% endfor %}
-    }
+    };
 
     prepareAjax();
 
@@ -101,13 +100,13 @@
                 addLastBought(id);
             },
             error: function(error) {
-                showError("Fehler beim Einkaufen!")
-            }
+                showError("Fehler beim Einkaufen!");
+            },
         });
     }
 
     function addLastBought(id) {
-        # TODO
+        // TODO
     }
 
 </script>
