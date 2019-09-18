@@ -45,6 +45,8 @@
     <script src="{% static "custom.js" %}"></script>
     <script>
     {% if user.is_authenticated %}
+        const auth_timeout = 10; // Timeout in seconds
+
         let money = {{ user.money }};
         updateMoney();
 
