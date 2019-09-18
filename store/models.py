@@ -53,4 +53,5 @@ class Token(models.Model):
 
     def increment(self):
         self.token += 1
+        self.save()
 
