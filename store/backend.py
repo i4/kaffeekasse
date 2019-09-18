@@ -4,8 +4,14 @@ from django.db.models import Count
 from django.db.models.functions import Lower
 
 
-class LoginLogic:
+class UserLogic:
 
+    """
+    Basic login function. On success the user is logged in and True is returned. On Failure nothing happens and False is
+    returned.
+    @param request: the request object
+    @param user_id: id of the user that should log in
+    """
     @staticmethod
     def login(request, user_id):
         try:
@@ -16,9 +22,6 @@ class LoginLogic:
             login(request, user)
             return True
         return False
-    
-
-class GetMostFrequentUsers:
 
     @staticmethod
     def getFrequentUsersList(client_id, max_users, max_days):
