@@ -1,6 +1,7 @@
 from .models import User, Client, Login
 from django.contrib.auth import login
-from django.db.models import Sum
+from django.db.models import Count
+from django.db.models.functions import Lower
 
 
 class LoginLogic:
@@ -21,12 +22,9 @@ class GetMostFrequentUsers:
 
     @staticmethod
     def getFrequentUsersList(client_id, max_users, max_days):
-        # logins = Login.objects.filter(client=client_id).select_related()
-        logins = Login.objects.filter(client=client_id).prefetch_related('user')
-        # logins = logins.values('nickname').annotate(Sum('user'))
-        doc = open("./testlog.out", "w")
-        for login in logins:
-            # doc.write(login.user.nickname + " " + str(login['user__sum']) + "\n")
-            doc.write(login.user.nickname)
-        doc.close()
-
+        logins = Login.objects.filter(client_id=client_id)
+        logins = Login.objects.select_related('user')
+        logins = logins.values('user__nickname', 'user__id')
+        logins = logins.annotate(total=Count('user__id'))
+        logins = logins.order_by('total').reverse()[:max_users]
+        return logins
