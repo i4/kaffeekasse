@@ -45,7 +45,7 @@ class ProductLogic:
     
     """
     Collects the prodcuts that are most bought on one client within a given time period.
-    Returns a list of dictionries on success: [{'product__name': '...', 'product_id': ..., 'total': ...}, ...]
+    Returns a list of dictionries on success: [{'product__name': '...', 'product_id': ...,  'product__price': ..., 'total': ...}, ...]
     @param max_products: the maximum of products taht should be shown
     @param max_days: the maximum of days that have passed since the last logisince the purchase 
     """
@@ -54,7 +54,7 @@ class ProductLogic:
         time_stamp = date.today() - timedelta(days=max_days)
         products = Purchase.objects.filter(time_stamp__gte=time_stamp.strftime("%Y-%m-%d") + " 00:00")
         products = products.select_related('product')
-        products = products.values('product__name', 'product_id')
+        products = products.values('product__name', 'product_id', 'product__price')
         products = products.annotate(total=Count('product_id'))
         products = products.order_by('total').reverse()[:max_products]
         print(products.query)
