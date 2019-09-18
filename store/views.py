@@ -30,7 +30,7 @@ def transfer(request):
     return render(request, "transfer.html", {"Users": User.objects.all()})
 
 
-# Authentications
+# Authentication
 
 @require_http_methods(["POST"])
 @csrf_protect
