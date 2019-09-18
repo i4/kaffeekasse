@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.utils import timezone
 
 
 class User(AbstractBaseUser):
@@ -24,7 +25,7 @@ class Charge(models.Model):
     id = models.TextField(primary_key=True)
     user = models.ForeignKey('user', on_delete=models.CASCADE, null=False)
     client = models.ForeignKey('client', on_delete=models.SET_NULL, null=True)
-    time_stamp = models.TimeField(null=False, auto_now=True)
+    time_stamp = models.DateTimeField(null=False, auto_now=True)
     amount = models.DecimalField(max_digits=6, decimal_places=2)
 
 class Purchase(models.Model):
@@ -33,7 +34,7 @@ class Purchase(models.Model):
     product = models.ForeignKey('product', on_delete=models.SET_NULL,
             null=True)
     client = models.ForeignKey('client', on_delete=models.SET_NULL, null=True)
-    time_stamp = models.TimeField(null=False, auto_now=True)
+    time_stamp = models.DateTimeField(null=False, auto_now=True)
     price = models.DecimalField(max_digits=6, decimal_places=2)
 
 class Transfer(models.Model):
@@ -43,11 +44,11 @@ class Transfer(models.Model):
     receiver  = models.ForeignKey('user', on_delete=models.SET_NULL,
             null=True, related_name='receiver')
     client  = models.ForeignKey('client', on_delete=models.SET_NULL, null=True)
-    time_stamp = models.TimeField(null=False, auto_now=True)
+    time_stamp = models.DateTimeField(null=False, auto_now=True)
     amount = models.DecimalField(max_digits=6, decimal_places=2)
 
 class Login(models.Model):
     id = models.TextField(primary_key=True)
-    time_stamp = models.TimeField(null=False, auto_now=True)
+    time_stamp = models.DateTimeField(null=False, auto_now=True)
     user  = models.ForeignKey('user', on_delete=models.CASCADE, null=False)
     client  = models.ForeignKey('client', on_delete=models.SET_NULL, null=True)
