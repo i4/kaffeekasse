@@ -11,6 +11,7 @@ urlpatterns = [
 
     # Auth
     path('login', views.login, name="login"),
+    path('logout', views.logout, name="logout"),
 
     # Test
     path('test', views.test, name="test"),

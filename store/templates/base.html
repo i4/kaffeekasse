@@ -18,6 +18,16 @@
             <ul class="navbar-nav mr-auto">
                 {% block navbar_items %} {% endblock %}
             </ul>
+            {% if user.is_authenticated %}
+                <span class="navbar-text text-light">
+                    {{ user.money }} &euro;
+                </span>
+                <li class="nav-item active">
+                    <a class="nav-link" href="logout" onclick="logout()">
+                        <img src="{% static "logout.svg" %}" width="20" height="20"/>
+                    </a>
+                </li>
+            {% endif %}
         </div>
     </nav>
 

@@ -3,7 +3,7 @@ from .models import User, Product
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_protect
 from django.http import HttpResponse, HttpResponseRedirect
-from django.contrib.auth import login
+from django.contrib.auth import login, logout as auth_logout
 from .backend import *
 
 # Create your views here.
@@ -34,8 +34,12 @@ def login(request):
     if (LoginLogic.login(request, request.POST.get("user_id"))):
         return HttpResponseRedirect(reverse("buy"))
     else:
-        return HttpResponseRedirect(reverse("index"))
+        return HttpResponseRedirect("/store/")
 
+
+def logout(request):
+    auth_logout(request)
+    return HttpResponseRedirect(reverse("index"))
 
 def test(request):
     user = User.objects.get(pk=1)
