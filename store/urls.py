@@ -13,6 +13,9 @@ urlpatterns = [
     path('login', views.login, name="login"),
     path('logout', views.logout, name="logout"),
 
+    # API
+    path('buy_product', views.buyProduct, name="buy_product"),
+
     # Test
     path('test', views.test, name="test"),
     path('test2', views.test2, name="test2"),

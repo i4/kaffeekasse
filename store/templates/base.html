@@ -22,8 +22,7 @@
             </ul>
             {% comment %} Right side {% endcomment %}
             {% if user.is_authenticated %}
-                <span class="navbar-text text-light">
-                    {{ user.money }} &euro;
+                <span class="navbar-text text-light" id="money">
                 </span>
                 <a class="nav-link" href="logout" onclick="logout()">
                     <img src="{% static "logout.svg" %}" width="20" height="20"/>
@@ -34,6 +33,7 @@
 
     {% comment %} Main page content {% endcomment %}
     <div class="container pt-4">
+        <div id="alertDiv"></div>
         {% block content %} {% endblock %}
     </div>
 
@@ -42,6 +42,23 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
         integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
         crossorigin="anonymous"></script>
+    <script src="{% static "custom.js" %}"></script>
+    <script>
+    {% if user.is_authenticated %}
+        let money = {{ user.money }};
+        updateMoney();
+
+        // Reduce the money variable by amount and update the dipsplayed information
+        function reduceMoney(amount) {
+            money -= amount;
+            updateMoney();
+        }
+        // Update the displayed money information
+        function updateMoney() {
+            $("#money").html(parseFloat(money).toFixed(2) + "&euro;");
+        }
+    {% endif %}
+    </script>
     {% block script %} {% endblock %}
 </body>
 </html>
