@@ -34,7 +34,7 @@ class UserLogic:
     @staticmethod
     def getFrequentUsersList(client_id, max_users, max_days):
         time_stamp = date.today() - timedelta(days=max_days)
-        logins = Login.objects.filter(client_id=client_id, time_stamp__gte=time_stamp.strftime("%d.%m.%Y") + " 00:00")
+        logins = Login.objects.filter(client_id=client_id, time_stamp__gte=time_stamp.strftime("%Y-%m-%d") + " 00:00")
         logins = Login.objects.select_related('user')
         logins = logins.values('user__nickname', 'user__id')
         logins = logins.annotate(total=Count('user__id'))
