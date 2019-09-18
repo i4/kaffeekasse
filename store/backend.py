@@ -3,6 +3,7 @@ from django.contrib.auth import login
 from django.db.models import Count
 from django.db.models.functions import Lower
 from datetime import date, timedelta 
+from django.db import transaction
 
 
 class UserLogic:
@@ -74,3 +75,11 @@ class ProductLogic:
         print(products)
         print(products.query)
         return list(products)
+
+
+class TokenLogic:
+
+    @transaction.atomic
+    def get_token(self):
+        token = Token.objects.all()
+        print(token)
