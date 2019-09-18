@@ -2,6 +2,7 @@ from .models import User, Client, Login
 from django.contrib.auth import login
 from django.db.models import Count
 from django.db.models.functions import Lower
+from datetime import date, timedelta 
 
 
 class UserLogic:
@@ -32,9 +33,11 @@ class UserLogic:
     """
     @staticmethod
     def getFrequentUsersList(client_id, max_users, max_days):
-        logins = Login.objects.filter(client_id=client_id)
+        time_stamp = date.today() - timedelta(days=max_days)
+        logins = Login.objects.filter(client_id=client_id, time_stamp__gte=time_stamp.strftime("%d.%m.%Y") + " 00:00")
         logins = Login.objects.select_related('user')
         logins = logins.values('user__nickname', 'user__id')
         logins = logins.annotate(total=Count('user__id'))
         logins = logins.order_by('total').reverse()[:max_users]
         return list(logins)
+
