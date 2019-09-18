@@ -2,6 +2,7 @@ from django.shortcuts import render, reverse
 from .models import User, Product
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_protect
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import logout as auth_logout
 from .backend import *
@@ -11,9 +12,11 @@ from .backend import *
 
 @require_http_methods(["GET"])
 def index(request):
-    return render(request, "index.html", {"Users": User.objects.all()})
+    # TODO: Remove hard coded client id
+    clientid = "0xf0x4-0x60x2-0xe0xe-0x90xe-0x70xf-0x10xb"
+    return render(request, "index.html", {"users": UserLogic.getFrequentUsersList(clientid, 20, 30)})
 
-
+@login_required(login_url="index")
 @require_http_methods(["GET"])
 def buy(request):
     return render(request, "buy.html", {
@@ -21,12 +24,12 @@ def buy(request):
         "candies": Product.objects.filter(category="candy"),
     })
 
-
+@login_required(login_url="index")
 @require_http_methods(["GET"])
 def charge(request):
     return render(request, "charge.html", {})
 
-
+@login_required(login_url="index")
 @require_http_methods(["GET"])
 def transfer(request):
     return render(request, "transfer.html", {"Users": User.objects.all()})
@@ -37,16 +40,23 @@ def transfer(request):
 @require_http_methods(["POST"])
 @csrf_protect
 def login(request):
-    if (LoginLogic.login(request, request.POST.get("user_id"))):
+    if (UserLogic.login(request, request.POST.get("user_id"))):
         return HttpResponseRedirect(reverse("buy"))
     else:
         return HttpResponseRedirect("/store/")
 
-
+@login_required(login_url="index")
 def logout(request):
     auth_logout(request)
     return HttpResponseRedirect(reverse("index"))
 
+
+# API
+@login_required(login_url="index")
+@require_http_methods(["POST"])
+def buyProduct(request):
+    # TODO: Add backend logic
+    return HttpResponse()
 
 # Test
 

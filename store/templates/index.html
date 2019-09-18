@@ -55,7 +55,7 @@
     <div class="col-sm-6 col-12">
         <ul class="list-group scroll-lg">
             {% for user in users %}
-                <button type="button" class="list-group-item list-group-item-action">{{ user.nickname }}</button>
+                <button onclick="loginUser({{ user.user__id }})" type="button" class="list-group-item list-group-item-action">{{ user.user__nickname }}</button>
             {% endfor %}
         </ul>
     </div>
@@ -64,15 +64,22 @@
 
 {% block script %}
     <script>
-        function login() {
-            // Parse input value to int
-            var val = parseInt($("#user_id").val());
-            if (!isNaN(val)) {
-                $("#user_id").val(val);
-                $("#loginForm").submit();
-            } else {
+        function loginUser(id) {
+            // Convert id to int
+            id = parseInt(id);
+            if (isNaN(id)) {
                 $("#user_id").val(null);
+                return;
             }
+
+            // Set user_id value in form and submit form
+            $("#user_id").val(id);
+            $("#loginForm").submit();
+        }
+
+        function login() {
+            var id = $("#user_id").val();
+            loginUser(id);
         }
     </script>
 {% endblock %}
