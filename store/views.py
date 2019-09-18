@@ -13,14 +13,14 @@ from .backend import *
 @require_http_methods(["GET"])
 def index(request):
     # TODO: Remove hard coded client id
-    clientid = "0xf0x4-0x60x2-0xe0xe-0x90xe-0x70xf-0x10xb"
-    return render(request, "index.html", {"users": UserLogic.getFrequentUsersList(clientid, 20, 30)})
+    return render(request, "index.html", {"users": UserLogic.getFrequentUsersList(20, 30)})
 
 
 @login_required(login_url="index")
 @require_http_methods(["GET"])
 def buy(request):
     return render(request, "buy.html", {
+        "most_bought": ProductLogic.getMostBoughtProductsList(5, 30),
         "drinks": Product.objects.filter(category="drink"),
         "candies": Product.objects.filter(category="candy"),
         "products": Product.objects.all(),
