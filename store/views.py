@@ -11,7 +11,9 @@ from .backend import *
 
 @require_http_methods(["GET"])
 def index(request):
-    return render(request, "index.html", {"Users": User.objects.all()})
+    # TODO: Remove hard coded client id
+    clientid = "0xf0x4-0x60x2-0xe0xe-0x90xe-0x70xf-0x10xb"
+    return render(request, "index.html", {"users": UserLogic.getFrequentUsersList(clientid, 20, 30)})
 
 
 @require_http_methods(["GET"])
