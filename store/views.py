@@ -39,7 +39,7 @@ def transfer(request):
 @require_http_methods(["POST"])
 @csrf_protect
 def login(request):
-    if (LoginLogic.login(request, request.POST.get("user_id"))):
+    if (UserLogic.login(request, request.POST.get("user_id"))):
         return HttpResponseRedirect(reverse("buy"))
     else:
         return HttpResponseRedirect("/store/")
