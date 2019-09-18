@@ -3,10 +3,11 @@ from .models import User, Product
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_protect
 from django.http import HttpResponse, HttpResponseRedirect
-from django.contrib.auth import login, logout as auth_logout
+from django.contrib.auth import logout as auth_logout
 from .backend import *
 
-# Create your views here.
+
+# Rendered pages
 
 @require_http_methods(["GET"])
 def index(request):
@@ -28,6 +29,9 @@ def charge(request):
 def transfer(request):
     return render(request, "transfer.html", {"Users": User.objects.all()})
 
+
+# Authentications
+
 @require_http_methods(["POST"])
 @csrf_protect
 def login(request):
@@ -41,10 +45,10 @@ def logout(request):
     auth_logout(request)
     return HttpResponseRedirect(reverse("index"))
 
+
+# Test
+
 def test(request):
-    user = User.objects.get(pk=1)
-    login(request, user)
-    
     return render(request, "test.html", {})
 
 def test2(request):
