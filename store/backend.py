@@ -33,7 +33,7 @@ class UserLogic:
     @staticmethod
     def getFrequentUsersList(max_users, max_days):
         time_stamp = date.today() - timedelta(days=max_days)
-        logins = Login.objects.filter(client_id=client_id, time_stamp__gte=time_stamp.strftime("%Y-%m-%d") + " 00:00")
+        logins = Login.objects.filter(time_stamp__gte=time_stamp.strftime("%Y-%m-%d") + " 00:00")
         logins = logins.select_related('user')
         logins = logins.values('user__nickname', 'user__id')
         logins = logins.annotate(total=Count('user__id'))
@@ -52,7 +52,7 @@ class ProductLogic:
     @staticmethod
     def getMostBoughtProductsList(max_products, max_days):
         time_stamp = date.today() - timedelta(days=max_days)
-        products = Purchase.objects.filter(client_id=client_id, time_stamp__gte=time_stamp.strftime("%Y-%m-%d") + " 00:00")
+        products = Purchase.objects.filter(time_stamp__gte=time_stamp.strftime("%Y-%m-%d") + " 00:00")
         products = products.select_related('product')
         products = products.values('product__name', 'product_id')
         products = products.annotate(total=Count('product_id'))
