@@ -49,5 +49,8 @@ class Login(models.Model):
     user  = models.ForeignKey('user', on_delete=models.CASCADE, null=False)
 
 class Token(models.Model):
-    token = models.BigIntegerField(primary_key=True, default=0)
+    token = models.BigIntegerField(unique=True, default=0)
+
+    def increment(self):
+        self.token += 1
 
