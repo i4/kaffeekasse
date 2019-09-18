@@ -30,7 +30,7 @@
         <h4>Getr&auml;nke</h4>
         <ul class="list-group">
             {% for drink in drinks %}
-                <button type="button" class="list-group-item list-group-item-action">
+                <button onclick="buy({{ drink.id }})" type="button" class="list-group-item list-group-item-action">
                     <div class="d-flex w-100 justify-content-between">
                         <div class="mb-1">{{ drink.name }}</div>
                         <div> {{ drink.price }} &euro;</div>
@@ -43,7 +43,7 @@
         <h4>Snacks</h4>
         <ul class="list-group">
             {% for candy in candies %}
-                <button type="button" class="list-group-item list-group-item-action">
+                <button onclick="buy({{ candy.id }})" type="button" class="list-group-item list-group-item-action">
                     <div class="d-flex w-100 justify-content-between">
                         <div class="mb-1">{{ candy.name }}</div>
                         <div> {{ candy.price }} &euro;</div>
@@ -70,4 +70,45 @@
         </ul>
     </div>
 </div>
+{% endblock %}
+
+{% block script %}
+<script>
+
+    const products = {
+        {% for product in products %}
+        {{ product.id }}: {
+            price: {{ product.price }},
+            name: "{{ product.name }}",
+        },
+        {% endfor %}
+    }
+
+    prepareAjax();
+
+    function buy(id) {
+        id = parseInt(id);
+        if (isNaN(id)) {
+            return;
+        }
+
+        $.ajax({
+            url: "{% url "buy_product" %}",
+            method: "POST",
+            data: {product_id: id},
+            success: function(data) {
+                reduceMoney(products[id]["price"]);
+                addLastBought(id);
+            },
+            error: function(error) {
+                showError("Fehler beim Einkaufen!")
+            }
+        });
+    }
+
+    function addLastBought(id) {
+        # TODO
+    }
+
+</script>
 {% endblock %}

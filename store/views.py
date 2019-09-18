@@ -22,6 +22,7 @@ def buy(request):
     return render(request, "buy.html", {
         "drinks": Product.objects.filter(category="drink"),
         "candies": Product.objects.filter(category="candy"),
+        "products": Product.objects.all(),
     })
 
 @login_required(login_url="index")
