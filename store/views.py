@@ -16,6 +16,7 @@ def index(request):
     clientid = "0xf0x4-0x60x2-0xe0xe-0x90xe-0x70xf-0x10xb"
     return render(request, "index.html", {"users": UserLogic.getFrequentUsersList(clientid, 20, 30)})
 
+
 @login_required(login_url="index")
 @require_http_methods(["GET"])
 def buy(request):
@@ -25,10 +26,12 @@ def buy(request):
         "products": Product.objects.all(),
     })
 
+
 @login_required(login_url="index")
 @require_http_methods(["GET"])
 def charge(request):
     return render(request, "charge.html", {})
+
 
 @login_required(login_url="index")
 @require_http_methods(["GET"])
@@ -46,6 +49,7 @@ def login(request):
     else:
         return HttpResponseRedirect("/store/")
 
+
 @login_required(login_url="index")
 def logout(request):
     auth_logout(request)
@@ -53,6 +57,7 @@ def logout(request):
 
 
 # API
+
 @login_required(login_url="index")
 @require_http_methods(["POST"])
 def buyProduct(request):
@@ -60,6 +65,7 @@ def buyProduct(request):
     return HttpResponse()
 
 # Test
+
 
 def test(request):
     return render(request, "test.html", {})
