@@ -26,10 +26,10 @@ class UserLogic:
 
     """
     Collects the users that have the most log ins on a client within a given time period.
-    Returns a list of dictionaries on succes: [{'user__nickname': '...', 'user__id': '...', 'total': '...'}, ...]
+    Returns a list of dictionaries on succes: [{'user__nickname': '...', 'user__id': ..., 'total': ...}, ...]
     @param client_id: the id of the client
     @param max_users: the maximum of users that should be shown
-    @param max_days: the maximum of days that have passed since the last logisince the last loginn
+    @param max_days: the maximum of days that have passed since the last login
     """
     @staticmethod
     def getFrequentUsersList(client_id, max_users, max_days):
@@ -43,10 +43,22 @@ class UserLogic:
 
 
 class ProductLogic:
-
+    
+    """
+    Collects the prodcuts that are most bought on one client within a given time period.
+    Returns a list of dictionries on success: [{'product__name': '...', 'product_id': ..., 'total': ...}, ...]
+    @param client_id: the id of the client
+    @param max_products: the maximum of products taht should be shown
+    @param max_days: the maximum of days that have passed since the last logisince the purchase 
+    """
     @staticmethod
-    def getMostBoughtProductList(client_id, max_products, max_days):
+    def getMostBoughtProductsList(client_id, max_products, max_days):
         time_stamp = date.today() - timedelta(days=max_days)
-        products = Purchase.object.filter(client_id=client_id, time_stamp__gte=time_stamp.strftime("%Y-%m-%d") + " 00:00")
+        products = Purchase.objects.filter(client_id=client_id, time_stamp__gte=time_stamp.strftime("%Y-%m-%d") + " 00:00")
         products = products.select_related('product')
-
+        products = products.values('product__name', 'product_id')
+        products = products.annotate(total=Count('product_id'))
+        products = products.order_by('total').reverse()[:max_products]
+        print(products.query)
+        print(products)
+        return list(products)
