@@ -22,6 +22,10 @@ class Product(models.Model):
     stock = models.IntegerField(null=False)
     price = models.DecimalField(max_digits=6, decimal_places=2)
 
+    def updateStock(amount):
+        self.stock += amount
+        self.save()
+
 class Charge(models.Model):
     token = models.BigIntegerField(null=False, unique=True)
     user = models.ForeignKey('user', on_delete=models.CASCADE, null=False)
