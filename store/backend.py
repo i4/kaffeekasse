@@ -37,4 +37,4 @@ class UserLogic:
         logins = logins.values('user__nickname', 'user__id')
         logins = logins.annotate(total=Count('user__id'))
         logins = logins.order_by('total').reverse()[:max_users]
-        return logins
+        return list(logins)
