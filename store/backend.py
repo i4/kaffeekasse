@@ -44,9 +44,9 @@ class UserLogic:
 class ProductLogic:
     
     """
-    Collects the prodcuts that are most bought on one client within a given time period.
+    Collects the prodcuts that are most bought within a given time period.
     Returns a list of dictionries on success: [{'product__name': '...', 'product_id': ...,  'product__price': ..., 'total': ...}, ...]
-    @param max_products: the maximum of products taht should be shown
+    @param max_products: the maximum of products that should be shown
     @param max_days: the maximum of days that have passed since the last logisince the purchase 
     """
     @staticmethod
@@ -57,6 +57,20 @@ class ProductLogic:
         products = products.values('product__name', 'product_id', 'product__price')
         products = products.annotate(total=Count('product_id'))
         products = products.order_by('total').reverse()[:max_products]
-        print(products.query)
+        return list(products)
+
+    """
+    Collects the products that are most bought by one user.
+    Returns a list of dictionaries on success: [{'product__name': '...', 'product_id': 41, 'product__price': ...}]
+    @param user_id: the id of the user
+    @param max_products: the maximum of products that should be shown
+    """
+    @staticmethod
+    def getLastBoughtProductsList(user_id, max_products):
+        products = Purchase.objects.filter(user=user_id)
+        products = products.select_related('product')
+        products = products.order_by('time_stamp').reverse()[:max_products]
+        products = products.values('product__name', 'product_id', 'product__price')
         print(products)
+        print(products.query)
         return list(products)
