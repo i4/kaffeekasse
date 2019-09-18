@@ -12,6 +12,10 @@ class User(AbstractBaseUser):
     password = models.TextField(null=True)
     USERNAME_FIELD = 'id'
 
+    def updateMoney(amount):
+        self.money += amount
+        self.save()
+
 class Product(models.Model):
     name = models.TextField(null=False)
     category = models.TextField(null=False)
