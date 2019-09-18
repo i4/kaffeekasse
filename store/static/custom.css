@@ -17,3 +17,9 @@
     overflow:scroll;
     -webkit-overflow-scrolling: touch;
 }
+.font-xl{
+    font-size: x-large;
+}
+.font-lg{
+    font-size: large;
+}

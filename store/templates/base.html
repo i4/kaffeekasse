@@ -11,7 +11,7 @@
 <body>
     {% comment %} Navbar {% endcomment %}
     <nav class="navbar navbar-expand-md navbar-dark">
-        <a class="navbar-brand" href="#">Kaffeekasse 2000<sup>XT</sup></a>
+        <a class="navbar-brand font-xl" href="#">Kaffeekasse 2000<sup>XT</sup></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -22,10 +22,10 @@
             </ul>
             {% comment %} Right side {% endcomment %}
             {% if user.is_authenticated %}
-                <span class="navbar-text text-light" id="money">
+                <span class="navbar-text text-light font-xl" id="money">
                 </span>
-                <a class="nav-link" href="logout" onclick="logout()">
-                    <img src="{% static "logout.svg" %}" width="20" height="20"/>
+                <a class="nav-link" href="#">
+                    <img src="{% static "logout.svg" %}" width="60" height="40"/>
                 </a>
             {% endif %}
         </div>
