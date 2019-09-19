@@ -70,7 +70,7 @@ def buyProduct(request):
     try:
         purchase_return_tuple = PurchaseLogic().purchase(user_id, product_id, token)
     except UserNotEnoughMoney as exc:
-        return JsonResponse({'error': str(exc)})
+        return JsonResponse({'error': str(exc)}, status=400)
     if purchase_return_tuple >= 0:
         return JsonResponse({"purchase_id": purchase_return_tuple})
     else:
