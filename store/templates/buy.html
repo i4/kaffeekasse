@@ -137,7 +137,6 @@
                 },
                 success: function(data) {
                     reduceMoney(products[id].price);
-                    console.log(data)
                     addLastBought(id, data.purchase_id);
                 },
                 error: error,
