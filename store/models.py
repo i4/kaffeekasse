@@ -32,7 +32,7 @@ class Charge(models.Model):
     user = models.ForeignKey('user', on_delete=models.CASCADE, null=False)
     time_stamp = models.DateTimeField(null=False, auto_now=True)
     amount = models.DecimalField(max_digits=6, decimal_places=2)
-    annulated = models.BooleanField(null=False) 
+    annullated = models.BooleanField(null=False) 
 
 class Purchase(models.Model):
     token = models.BigIntegerField(null=False, unique=True)
@@ -41,7 +41,7 @@ class Purchase(models.Model):
             null=True)
     time_stamp = models.DateTimeField(null=False, auto_now=True)
     price = models.DecimalField(max_digits=6, decimal_places=2)
-    annulated = models.BooleanField(null=False)
+    annullated = models.BooleanField(null=False)
 
 class Transfer(models.Model):
     token = models.BigIntegerField(null=False, unique=True)
@@ -51,7 +51,7 @@ class Transfer(models.Model):
             null=True, related_name='receiver')
     time_stamp = models.DateTimeField(null=False, auto_now=True)
     amount = models.DecimalField(max_digits=6, decimal_places=2)
-    annulated = models.BooleanField(null=False)
+    annullated = models.BooleanField(null=False)
 
 class Login(models.Model):
     time_stamp = models.DateTimeField(null=False, auto_now=True)

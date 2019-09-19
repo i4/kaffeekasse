@@ -72,7 +72,7 @@ class ProductLogic:
     """
     Collects the products that are most bought by one user.
     Returns a list of dictionaries on success: [{'product__name': '...', 'product_id': 41, 'product__price': ...,
-    'purchase__id': ..., 'time_stamp': ..., 'annullable': ...}]
+    'purchase__id': ...,  'annullated': ..., time_stamp': ..., 'annullable': ...}]
     @param user_id: the id of the user
     @config-param max_products: the maximum of products that should be shown
     """
@@ -83,7 +83,7 @@ class ProductLogic:
         products = Purchase.objects.filter(user=user_id)
         products = products.select_related('product')
         products = products.order_by('time_stamp').reverse()[:max_products]
-        products = products.values('product__name', 'product_id', 'product__price', 'time_stamp', 'id', 'annulated')
+        products = products.values('product__name', 'product_id', 'product__price', 'time_stamp', 'id', 'annullated')
 
         # warning: summertime/wintertime currently is not respected in the following calculations. This should be
         # implemented to avoid non-annullable transactions in the lost hour between summer- and wintertime
@@ -140,7 +140,7 @@ class PurchaseLogic:
 
     def __createPurchaseTuple(self, user, product, token):
         try:
-            purchase = Purchase(user=user, product=product, price=product.price, token=token, annulated=False)
+            purchase = Purchase(user=user, product=product, price=product.price, token=token, annullated=False)
             purchase.save()
         except IntegrityError:
             return False
@@ -151,3 +151,21 @@ class PurchaseLogic:
 
     def __updateProductStock(self, product):
         product.updateStock(-1) 
+
+    @staticmethod
+    def annullatePurchase(purchase_id):
+        # warning: summertime/wintertime currently is not respected in the following calculations. This should be
+        # implemented to avoid non-annullable transactions in the lost hour between summer- and wintertime
+        annullable_time = config['T_ANNULLABLE_PURCHASE_M']
+        now = datetime.now()
+        time_limit = datetime.now() - timedelta(minutes=annullable_time)
+        timezone = pytz.timezone('Europe/Berlin')
+        time_limit = timezone.localize(time_limit) 
+        
+        purchase = list(Purchase.objects.filter(id=purchase_id))[0] 
+        purchase_time = purchase['time_stamp']
+        if time_limit >= purchase_time:
+            return False
+        else:
+           pass 
+
