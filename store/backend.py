@@ -30,8 +30,8 @@ class UserLogic:
     """
     Collects the users that have the most log ins on a client within a given time period.
     Returns a list of dictionaries on succes: [{'user__nickname': '...', 'user__id': ..., 'total': ...}, ...]
-    @config-param max_users: the maximum of users that should be shown
-    @config-param max_days: the maximum of days that have passed since the last login
+    @config-param max_users: the maximum of users that should be shown. Depends on N_USERS_LOGIN
+    @config-param max_days: the maximum of days that have passed since the last login. Depends on T_USERS_LOGIN_D
     """
     @staticmethod
     def getFrequentUsersList():
@@ -54,8 +54,9 @@ class ProductLogic:
     """
     Collects the prodcuts that are most bought within a given time period.
     Returns a list of dictionries on success: [{'product__name': '...', 'product_id': ...,  'product__price': ..., 'total': ...}, ...]
-    @conifg-param max_products: the maximum of products that should be shown
-    @config-param max_days: the maximum of days that have passed since the last logisince the purchase 
+    @conifg-param max_products: the maximum of products that should be shown. Depends on N_MOST_BOUGHT_PRODUCTS
+    @config-param max_days: the maximum of days that have passed since the last logisince the purchase. Depends on
+        T_MOST_BOUGHT_PRODUCTS_D
     """
     @staticmethod
     def getMostBoughtProductsList():
@@ -74,7 +75,8 @@ class ProductLogic:
     Returns a list of dictionaries on success: [{'product__name': '...', 'product_id': 41, 'product__price': ...,
     'purchase__id': ...,  'annullated': ..., time_stamp': ..., 'annullable': ...}]
     @param user_id: the id of the user
-    @config-param max_products: the maximum of products that should be shown
+    @config-param max_products: the maximum of products that should be shown, depends on N_LAST_BOUGHT_PRODUCTS
+    @config-param annullable_time: the maximum time in minutes a purchase can be annullated. Depends on T_ANNULLABLE_PURCHASE_M
     """
     @staticmethod
     def getLastBoughtProductsList(user_id):
@@ -152,6 +154,12 @@ class PurchaseLogic:
     def __updateProductStock(self, product):
         product.updateStock(-1) 
 
+    """
+    Annulates a purchase that is not older than a given number of minutes. Returns False, if the purchase is too old,
+    returns True else.
+    @param purchase_id: the id of the purchase to annullate
+    @config-param annullable_time: depends on T_ANNULLABLE_PURCHASE_M
+    """
     @staticmethod
     def annullatePurchase(purchase_id):
         # warning: summertime/wintertime currently is not respected in the following calculations. This should be
