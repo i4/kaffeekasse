@@ -72,7 +72,7 @@ class ProductLogic:
     """
     Collects the products that are most bought by one user.
     Returns a list of dictionaries on success: [{'product__name': '...', 'product_id': 41, 'product__price': ...,
-    'time_stamp': ..., 'annullable': ...}]
+    'purchase__id': ..., 'time_stamp': ..., 'annullable': ...}]
     @param user_id: the id of the user
     @config-param max_products: the maximum of products that should be shown
     """
@@ -83,7 +83,7 @@ class ProductLogic:
         products = Purchase.objects.filter(user=user_id)
         products = products.select_related('product')
         products = products.order_by('time_stamp').reverse()[:max_products]
-        products = products.values('product__name', 'product_id', 'product__price', 'time_stamp')
+        products = products.values('product__name', 'product_id', 'product__price', 'time_stamp', 'id', 'annulated')
 
         # warning: summertime/wintertime currently is not respected in the following calculations. This should be
         # implemented to avoid non-annullable transactions in the lost hour between summer- and wintertime
@@ -93,11 +93,13 @@ class ProductLogic:
         time_limit = timezone.localize(time_limit) 
 
         for product in products:
+            product['purchase__id'] = product.pop('id')
             purchase_time = product['time_stamp']
             if time_limit >= purchase_time: 
                 product.update({'annullable': False})
             else:
                 product.update({'annullable': True})
+        print(products)
         return list(products)
 
 
@@ -149,4 +151,3 @@ class PurchaseLogic:
 
     def __updateProductStock(self, product):
         product.updateStock(-1) 
-
