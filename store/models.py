@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models, IntegrityError
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.utils import timezone
@@ -15,6 +15,7 @@ class User(AbstractBaseUser):
 
     def updateMoney(self, amount):
         if self.money + amount < 0:
+            raise IntegrityError("User has no money")
             return False
         self.money += Decimal(amount)
         self.save()

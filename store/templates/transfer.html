@@ -100,7 +100,7 @@
             </div>
         </div>
         {% comment %} User list {% endcomment %}
-        <div class="col-sm-6 col-12">
+        <div class="col-lg-4 col-md-6 col-12">
             <h4>Alle Empf&auml;nger</h4>
             <ul class="list-group scroll-lg">
                 {% for user in users %}
@@ -108,15 +108,59 @@
                 {% endfor %}
             </ul>
         </div>
+        <div class="col-lg-4 col-md-6 col-12 mb-4">
+            <h4>Letzte &Uuml;berweisungen</h4>
+            <ul class="list-group" id="recent_transfers">
+            </ul>
+            <template id="recent_transfer_template">
+                <label class="list-group-item">
+                    <div class="d-flex w-100 justify-content-between">
+                        <div class="mb-1" id="recent_transfer_recipient"></div>
+                        <div id="recent_transfer_amount"></div>
+                    </div>
+                    <div class="text-right">
+                        <button class="btn btn-i4" id="recent_transfer_revert">
+                            R&uuml;ckg&auml;ngig
+                        </button>
+                    </div>
+                </label>
+            </template>
+        </div>
     </div>
 </form>
 {% endblock %}
 
 {% block script %}
 <script>
+    var recent_transfers = [{
+            id: 0,
+            amount: 12.12,
+            reciever_nickname: "nickname",
+        }];
+
+    updateRecentTransfers();
+
     function onuser_idChange() {
         // Set user_id in label
         $("#user_idRangeLabel").text("Betrag: " + $("#user_idRange").val() + " €");
+    }
+
+    function updateRecentTransfers() {
+        // Remove old values from list
+        $("#recent_transfers").empty();
+        for (transfer of recent_transfers) {
+            // Clone template
+            var template = $("#recent_transfer_template");
+            template = template.clone().prop('content');
+
+            // Append template
+            $("#recent_transfers").append(template);
+
+            // Set template values
+            $("#recent_transfer_recipient").text(transfer.reciever_nickname).attr("id", "");
+            $("#recent_transfer_amount").html(transfer.amount + "&euro;").attr("id", "");
+        }
+
     }
 </script>
 {% endblock %}

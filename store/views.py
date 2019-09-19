@@ -21,6 +21,7 @@ def index(request):
 def buy(request):
     return render(request, "buy.html", {
         "most_bought": ProductLogic.getMostBoughtProductsList(),
+        "recently_bought": ProductLogic.getLastBoughtProductsList(request.user.id),
         "drinks": Product.objects.filter(category="drink"),
         "candies": Product.objects.filter(category="candy"),
         "products": Product.objects.all(),
@@ -66,17 +67,16 @@ def buyProduct(request):
     product_id = request.POST.get("product_id")
     token = request.POST.get("token")
     purchase_return_tuple = PurchaseLogic().purchase(user_id, product_id, token)
-    if purchase_return_tuple[0]:
-        return HttpResponse()
+    if purchase_return_tuple[1] >= 0:
+        return JsonResponse({"purchase__id": purchase_return_tuple[1]})
     else:
-        return HttpResponse()
-    return HttpResponse()
+        return HttpResponse(status=400)
 
 
 @login_required(login_url="index")
 @require_http_methods(["POST"])
 def getToken(request):
-    token = TokenLogic().get_token()
+    token = TokenLogic.get_token()
     return JsonResponse({"token": token})
 
 # Test
@@ -87,4 +87,7 @@ def test(request):
 
 
 def test2(request):
-    ProductLogic.getLastBoughtProductsList(1)
+    # tl = TokenLogic()
+    # print(PurchaseLogic.purchase(1, 1, tl.get_token()))
+    print(PurchaseLogic.purchase(1, 1, 57058))
+    return HttpResponse()
