@@ -172,11 +172,9 @@
                         token: token
                     },
                     success: data => {
-                        console.log(id)
                         recently_bought.filter(item => {
-                            if (item.id == id) {
+                            if (item.purchase_id == id) {
                                 item.annullated = true;
-                                console.log(item)
                             }
                             return true;
                         });
