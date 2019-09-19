@@ -106,8 +106,20 @@
         {% endfor %}
     };
 
-    prepareAjax();
+    const recently_bought = [
+        {% for product in recently_bought %}{
+            id: {{ product.product_id }},
+            price: {{ product.product__price }},
+            name: "{{ product.product__name }}",
+            annullable: {% if product.annullable %} true {% else %} false {% endif %},
+            annullated: {% if product.annulated %} true {% else %} false {% endif %},
+            purchase_id: {{ product.purchase__id }},
+        },
+        {% endfor %}
+    ];
 
+    updateRecentlyBoughtList();
+    
     function buy(id) {
         id = parseInt(id);
         if (isNaN(id)) {
@@ -135,7 +147,47 @@
     }
 
     function addLastBought(id) {
-        // TODO
+        recently_bought.pop();
+        recently_bought.unshift({
+            id: id,
+            name: products[id].name,
+            price: products[id].price,
+            annullable: true,
+            annullated: false,
+        });
+        updateRecentlyBoughtList();
+    }
+
+
+    function revert(id) {
+        return function() {
+            // TODO: Revert logic
+        }
+    }
+
+    function updateRecentlyBoughtList() {
+        // Remove old values from list
+        $("#recently_bought_list").empty();
+
+        for (product of recently_bought) {
+            // Get and clone correct template
+            var template = product.annullated ? 
+                $("#recently_bought_annullated_template") :
+                (product.annullable ? 
+                    $("#recently_bought_annullable_template") :
+                    $("#recently_bought_template"));
+            template = template.clone().prop('content');
+
+            // Append template
+            $("#recently_bought_list").append(template);
+
+            // Set template values
+            $("#recent_product_price").html(product.price.toFixed(2) + " &euro;").attr("id", "");
+            $("#recent_product_name").text(product.name).attr("id", "");
+            if (product.annullable) {
+                $("#recent_bought_revert").click(revert(product.id)).attr("id", "");
+            }
+        }
     }
 
 </script>
