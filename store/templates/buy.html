@@ -136,7 +136,7 @@
                 },
                 success: function(data) {
                     reduceMoney(products[id].price);
-                    addLastBought(id);
+                    addLastBought(id, data.purchase_id);
                 },
                 error: function(error) {
                     if ("responseJSON" in error && "error" in error.responseJSON) {
@@ -151,7 +151,7 @@
             });
     }
 
-    function addLastBought(id) {
+    function addLastBought(id, purchase_id) {
         recently_bought.pop();
         recently_bought.unshift({
             id: id,
@@ -159,14 +159,39 @@
             price: products[id].price,
             annullable: true,
             annullated: false,
+            purchase_id: purchase_id,
         });
         updateRecentlyBoughtList();
     }
 
 
     function revert(id) {
+        error = _ => {
+            showError("Fehler beim R&uuml;ckg&auml;gig machen eines Kaufes");
+        }
+
         return function() {
-            // TODO: Revert logic
+            tokenCall(token => {
+                $.ajax({
+                    url: "{% url "revert_purchase" %}",
+                    method: "POST",
+                    data: {
+                        purchase: id,
+                        token: token
+                    },
+                    success: data => {
+                        console.log(id)
+                        recently_bought.filter(item => {
+                            if (item.id == id) {
+                                item.annullated = true;
+                                console.log(item)
+                            }
+                            return true;
+                        });
+                        updateRecentlyBoughtList();
+                    },
+                    error: error,
+                })}, _ => error());
         }
     }
 
