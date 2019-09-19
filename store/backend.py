@@ -2,7 +2,7 @@ from .models import *
 from django.contrib.auth import login
 from django.db.models import Count, ObjectDoesNotExist
 from django.db.models.functions import Lower
-from datetime import date, timedelta, datetime 
+from datetime import date, timedelta, datetime
 from django.db import transaction, IntegrityError
 from .store_config import KAFFEEKASSE as config
 import pytz
@@ -50,7 +50,7 @@ class UserLogic:
 
 
 class ProductLogic:
-    
+
     """
     Collects the prodcuts that are most bought within a given time period.
     Returns a list of dictionries on success: [{'product__name': '...', 'product_id': ...,  'product__price': ..., 'total': ...}, ...]
@@ -92,12 +92,12 @@ class ProductLogic:
         now = datetime.now()
         time_limit = datetime.now() - timedelta(minutes=annullable_time)
         timezone = pytz.timezone('Europe/Berlin')
-        time_limit = timezone.localize(time_limit) 
+        time_limit = timezone.localize(time_limit)
 
         for product in products:
             product['purchase__id'] = product.pop('id')
             purchase_time = product['time_stamp']
-            if time_limit >= purchase_time: 
+            if time_limit >= purchase_time:
                 product.update({'annullable': False})
             else:
                 product.update({'annullable': True})
@@ -111,15 +111,15 @@ class TokenLogic:
     Generates a new and unique token as 64-bit integer to be used in a at-most-once client-server-interaction.
     """
     @staticmethod
-    def get_token(self):
-        with transaction.atomic:
-            token = list(Token.objects.all())[0] 
+    def get_token():
+        with transaction.atomic():
+            token = list(Token.objects.all())[0]
             token.increment()
             return token.token
 
 
 class PurchaseLogic:
-    
+
     """
     Execute the purchase logic. Three db parties are included:
     *)  Purchase: include a new purchase-tuple with the user_id, product_id, the current time, the current products price
@@ -157,11 +157,11 @@ class PurchaseLogic:
 
     @staticmethod
     def __updateUserMoney(user, price):
-        return user.updateMoney(price * (-1)) 
+        return user.updateMoney(price * (-1))
 
     @staticmethod
     def __updateProductStock(product):
-        product.updateStock(-1) 
+        product.updateStock(-1)
 
     """
     Annulates a purchase that is not older than a given number of minutes. Returns False, if the purchase is too old,
@@ -177,9 +177,9 @@ class PurchaseLogic:
         now = datetime.now()
         time_limit = datetime.now() - timedelta(minutes=annullable_time)
         timezone = pytz.timezone('Europe/Berlin')
-        time_limit = timezone.localize(time_limit) 
-        
-        purchase = list(Purchase.objects.filter(id=purchase_id))[0] 
+        time_limit = timezone.localize(time_limit)
+
+        purchase = list(Purchase.objects.filter(id=purchase_id))[0]
         purchase_time = purchase['time_stamp']
         if time_limit >= purchase_time:
             return False
