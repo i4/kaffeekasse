@@ -96,7 +96,7 @@ class PurchaseLogic:
         self.updateProductStock(product_id)
         return True
 
-    def createPurchaseTuple(self, user_id, product_id, price, token):
+    def __createPurchaseTuple(self, user_id, product_id, price, token):
         try:
             purchase = Purchase(user=User.objects.get(pk=1), product=Product.objects.get(pk=1), price=price, token=token,
                     annulated=False)
@@ -105,11 +105,11 @@ class PurchaseLogic:
             return False
         return True
 
-    def updateUserMoney(self, user_id, price):
+    def __updateUserMoney(self, user_id, price):
         user = list(User.objects.filter(id=user_id))[0]
         user.updateMoney(price * (-1)) 
 
-    def updateProductStock(self, product_id):
+    def __updateProductStock(self, product_id):
         product = list(Product.objects.filter(id=product_id))[0]
         product.updateStock(-1) 
 
