@@ -50,9 +50,15 @@
         // Initial call
         updateMoney();
 
-        // Reduce the money variable by amount and update the dipsplayed information
+        // Reduce the money variable by amount and update the displayed information
         function reduceMoney(amount) {
             money -= amount;
+            updateMoney();
+        }
+
+        // Increase the money variable by amount and update the displayed information
+        function increaseMoney(amount) {
+            money += amount;
             updateMoney();
         }
 

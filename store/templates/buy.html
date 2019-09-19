@@ -175,6 +175,7 @@
                         recently_bought.filter(item => {
                             if (item.purchase_id == id) {
                                 item.annullated = true;
+                                increaseMoney(item.price);
                             }
                             return true;
                         });
