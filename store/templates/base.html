@@ -81,6 +81,19 @@
             }
         }
         idleTimer(); {% endcomment %}
+
+
+        // Fetch an token and call the success with the token or error on error.
+        function tokenCall(success, error) {
+            $.ajax({
+                url: "{% url "getToken" %}",
+                method: "POST",
+                success: function (data) {
+                    success(data.token);
+                },
+                error: error
+            })
+        }
     {% endif %}
     </script>
     {% block script %} {% endblock %}
