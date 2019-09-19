@@ -3,7 +3,7 @@ from .models import User, Product
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth import logout as auth_logout
 from .backend import *
 
@@ -70,6 +70,13 @@ def buyProduct(request):
     else:
         return HttpResponse()
     return HttpResponse()
+
+
+@login_required(login_url="index")
+@require_http_methods(["POST"])
+def getToken(request):
+    token = TokenLogic().get_token()
+    return JsonResponse({"token": token})
 
 # Test
 
