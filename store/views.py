@@ -62,10 +62,10 @@ def logout(request):
 @require_http_methods(["POST"])
 def buyProduct(request):
     # TODO: Add backend logic
-    user_id = request.POST.get("user_id")
+    user_id = request.user.id
     product_id = request.POST.get("product_id")
     token = request.POST.get("token")
-    if (PurchaseLogic.purchase(user_id, product_id, token)):
+    if (PurchaseLogic().purchase(user_id, product_id, token)):
         return HttpResponse()
     else:
         return HttpResponse()
