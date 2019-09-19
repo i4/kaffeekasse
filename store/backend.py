@@ -2,9 +2,10 @@ from .models import *
 from django.contrib.auth import login
 from django.db.models import Count
 from django.db.models.functions import Lower
-from datetime import date, timedelta 
+from datetime import date, timedelta, datetime 
 from django.db import transaction, IntegrityError
 from .store_config import KAFFEEKASSE as config
+import pytz
 
 
 class UserLogic:
@@ -29,11 +30,11 @@ class UserLogic:
     """
     Collects the users that have the most log ins on a client within a given time period.
     Returns a list of dictionaries on succes: [{'user__nickname': '...', 'user__id': ..., 'total': ...}, ...]
-    @param max_users: the maximum of users that should be shown
-    @param max_days: the maximum of days that have passed since the last login
+    @config-param max_users: the maximum of users that should be shown
+    @config-param max_days: the maximum of days that have passed since the last login
     """
     @staticmethod
-    def getFrequentUsersList(max_users, max_days):
+    def getFrequentUsersList():
         max_users = config['N_USERS_LOGIN']
         max_days = config['T_USERS_LOGIN_D']
         time_stamp = date.today() - timedelta(days=max_days)
@@ -53,8 +54,8 @@ class ProductLogic:
     """
     Collects the prodcuts that are most bought within a given time period.
     Returns a list of dictionries on success: [{'product__name': '...', 'product_id': ...,  'product__price': ..., 'total': ...}, ...]
-    @param max_products: the maximum of products that should be shown
-    @param max_days: the maximum of days that have passed since the last logisince the purchase 
+    @conifg-param max_products: the maximum of products that should be shown
+    @config-param max_days: the maximum of days that have passed since the last logisince the purchase 
     """
     @staticmethod
     def getMostBoughtProductsList():
@@ -73,22 +74,30 @@ class ProductLogic:
     Returns a list of dictionaries on success: [{'product__name': '...', 'product_id': 41, 'product__price': ...,
     'time_stamp': ..., 'annullable': ...}]
     @param user_id: the id of the user
-    @param max_products: the maximum of products that should be shown
+    @config-param max_products: the maximum of products that should be shown
     """
     @staticmethod
-    def getLastBoughtProductsList(user_id, max_products):
+    def getLastBoughtProductsList(user_id):
         max_products = config['N_LAST_BOUGHT_PRODUCTS']
-        annulable_time = config['T_ANNULABLE_PURCHASE_M']
+        annullable_time = config['T_ANNULLABLE_PURCHASE_M']
         products = Purchase.objects.filter(user=user_id)
         products = products.select_related('product')
         products = products.order_by('time_stamp').reverse()[:max_products]
         products = products.values('product__name', 'product_id', 'product__price', 'time_stamp')
+
+        # warning: summertime/wintertime currently is not respected in the following calculations. This should be
+        # implemented to avoid non-annullable transactions in the lost hour between summer- and wintertime
+        now = datetime.now()
+        time_limit = datetime.now() - timedelta(minutes=annullable_time)
+        timezone = pytz.timezone('Europe/Berlin')
+        time_limit = timezone.localize(time_limit) 
+
         for product in products:
-            if datetime.now() - timedelta(minutes=annulable_time) > datetime.strptime(products['time_stamp'], "%Y-m-d
-                    %h:%m"): 
-                products.update[{'annullable': False}]
+            purchase_time = product['time_stamp']
+            if time_limit >= purchase_time: 
+                product.update({'annullable': False})
             else:
-                products.update[{'annullable': True}]
+                product.update({'annullable': True})
         return list(products)
 
 
