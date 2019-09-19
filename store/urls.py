@@ -15,6 +15,7 @@ urlpatterns = [
 
     # API
     path('buy_product', views.buyProduct, name="buy_product"),
+    path('token', views.getToken, name="getToken"),
 
     # Test
     path('test', views.test, name="test"),

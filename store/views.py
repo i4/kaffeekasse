@@ -3,7 +3,7 @@ from .models import User, Product
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth import logout as auth_logout
 from .backend import *
 
@@ -62,14 +62,21 @@ def logout(request):
 @require_http_methods(["POST"])
 def buyProduct(request):
     # TODO: Add backend logic
-    user_id = request.POST.get("user_id")
+    user_id = request.user.id
     product_id = request.POST.get("product_id")
     token = request.POST.get("token")
-    if (PurchaseLogic.purchase(user_id, product_id, token)):
+    if (PurchaseLogic().purchase(user_id, product_id, token)):
         return HttpResponse()
     else:
         return HttpResponse()
     return HttpResponse()
+
+
+@login_required(login_url="index")
+@require_http_methods(["POST"])
+def getToken(request):
+    token = TokenLogic().get_token()
+    return JsonResponse({"token": token})
 
 # Test
 
