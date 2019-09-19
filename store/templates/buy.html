@@ -139,7 +139,12 @@
                     addLastBought(id);
                 },
                 error: function(error) {
-                    showError("Fehler beim Einkaufen!");
+                    if ("responseJSON" in error && "error" in error.responseJSON) {
+                        showError(error.responseJSON.error);
+                    }
+                    else {
+                        showError("Fehler beim Einkaufen");
+                    }
                 },
             })}, error => {
                 showError("Fehler beim Einkaufen");
