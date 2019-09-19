@@ -86,8 +86,8 @@
 
         // Cancel the previous timer and start a new one
         function resetTimer() {
-            clearTimeout(timer);
-            timer = setTimeout(logout, 1000 * auth_timeout);
+            {% comment %} clearTimeout(timer);
+            timer = setTimeout(logout, 1000 * auth_timeout); {% endcomment %}
         }
     </script>
     {% endif %}
