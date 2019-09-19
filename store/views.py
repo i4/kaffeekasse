@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth import logout as auth_logout
 from .backend import *
+from .store_exceptions import *
 
 
 # Rendered pages
@@ -66,9 +67,12 @@ def buyProduct(request):
     user_id = request.user.id
     product_id = request.POST.get("product_id")
     token = request.POST.get("token")
-    purchase_return_tuple = PurchaseLogic().purchase(user_id, product_id, token)
+    try:
+        purchase_return_tuple = PurchaseLogic().purchase(user_id, product_id, token)
+    except UserNotEnoughMoney as exc:
+        return JsonResponse({'error': exc.message})
     if purchase_return_tuple >= 0:
-        return JsonResponse({"purchase__id": purchase_return_tuple})
+        return JsonResponse({"purchase_id": purchase_return_tuple})
     else:
         return HttpResponse(status=400)
 
