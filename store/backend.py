@@ -4,6 +4,7 @@ from django.db.models import Count
 from django.db.models.functions import Lower
 from datetime import date, timedelta 
 from django.db import transaction, IntegrityError
+from .store_config import KAFFEEKASSE as config
 
 
 class UserLogic:
@@ -33,12 +34,17 @@ class UserLogic:
     """
     @staticmethod
     def getFrequentUsersList(max_users, max_days):
+        max_users = config['N_USERS_LOGIN']
+        max_days = config['T_USERS_LOGIN_D']
         time_stamp = date.today() - timedelta(days=max_days)
         logins = Login.objects.filter(time_stamp__gte=time_stamp.strftime("%Y-%m-%d") + " 00:00")
         logins = logins.select_related('user')
         logins = logins.values('user__nickname', 'user__id')
         logins = logins.annotate(total=Count('user__id'))
-        logins = logins.order_by('total').reverse()[:max_users]
+        if max_users <= 0:
+            logins = logins.order_by('total').reverse()
+        else:
+            logins = logins.order_by('total').reverse()[:max_users]
         return list(logins)
 
 
