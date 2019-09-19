@@ -183,8 +183,6 @@ class PurchaseLogic:
         purchase = list(Purchase.objects.filter(id=purchase_id))[0]
         purchase_time = purchase['time_stamp']
         if time_limit >= purchase_time:
-            return False
-        else:
-            purchase.annullate()
-            return True
+            raise PurchaseNotAnnullable()
+
 

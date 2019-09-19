@@ -16,7 +16,7 @@ class User(AbstractBaseUser):
 
     def updateMoney(self, amount):
         if self.money + amount < 0:
-            raise UserNotEnoughMoney
+            raise UserNotEnoughMoney()
             return False
         self.money += Decimal(amount)
         self.save()

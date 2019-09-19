@@ -87,7 +87,12 @@ def getToken(request):
 @login_required(login_url="index")
 @require_http_methods(["POST"])
 def revert_purchase(request):
-    return HttpResponse()
+    purchase_id = request.POST.get("purchase_id")
+    try:
+        PurchaseLogic.annullatePurchase(purchase_id)
+    except PurchaseNotAnnullable as exc:
+        return JsonResponse({'error': str(exc)}, status=400)
+    return JsonResponse(status=400)
 
 # Test
 
