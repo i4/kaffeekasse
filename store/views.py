@@ -67,8 +67,8 @@ def buyProduct(request):
     product_id = request.POST.get("product_id")
     token = request.POST.get("token")
     purchase_return_tuple = PurchaseLogic().purchase(user_id, product_id, token)
-    if purchase_return_tuple[1] >= 0:
-        return JsonResponse({"purchase__id": purchase_return_tuple[1]})
+    if purchase_return_tuple >= 0:
+        return JsonResponse({"purchase__id": purchase_return_tuple})
     else:
         return HttpResponse(status=400)
 
