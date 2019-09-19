@@ -1,1 +1,2 @@
 - Sommerzeit vs. Winterzeit wird aktuell bei allen Funktionen, die mit Undo zu tun haben nicht nicht berücksichtigt. 
+- Letzte Einkäufe verschwinden nicht aus der Liste, wenn man sie löscht, man kann unendlich Guthaben erzeugen. Lieg eventuell am Backend
