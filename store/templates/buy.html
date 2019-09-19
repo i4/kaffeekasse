@@ -113,6 +113,7 @@
             name: "{{ product.product__name }}",
             annullable: {% if product.annullable %} true {% else %} false {% endif %},
             annullated: {% if product.annulated %} true {% else %} false {% endif %},
+            purchase_id: {{ product.purchase__id }},
         },
         {% endfor %}
     ];
