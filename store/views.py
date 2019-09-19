@@ -83,6 +83,12 @@ def getToken(request):
     token = TokenLogic.get_token()
     return JsonResponse({"token": token})
 
+
+@login_required(login_url="index")
+@require_http_methods(["POST"])
+def revert_purchase(request):
+    return HttpResponse()
+
 # Test
 
 
