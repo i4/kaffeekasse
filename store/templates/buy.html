@@ -90,19 +90,25 @@
         if (isNaN(id)) {
             return;
         }
-
-        $.ajax({
-            url: "{% url "buy_product" %}",
-            method: "POST",
-            data: {product_id: id},
-            success: function(data) {
-                reduceMoney(products[id]["price"]);
-                addLastBought(id);
-            },
-            error: function(error) {
-                showError("Fehler beim Einkaufen!");
-            },
-        });
+        
+        tokenCall(token => {
+            $.ajax({
+                url: "{% url "buy_product" %}",
+                method: "POST",
+                data: {
+                    product_id: id,
+                    token: token
+                },
+                success: function(data) {
+                    reduceMoney(products[id].price);
+                    addLastBought(id);
+                },
+                error: function(error) {
+                    showError("Fehler beim Einkaufen!");
+                },
+            })}, error => {
+                showError("Fehler beim Einkaufen");
+            });
     }
 
     function addLastBought(id) {
