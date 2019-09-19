@@ -72,13 +72,14 @@ class ProductLogic:
         products = products.select_related('product')
         products = products.order_by('time_stamp').reverse()[:max_products]
         products = products.values('product__name', 'product_id', 'product__price')
-        print(products)
-        print(products.query)
         return list(products)
 
 
 class TokenLogic:
 
+    """
+    Generates a new and unique token as 64-bit integer to be used in a at-most-once client-server-interaction.
+    """
     @transaction.atomic
     def get_token(self):
         token = list(Token.objects.all())[0] 
