@@ -62,6 +62,13 @@ def logout(request):
 @require_http_methods(["POST"])
 def buyProduct(request):
     # TODO: Add backend logic
+    user_id = request.POST.get("user_id")
+    product_id = request.POST.get("product_id")
+    token = request.POST.get("token")
+    if (PurchaseLogic.purchase(user_id, product_id, token)):
+        return HttpResponse()
+    else:
+        return HttpResponse()
     return HttpResponse()
 
 # Test
@@ -72,5 +79,7 @@ def test(request):
 
 
 def test2(request):
-    GetMostFrequentUsers.getFrequentUsersList("0x50xd-0xf0x3-0x60xd-0x50x3-0xd0x9-0xb0x20x50x4-0x90x2-0xd0xd-0x20x3-0xa0x9-0x10x00x80x4-0x50x8-0xf0x6-0xb0xd-0x50xb-0x90xf",
-                                              4, 4*7)
+    tl = TokenLogic()
+    token = tl.get_token()
+    pl = PurchaseLogic()
+    pl.purchase(1, 1, token)
