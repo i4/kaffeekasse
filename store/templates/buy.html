@@ -119,13 +119,13 @@
     ];
 
     updateRecentlyBoughtList();
-    
+
     function buy(id) {
         id = parseInt(id);
         if (isNaN(id)) {
             return;
         }
-        
+
         tokenCall(token => {
             $.ajax({
                 url: "{% url "buy_product" %}",
@@ -171,9 +171,9 @@
 
         for (product of recently_bought) {
             // Get and clone correct template
-            var template = product.annullated ? 
+            var template = product.annullated ?
                 $("#recently_bought_annullated_template") :
-                (product.annullable ? 
+                (product.annullable ?
                     $("#recently_bought_annullable_template") :
                     $("#recently_bought_template"));
             template = template.clone().prop('content');
