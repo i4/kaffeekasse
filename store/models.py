@@ -43,6 +43,10 @@ class Purchase(models.Model):
     price = models.DecimalField(max_digits=6, decimal_places=2)
     annullated = models.BooleanField(null=False)
 
+    def annullate(self):
+        self.annullated = True
+        self.save()
+
 class Transfer(models.Model):
     token = models.BigIntegerField(null=False, unique=True)
     sender = models.ForeignKey('user', on_delete=models.SET_NULL, null=True,

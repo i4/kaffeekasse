@@ -167,5 +167,6 @@ class PurchaseLogic:
         if time_limit >= purchase_time:
             return False
         else:
-           pass 
+            purchase.annullate()
+            return True
 
