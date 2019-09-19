@@ -76,6 +76,7 @@ class ProductLogic:
     """
     @staticmethod
     def getLastBoughtProductsList(user_id, max_products):
+        max_products = config['N_LAST_BOUGHT_PRODUCTS']
         products = Purchase.objects.filter(user=user_id)
         products = products.select_related('product')
         products = products.order_by('time_stamp').reverse()[:max_products]
