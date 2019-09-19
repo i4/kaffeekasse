@@ -43,11 +43,12 @@
         integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
         crossorigin="anonymous"></script>
     <script src="{% static "custom.js" %}"></script>
-    <script>
+    {% comment %} Money {% endcomment %}
     {% if user.is_authenticated %}
-        const auth_timeout = 10; // Timeout in seconds
+    <script>
+        var money = {{ user.money }};
 
-        let money = {{ user.money }};
+        // Initial call
         updateMoney();
 
         // Reduce the money variable by amount and update the dipsplayed information
@@ -55,35 +56,48 @@
             money -= amount;
             updateMoney();
         }
+
         // Update the displayed money information
         function updateMoney() {
             $("#money").html(parseFloat(money).toFixed(2) + "&euro;");
         }
+    </script>
+    {% endif %}
 
-        // Auto logout for inactivity
-        {% comment %} function idleTimer() {
-            var t;
-            window.onload = resetTimer;
-            window.onmousemove = resetTimer; // catches mouse movements
-            window.onmousedown = resetTimer; // catches mouse movements
-            window.onclick = resetTimer;     // catches mouse clicks
-            window.onscroll = resetTimer;    // catches scrolling
-            window.onkeypress = resetTimer;  //catches keyboard actions
+    {% comment %} Auto logout {% endcomment %}
+    {% if user.is_authenticated %}
+    <script>
+        const auth_timeout = 10; // Timeout in seconds
+        var timer;
 
-            function logout() {
-                window.location.href = '{% url "logout" %}';
-            }
+        // Start timer, after the page finished loading
+        window.onload = resetTimer;
 
-            function resetTimer() {
-                console.log("Reset timer")
-                clearTimeout(t);
-                t = setTimeout(logout, 1000 * auth_timeout);
-            }
+        // Reset timer on any user input
+        window.onmousemove = resetTimer; // catches mouse movements
+        window.onmousedown = resetTimer; // catches mouse movements
+        window.onclick = resetTimer;     // catches mouse clicks
+        window.onscroll = resetTimer;    // catches scrolling
+        window.onkeypress = resetTimer;  //catches keyboard actions
+
+        function logout() {
+            window.location.href = '{% url "logout" %}';
         }
-        idleTimer(); {% endcomment %}
 
+        // Cancel the previous timer and start a new one
+        function resetTimer() {
+            clearTimeout(timer);
+            timer = setTimeout(logout, 1000 * auth_timeout);
+        }
+    </script>
+    {% endif %}
 
-        // Fetch an token and call the success with the token or error on error.
+    {% comment %} For easier token handling {% endcomment %}
+    {% if user.is_authenticated %}
+    <script>
+        // Fetch an token from the server.
+        // On success call the success callback with the token as parameter.
+        // On error call the error callback with the error object as parameter.
         function tokenCall(success, error) {
             $.ajax({
                 url: "{% url "getToken" %}",
@@ -94,7 +108,61 @@
                 error: error
             })
         }
+    </script>
     {% endif %}
+
+    {% comment %} Prepare ajax to use the crsf token {% endcomment %}
+    {% if user.is_authenticated %}
+    <script>
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+                }
+            }
+        });
+    </script>
+    {% endif %}
+
+    {% comment %} Error messages {% endcomment %}
+    <script>
+        // Shows an error in the alert div.
+        // If there is an error message in the response, use it.
+        // Otherwise use the def.
+        function showError(response, def) {
+            if (response && "error" in response) {
+                displayError(response.error);
+            } else {
+                displayError(def)
+            }
+
+        }
+
+        // Display the message in alertDiv as an bootstrap danger alert
+        function displayError(message) {
+            $("#alertDiv").html('<div class="alert alert-danger" role="alert">' + message + '</div>');
+        }
     </script>
     {% block script %} {% endblock %}
 </body>

@@ -121,6 +121,7 @@
     updateRecentlyBoughtList();
 
     function buy(id) {
+        error = error => showError(error.responseJSON, "Fehler beim Einkaufen");
         id = parseInt(id);
         if (isNaN(id)) {
             return;
@@ -136,19 +137,11 @@
                 },
                 success: function(data) {
                     reduceMoney(products[id].price);
+                    console.log(data)
                     addLastBought(id, data.purchase_id);
                 },
-                error: function(error) {
-                    if ("responseJSON" in error && "error" in error.responseJSON) {
-                        showError(error.responseJSON.error);
-                    }
-                    else {
-                        showError("Fehler beim Einkaufen");
-                    }
-                },
-            })}, error => {
-                showError("Fehler beim Einkaufen");
-            });
+                error: error,
+            })}, error);
     }
 
     function addLastBought(id, purchase_id) {
@@ -166,8 +159,8 @@
 
 
     function revert(id) {
-        error = _ => {
-            showError("Fehler beim R&uuml;ckg&auml;gig machen eines Kaufes");
+        error = error => {
+            showError(error.responseJSON, "Fehler beim Einkaufen");
         }
 
         return function() {
@@ -176,7 +169,7 @@
                     url: "{% url "revert_purchase" %}",
                     method: "POST",
                     data: {
-                        purchase: id,
+                        purchase_id: id,
                         token: token
                     },
                     success: data => {
@@ -191,7 +184,7 @@
                         updateRecentlyBoughtList();
                     },
                     error: error,
-                })}, _ => error());
+                })}, error);
         }
     }
 
