@@ -57,7 +57,9 @@ class ProductLogic:
     @param max_days: the maximum of days that have passed since the last logisince the purchase 
     """
     @staticmethod
-    def getMostBoughtProductsList(max_products, max_days):
+    def getMostBoughtProductsList():
+        max_products = config['N_MOST_BOUGHT_PRODUCTS']
+        max_days = config['T_MOST_BOUGHT_PRODUCTS_D']
         time_stamp = date.today() - timedelta(days=max_days)
         products = Purchase.objects.filter(time_stamp__gte=time_stamp.strftime("%Y-%m-%d") + " 00:00")
         products = products.select_related('product')
