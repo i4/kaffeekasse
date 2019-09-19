@@ -1,3 +1,3 @@
 - undo-funktion für letzte Einkäufe
 - Beim Einkauf Guthaben ueberpruefen
-- Zeitzonen werden beim undo aktuell nicht berücksichtigt. 
+- Sommerzeit vs. Winterzeit wird aktuell bei allen Funktionen, die mit Undo zu tun haben nicht nicht berücksichtigt. 
