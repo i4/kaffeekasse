@@ -14,8 +14,11 @@ class User(AbstractBaseUser):
     USERNAME_FIELD = 'id'
 
     def updateMoney(self, amount):
+        if self.money + amount < 0:
+            return False
         self.money += Decimal(amount)
         self.save()
+        return True
 
 class Product(models.Model):
     name = models.TextField(null=False)
@@ -26,6 +29,7 @@ class Product(models.Model):
     def updateStock(self, amount):
         self.stock += amount
         self.save()
+        return True
 
 class Charge(models.Model):
     token = models.BigIntegerField(null=False, unique=True)

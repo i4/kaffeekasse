@@ -65,7 +65,8 @@ def buyProduct(request):
     user_id = request.user.id
     product_id = request.POST.get("product_id")
     token = request.POST.get("token")
-    if (PurchaseLogic().purchase(user_id, product_id, token)):
+    purchase_return_tuple = PurchaseLogic().purchase(user_id, product_id, token)
+    if purchase_return_tuple[0]:
         return HttpResponse()
     else:
         return HttpResponse()

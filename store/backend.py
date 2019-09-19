@@ -132,21 +132,30 @@ class PurchaseLogic:
     @transaction.atomic
     def purchase(self, user_id, product_id, token):
         user = list(User.objects.filter(id=user_id))[0]
-        product = list(Product.objects.filter(id=product_id))[0]
-
-        if not self.__createPurchaseTuple(user, product, token):
-            return False
-        self.__updateUserMoney(user, product.price)
+        try:
+            product = list(Product.objects.filter(id=product_id))[0]
+        except Product.ObjectDoesNotExist:
+            transaction.rollback()
+            return False, -1
+        
+        purchase_create_return_tuple = self.__createPurchaseTuple(user, product, token)
+        if not purchase_create_return_tuple[0]:
+            transaction.rollback()
+            return False, -1
+        if not self.__updateUserMoney(user, product.price):
+            transaction.rollback()
+            return False, -1
         self.__updateProductStock(product)
-        return True
+        transaction.commit()
+        return True, purchase_create_return_tuple[1]
 
     def __createPurchaseTuple(self, user, product, token):
         try:
             purchase = Purchase(user=user, product=product, price=product.price, token=token, annullated=False)
             purchase.save()
         except IntegrityError:
-            return False
-        return True
+            return False, -1
+        return True, purchase.id
 
     def __updateUserMoney(self, user, price):
         user.updateMoney(price * (-1)) 
