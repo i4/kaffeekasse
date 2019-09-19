@@ -92,7 +92,7 @@ def revert_purchase(request):
         PurchaseLogic.annullatePurchase(purchase_id)
     except PurchaseNotAnnullable as exc:
         return JsonResponse({'error': str(exc)}, status=400)
-    return JsonResponse(status=400)
+    return HttpResponse(status=200)
 
 # Test
 

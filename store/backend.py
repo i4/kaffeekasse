@@ -102,7 +102,8 @@ class ProductLogic:
                 product.update({'annullable': False})
             else:
                 product.update({'annullable': True})
-        print(products)
+            print(product)
+        # print(products)
         return list(products)
 
 
@@ -179,10 +180,17 @@ class PurchaseLogic:
         time_limit = datetime.now() - timedelta(minutes=annullable_time)
         timezone = pytz.timezone('Europe/Berlin')
         time_limit = timezone.localize(time_limit)
-
+        print(purchase_id)
         purchase = list(Purchase.objects.filter(id=purchase_id))[0]
-        purchase_time = purchase['time_stamp']
+        purchase_time = purchase.time_stamp
+        print("purchase_id:", purchase.id, "time_limit:", time_limit, "purchase_time", purchase_time, "valid:",
+                time_limit > purchase_time)
         if time_limit >= purchase_time:
             raise PurchaseNotAnnullable()
-
+        
+        with transaction.atomic():
+            user = list(User.objects.filter(id=purchase.user.id))[0]
+            purchase.annullate()
+            user.updateMoney(purchase.price)
+            print("user_id:", user.id, "purchase_id:", purchase.id, "user.money:", user.money)
 
