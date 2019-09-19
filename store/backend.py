@@ -70,17 +70,25 @@ class ProductLogic:
 
     """
     Collects the products that are most bought by one user.
-    Returns a list of dictionaries on success: [{'product__name': '...', 'product_id': 41, 'product__price': ...}]
+    Returns a list of dictionaries on success: [{'product__name': '...', 'product_id': 41, 'product__price': ...,
+    'time_stamp': ..., 'annullable': ...}]
     @param user_id: the id of the user
     @param max_products: the maximum of products that should be shown
     """
     @staticmethod
     def getLastBoughtProductsList(user_id, max_products):
         max_products = config['N_LAST_BOUGHT_PRODUCTS']
+        annulable_time = config['T_ANNULABLE_PURCHASE_M']
         products = Purchase.objects.filter(user=user_id)
         products = products.select_related('product')
         products = products.order_by('time_stamp').reverse()[:max_products]
-        products = products.values('product__name', 'product_id', 'product__price')
+        products = products.values('product__name', 'product_id', 'product__price', 'time_stamp')
+        for product in products:
+            if datetime.now() - timedelta(minutes=annulable_time) > datetime.strptime(products['time_stamp'], "%Y-m-d
+                    %h:%m"): 
+                products.update[{'annullable': False}]
+            else:
+                products.update[{'annullable': True}]
         return list(products)
 
 
