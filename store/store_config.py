@@ -9,8 +9,8 @@ N_USERS_LOGIN: number of users that should be shown in the users list in the log
 T_USERS_LOGIN_D: number of days in the past that are used as time intervall limit to search for users
 """
 KAFFEEKASSE = {'N_LAST_BOUGHT_PRODUCTS': 5,
-               'T_LAST_BOUGHT_PRODUCTS_D': 30
-               'T_ANNULLABLE_PURCHASE_M': 60
+               'T_LAST_BOUGHT_PRODUCTS_D': 30,
+               'T_ANNULLABLE_PURCHASE_M': 60,
                'N_MOST_BOUGHT_PRODUCTS': 5,
                'T_MOST_BOUGHT_PRODUCTS_D': 30,
                'N_USERS_LOGIN': -1,
