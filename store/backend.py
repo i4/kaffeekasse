@@ -38,21 +38,6 @@ class UserLogic:
     @config-param max_users: the maximum of users that should be shown from the most recent ones. Depends on N_USERS_LOGIN
     @config-param max_days: the maximum of days that have passed since the last login to count as recent login. Depends on T_USERS_LOGIN_D
     """
-    # @staticmethod
-    # def getFrequentUsersList():
-    #     max_users = config['N_USERS_LOGIN']
-    #     max_days = config['T_USERS_LOGIN_D']
-    #     time_stamp = date.today() - timedelta(days=max_days)
-    #     logins = Login.objects.filter(time_stamp__gte=time_stamp.strftime("%Y-%m-%d") + " 00:00")
-    #     logins = logins.select_related('user')
-    #     logins = logins.values('user__nickname', 'user__id')
-    #     logins = logins.annotate(total=Count('user__id'))
-    #     if max_users <= 0:
-    #         logins = logins.order_by('total').reverse()
-    #     else:
-    #         logins = logins.order_by('total').reverse()[:max_users]
-    #     return list(logins)
-
     @staticmethod
     def getFrequentUsersList():
         max_users = config['N_USERS_LOGIN']
