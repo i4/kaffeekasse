@@ -116,7 +116,7 @@
 
         // Get amount from text field
         var amount = $("#amount").val().replace(',', '.');
-        amount = parseFloat(amount).toFixed(2);
+        amount = parseFloat(amount);
         if (isNaN(amount)) {
             displayError("Ung&uuml;ltiger Betrag");
             return;
