@@ -98,7 +98,12 @@ def revert_purchase(request):
 @login_required(login_url="index")
 @require_http_methods(["POST"])
 def revert_charge(request):
-    return HttpResponse()
+    charge_id = request.POST.get("charge_id")
+    try:
+        ChargeLogic.annullateCharge(charge_id)
+    except ChargeNotAnnullable as exc:
+        return JsonResponse({'error': str(exc)}, status=400)
+    return HttpResponse(status=200)
 
 
 # Test
@@ -109,7 +114,4 @@ def test(request):
 
 
 def test2(request):
-    # tl = TokenLogic()
-    # print(PurchaseLogic.purchase(1, 1, tl.get_token()))
-    print(PurchaseLogic.purchase(1, 1, 57058))
-    return HttpResponse()
+    ChargeLogic.annullateCharge(1900)
