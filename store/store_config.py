@@ -9,6 +9,7 @@ N_USERS_LOGIN: number of users that should be shown in the users list in the log
 T_USERS_LOGIN_D: number of days in the past that are used as time intervall limit to search for users
 N_LAST_CHARGES: number of charges that should be shown in 'Letzte Aufladungen'. A negative number means 'all users are
     selected'
+T_ANNULLABLE_CHARGE_M: time of minutes a user has for a charge to undo it
 """
 KAFFEEKASSE = {'N_LAST_BOUGHT_PRODUCTS': 5,
                'T_LAST_BOUGHT_PRODUCTS_D': 30,
@@ -18,4 +19,5 @@ KAFFEEKASSE = {'N_LAST_BOUGHT_PRODUCTS': 5,
                'N_USERS_LOGIN': -1,
                'T_USERS_LOGIN_D': 356,
                'N_LAST_CHARGES': -1,
+               'T_ANNULLABLE_CHARGE_M': 60,
                }

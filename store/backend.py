@@ -102,8 +102,7 @@ class ProductLogic:
                 product.update({'annullable': False})
             else:
                 product.update({'annullable': True})
-            print(product)
-        # print(products)
+
         return list(products)
 
 
@@ -195,17 +194,35 @@ class PurchaseLogic:
 class ChargeLogic:
     
     """
-    Returns a list of the last charges of a specified user: [{'id': ..., 'amount': ...}, Decimal(...,...)]
+    Returns a list of the last charges of a specified user: [{'id': ..., 'amount': Decimal(...,...), 'annullated': ...,
+    'time_stamp': ..., 'annullable': ...}]
     @param user_id: the id of the specified user
     @config-param max_charges: Number of charges to be shown. Depends on N_LAST_CHARGES
+    @config-param annullable_time: time to annullate a charge. Depends on T_ANNULLABLE_CHARGE_M 
     """
     @staticmethod
     def getLastChargesList(user_id):
         max_charges = config['N_LAST_CHARGES'] 
-        charges = Charge.objects.filter(user=user_id).values('id', 'amount')
+        annullable_time = config['T_ANNULLABLE_CHARGE_M']
+        charges = Charge.objects.filter(user=user_id).values('id', 'amount', 'annullated', 'time_stamp')
+
         if max_charges < 0:
             charges = list(charges.order_by('time_stamp').reverse())
         else:
             charges = list(charges.order_by('time_stamp').reverse())[:max_charges]
+
+        # warning: summertime/wintertime currently is not respected in the following calculations. This should be
+        # implemented to avoid non-annullable transactions in the lost hour between summer- and wintertime
+        now = datetime.now()
+        time_limit = datetime.now() - timedelta(minutes=annullable_time)
+        timezone = pytz.timezone('Europe/Berlin')
+        time_limit = timezone.localize(time_limit)
+
+        for charge in charges:
+            if time_limit > charge['time_stamp']:
+                charge.update({'annullable': False})
+            else:
+                charge.update({'annullable': True})
+
         return charges
     
