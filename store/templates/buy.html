@@ -126,14 +126,22 @@
     updateRecentlyBoughtList();
 
     function buy(id) {
-        error = error => showError(error.responseJSON, "Fehler beim Einkaufen");
+        error = error => {
+            err = null;
+            if (error && "responseJSON" in error) {
+                err = error.responseJSON
+            }
+            showError(err, "Fehler beim Einkaufen");
+        }
 
+        // Check if id is a valid integer
         id = parseInt(id);
         if (isNaN(id)) {
-            error();
+            error(null);
             return;
         }
 
+        // Send request to the server using a new token
         tokenCall(token => {
             $.ajax({
                 url: "{% url "buy_product" %}",
