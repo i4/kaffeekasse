@@ -94,6 +94,13 @@ def revert_purchase(request):
         return JsonResponse({'error': str(exc)}, status=400)
     return HttpResponse(status=200)
 
+
+@login_required(login_url="index")
+@require_http_methods(["POST"])
+def revert_charge(request):
+    return HttpResponse()
+
+
 # Test
 
 
