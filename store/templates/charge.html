@@ -118,7 +118,7 @@
         var amount = $("#amount").val().replace(',', '.');
         amount = parseFloat(amount).toFixed(2);
         if (isNaN(amount)) {
-            error(null);
+            displayError("Ung&uuml;ltiger Betrag");
             return;
         }
 
