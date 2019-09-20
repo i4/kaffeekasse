@@ -136,6 +136,7 @@
                     token: token
                 },
                 success: data => {
+                    clearError();
                     increaseMoney(amount);
                     $("#amount").val("");
                     addNewCharge(data.charge_id, amount);
@@ -173,6 +174,7 @@
                         token: token
                     },
                     success: data => {
+                        clearError();
                         recent_charges.filter(item => {
                             if (item.id == id) {
                                 item.annullated = true;

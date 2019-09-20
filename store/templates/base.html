@@ -164,7 +164,11 @@
             } else {
                 displayError(def)
             }
+        }
 
+        // Clear alert div
+        function clearError() {
+            $("#alertDiv").html("");
         }
 
         // Display the message in alertDiv as an bootstrap danger alert

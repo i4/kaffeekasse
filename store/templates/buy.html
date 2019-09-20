@@ -151,6 +151,7 @@
                     token: token
                 },
                 success: function(data) {
+                    clearError();
                     reduceMoney(products[id].price);
                     addLastBought(id, data.purchase_id);
                 },
@@ -188,6 +189,7 @@
                         token: token
                     },
                     success: data => {
+                        clearError();
                         recently_bought.filter(item => {
                             if (item.purchase_id == id) {
                                 item.annullated = true;
