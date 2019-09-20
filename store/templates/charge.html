@@ -111,11 +111,7 @@
 
     function charge() {
         error = error => {
-            err = null;
-            if (error && "responseJSON" in error) {
-                err = error.responseJSON;
-            }
-            showError(err, "Fehler beim Aufladen");
+            showError(error, "Fehler beim Aufladen");
         }
 
         // Get amount from text field
@@ -161,11 +157,7 @@
     // Returns a function that can be called to revert the charge where charge.id == id
     function revert(id) {
         error = error => {
-            err = null;
-            if (error && "responseJSON" in error) {
-                err = error.responseJSON
-            }
-            showError(err, "Fehler beim R&uuml;ckg&auml;gig machen einer Aufladung");
+            showError(error, "Fehler beim R&uuml;ckg&auml;gig machen einer Aufladung");
         };
 
         return function() {

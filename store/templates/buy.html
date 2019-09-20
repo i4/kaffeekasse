@@ -127,11 +127,7 @@
 
     function buy(id) {
         error = error => {
-            err = null;
-            if (error && "responseJSON" in error) {
-                err = error.responseJSON
-            }
-            showError(err, "Fehler beim Einkaufen");
+            showError(error, "Fehler beim Einkaufen");
         }
 
         // Check if id is a valid integer
@@ -176,11 +172,7 @@
 
     function revert(id) {
         error = error => {
-            err = null;
-            if (error && "responseJSON" in error) {
-                err = error.responseJSON
-            }
-            showError(err, "Fehler beim R&uuml;ckg&auml;gig machen eines Einkaufes.");
+            showError(error, "Fehler beim R&uuml;ckg&auml;gig machen eines Einkaufes.");
         }
 
         return function() {

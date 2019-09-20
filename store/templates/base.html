@@ -156,11 +156,11 @@
     {% comment %} Error messages {% endcomment %}
     <script>
         // Shows an error in the alert div.
-        // If there is an error message in the response, use it.
-        // Otherwise use the def.
-        function showError(response, def) {
-            if (response && "error" in response) {
-                displayError(response.error);
+        // Try to extract an error message from error.
+        // Otherwise use def.
+        function showError(error, def) {
+            if (error && "responseJSON" in error && "error" in error.responseJSON) {
+                displayError(error.responseJSON.error);
             } else {
                 displayError(def)
             }

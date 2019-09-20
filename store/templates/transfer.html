@@ -175,11 +175,7 @@
 
     function transfer(receiver) {
         error = error => {
-            err = null;
-            if (error && "responseJSON" in error) {
-                err = error.responseJSON;
-            }
-            showError(err, "Fehler beim &Uuml;berweisen");
+            showError(error, "Fehler beim &Uuml;berweisen");
         }
 
 
@@ -242,11 +238,7 @@
     // Returns a function that can be called to revert the transfer where transfer.id == id
     function revert(id) {
         error = error => {
-            err = null;
-            if (error && "responseJSON" in error) {
-                err = error.responseJSON;
-            }
-            showError(err, "Fehler beim R&uuml;ckg&auml;gig machen einer&Uuml;berweisung");
+            showError(error, "Fehler beim R&uuml;ckg&auml;gig machen einer&Uuml;berweisung");
         }
 
         return function() {
