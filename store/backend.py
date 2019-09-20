@@ -172,15 +172,14 @@ class PurchaseLogic:
         # warning: summertime/wintertime currently is not respected in the following calculations. This should be
         # implemented to avoid non-annullable transactions in the lost hour between summer- and wintertime
         annullable_time = config['T_ANNULLABLE_PURCHASE_M']
+
         now = datetime.now()
         time_limit = datetime.now() - timedelta(minutes=annullable_time)
         timezone = pytz.timezone('Europe/Berlin')
         time_limit = timezone.localize(time_limit)
-        print(purchase_id)
+
         purchase = list(Purchase.objects.filter(id=purchase_id))[0]
         purchase_time = purchase.time_stamp
-        print("purchase_id:", purchase.id, "time_limit:", time_limit, "purchase_time", purchase_time, "valid:",
-                time_limit > purchase_time)
         if time_limit >= purchase_time:
             raise PurchaseNotAnnullable()
         
@@ -188,7 +187,6 @@ class PurchaseLogic:
             user = list(User.objects.filter(id=purchase.user.id))[0]
             purchase.annullate()
             user.updateMoney(purchase.price)
-            print("user_id:", user.id, "purchase_id:", purchase.id, "user.money:", user.money)
 
 
 class ChargeLogic:
@@ -253,3 +251,24 @@ class ChargeLogic:
     @staticmethod
     def __updateUserMoney(user, amount):
         user.updateMoney(amount)
+
+    @staticmethod
+    def annullateCharge(charge_id):
+        # warning: summertime/wintertime currently is not respected in the following calculations. This should be
+        # implemented to avoid non-annullable transactions in the lost hour between summer- and wintertime
+        annullable_time = config['T_ANNULLABLE_CHARGE_M']
+
+        now = datetime.now()
+        time_limit = datetime.now() - timedelta(minutes=annullable_time)
+        timezone = pytz.timezone('Europe/Berlin')
+        time_limit = timezone.localize(time_limit)
+
+        charge = list(Charge.objects.filter(id=charge_id))[0]
+
+        if time_limit > charge.time_stamp:
+            raise ChargeNotAnnullable()
+
+        with transaction.atomic():
+            user = list(User.objects.filter(id=charge.user.id))[0]
+            charge.annullate()
+            user.updateMoney((-1) * charge.amount)

@@ -11,3 +11,8 @@ class NotAnnullable(Exception):
 class PurchaseNotAnnullable(Exception):
     def __init__(self):
         super().__init__("Einkauf ist nicht annullierbar!")
+
+
+class ChargeNotAnnullable(Exception):
+    def __init__(self):
+        super().__init__("Aufladung ist nicht annullierbar")
