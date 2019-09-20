@@ -150,11 +150,8 @@ class PurchaseLogic:
 
     @staticmethod
     def __createPurchaseTuple(user, product, token):
-        try:
-            purchase = Purchase(user=user, product=product, price=product.price, token=token, annullated=False)
-            purchase.save()
-        except IntegrityError:
-            return False, -1
+        purchase = Purchase(user=user, product=product, price=product.price, token=token, annullated=False)
+        purchase.save()
         return True, purchase.id
 
     @staticmethod
@@ -211,4 +208,4 @@ class ChargeLogic:
         else:
             charges = list(charges.order_by('time_stamp').reverse())[:max_charges]
         return charges
-
+    
