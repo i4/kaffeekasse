@@ -40,47 +40,52 @@ def charge(request):
 @login_required(login_url="index")
 @require_http_methods(["GET"])
 def transfer(request):
-    dummyTransfers = [
-        {
-            "id": 1,
-            "annullated": True,
-            "annullable": False,
-            "amount": 12.4,
-            "receiver_nickname": "franz",
-        },
-        {
-            "id": 2,
-            "annullated": False,
-            "annullable": True,
-            "amount": 12.4,
-            "receiver_nickname": "hans"
-        },
-        {
-            "id": 3,
-            "annullated": True,
-            "annullable": False,
-            "amount": 12.4,
-            "receiver_nickname": "fritz"
-        },
-        {
-            "id": 4,
-            "annullated": True,
-            "annullable": False,
-            "amount": 11.4,
-            "receiver_nickname": "peter"
-        },
-        {
-            "id": 5,
-            "annullated": False,
-            "annullable": False,
-            "amount": 13.4,
-            "receiver_nickname": "scooter"
-        }
-    ]
     return render(request, "transfer.html", {
+        # "users": TransferLogic.getFreuquentTransferTargeds(request.user.id),
         "users": User.objects.all(),
-        "recent_transfers": dummyTransfers,
-    })
+        "recent_transfers": TransferLogic.getLastTransfers(request.user.id),
+        })
+    # dummyTransfers = [
+    #     {
+    #         "id": 1,
+    #         "annullated": True,
+    #         "annullable": False,
+    #         "amount": 12.4,
+    #         "receiver_nickname": "franz",
+    #     },
+    #     {
+    #         "id": 2,
+    #         "annullated": False,
+    #         "annullable": True,
+    #         "amount": 12.4,
+    #         "receiver_nickname": "hans"
+    #     },
+    #     {
+    #         "id": 3,
+    #         "annullated": True,
+    #         "annullable": False,
+    #         "amount": 12.4,
+    #         "receiver_nickname": "fritz"
+    #     },
+    #     {
+    #         "id": 4,
+    #         "annullated": True,
+    #         "annullable": False,
+    #         "amount": 11.4,
+    #         "receiver_nickname": "peter"
+    #     },
+    #     {
+    #         "id": 5,
+    #         "annullated": False,
+    #         "annullable": False,
+    #         "amount": 13.4,
+    #         "receiver_nickname": "scooter"
+    #     }
+    # ]
+    # return render(request, "transfer.html", {
+    #     "users": User.objects.all(),
+    #     "recent_transfers": dummyTransfers,
+    # })
 
 
 # Authentication
@@ -141,7 +146,6 @@ def revert_purchase(request):
 @login_required(login_url="index")
 @require_http_methods(["POST"])
 def charge_money(request):
-    print(request.POST)
     user_id = request.user.id
     token = request.POST.get("token")
     amount = request.POST.get("amount")
@@ -163,7 +167,13 @@ def revert_charge(request):
 
 
 def transfer_money(request):
-    return JsonResponse({"transfer_id": 3})
+    print(request.POST)
+    user_id = request.user.id
+    token = request.POST.get("token")
+    receiver_id = request.POST.get("receiver")
+    amount = Decimal(request.POST.get("amount"))
+    transfer_id = TransferLogic.transfer(user_id, receiver_id, amount, token)
+    return JsonResponse({"transfer_id": transfer_id})
 
 
 def revert_transfer(request):
@@ -178,4 +188,8 @@ def test(request):
 
 
 def test2(request):
-    ChargeLogic.annullateCharge(1900)
+    transfers = TransferLogic.getFreuquentTransferTargeds(1)
+    for transfer in transfers:
+        print(transfer)
+    print("n_transfers:", len(transfers))
+

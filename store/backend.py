@@ -308,11 +308,11 @@ class TransferLogic:
     Returns a list of users that are possible recepiants for a transfer of money. The list first containts receivers
     that are often addressed by the specified user and after that users that have never been addressed.
     @param user_id: the id of the user thats receivers should be shown
-    @config-param max_receivers: depends on N_TRANSFER_RECEIVERS
+    @config-param max_receivers: depends on N_TRANSFERS_RECEIVERS
     """ 
     @staticmethod
     def getFreuquentTransferTargeds(user_id):
-        max_receivers = config['N_TRANSFER_RECEIVERS']
+        max_receivers = config['N_TRANSFERS_RECEIVERS']
         transfers = Transfer.objects.filter(sender=user_id).exclude(receiver=None).exclude(receiver=user_id)
         transfers = transfers.select_related('receiver')
         transfers = transfers.values('receiver', 'receiver__nickname')
@@ -320,6 +320,38 @@ class TransferLogic:
         transfers = transfers.order_by('total').reverse().order_by('receiver__nickname')
         if max_receivers >= 0:
             transfers = transfers[:max_receivers]
+        return list(transfers)
+
+    """
+    Returns a list of last transfers of a specified user sorted by the time of the transfer.
+    @param user_id: the id of the user that is logged in and wants to send money
+    @config-param max_transfers: depends on N_LAST_TRANSFERS
+    @config-param annullable_time: depends on T_ANNULLABLE_TRANSFERS_M
+    """
+    @staticmethod
+    def getLastTransfers(user_id):
+        max_transfers = config['N_LAST_TRANSFERS']
+        annullable_time = config['T_ANNULLABLE_TRANSFERS_M']
+
+        transfers = Transfer.objects.filter(sender=user_id)
+        transfers = transfers.select_related('receiver')
+        transfers = transfers.order_by('time_stamp').reverse()[:max_transfers]
+        transfers = transfers.values('id', 'annullated', 'amount', 'receiver__nickname', 'time_stamp')
+
+        # warning: summertime/wintertime currently is not respected in the following calculations. This should be
+        # implemented to avoid non-annullable transactions in the lost hour between summer- and wintertime
+        now = datetime.now()
+        time_limit = datetime.now() - timedelta(minutes=annullable_time)
+        timezone = pytz.timezone('Europe/Berlin')
+        time_limit = timezone.localize(time_limit)
+
+        for transfer in transfers:
+            if time_limit > transfer['time_stamp']:
+                transfer.update({'annullable': False})
+            else:
+                transfer.update({'annullable': True})
+            transfer['receiver_nickname'] = transfer.pop('receiver__nickname')
+        
         return list(transfers)
 
     """
@@ -334,7 +366,7 @@ class TransferLogic:
         sender = list(User.objects.filter(id=user_id))[0]
         receiver = list(User.objects.filter(id=receiver_id))[0]
         try:
-            with transfer.atomic():
+            with transaction.atomic():
                 transfer_id = TransferLogic.__createTransferTuple(sender, receiver, amount, token)
                 TransferLogic.__updateSenderMoney(sender, amount)
                 TransferLogic.__updateReceiverMoney(receiver, amount)
@@ -342,15 +374,18 @@ class TransferLogic:
             return list(Transfers.objects.filter(token=token))[0]
         return transfer_id
 
-
+    @staticmethod
     def __createTransferTuple(sender, receiver, amount, token):
-        transfer = Transfer(sender=sender, receiver=receiver, amount=amount, token=token, annulated=False)
+        transfer = Transfer(sender=sender, receiver=receiver, amount=amount, token=token, annullated=False)
         transfer.save()
         return transfer.id
 
+    @staticmethod
     def __updateSenderMoney(sender, amount):
         sender.updateMoney((-1) * amount)
 
+    @staticmethod
     def __updateReceiverMoney(receiver, amount):
         receiver.updateMoney(amount) 
+
 

@@ -9,9 +9,11 @@ N_USERS_LOGIN: number of users that should be shown in the users list in the log
 T_USERS_LOGIN_D: number of days in the past that are used as time intervall limit to search for users
 N_LAST_CHARGES: number of charges that should be shown in 'Letzte Aufladungen'. A negative number means 'all users are
     selected'
-T_ANNULLABLE_CHARGE_M: time of minutes a user has for a charge to undo it
-N_TRANSFER_RECEIVERS: number of receivers that should be shown in 'alle Überweisungen'. A negative value means 'all
+T_ANNULLABLE_CHARGE_M: time in minutes a user has for a charge to undo it
+N_TRANSFERS_RECEIVERS: number of receivers that should be shown in 'alle Empfänger'. A negative value means 'all
 users are shown'
+N_LAST_TRANSFERS: number of transfers that should be shown in 'Letzte Überweisungen'
+T_ANNULLABLE_TRANSFERS_M: time in minutes a user has for a transfer to undo it
 """
 KAFFEEKASSE = {'N_LAST_BOUGHT_PRODUCTS': 5,
                'T_LAST_BOUGHT_PRODUCTS_D': 30,
@@ -22,5 +24,7 @@ KAFFEEKASSE = {'N_LAST_BOUGHT_PRODUCTS': 5,
                'T_USERS_LOGIN_D': 356,
                'N_LAST_CHARGES': 10,
                'T_ANNULLABLE_CHARGE_M': 60,
-               'N_TRANSFER_RECEIVERS': -1,
+               'N_TRANSFERS_RECEIVERS': -1,
+               'N_LAST_TRANSFERS': 5,
+               'T_ANNULLABLE_TRANSFERS_M': 60,
                }
