@@ -32,7 +32,9 @@ def buy(request):
 @login_required(login_url="index")
 @require_http_methods(["GET"])
 def charge(request):
-    return render(request, "charge.html", {})
+    return render(request, "charge.html", {
+        "recent_charges": ChargeLogic.getLastChargesList(request.user.id),
+    })
 
 
 @login_required(login_url="index")
@@ -88,8 +90,9 @@ def getToken(request):
 @require_http_methods(["POST"])
 def revert_purchase(request):
     purchase_id = request.POST.get("purchase_id")
+    token = request.POST.get("token")
     try:
-        PurchaseLogic.annullatePurchase(purchase_id)
+        PurchaseLogic.annullatePurchase(purchase_id, token)
     except PurchaseNotAnnullable as exc:
         return JsonResponse({'error': str(exc)}, status=400)
     return HttpResponse(status=200)
@@ -111,8 +114,9 @@ def charge_money(request):
 @require_http_methods(["POST"])
 def revert_charge(request):
     charge_id = request.POST.get("charge_id")
+    token = request.POST.get("token")
     try:
-        ChargeLogic.annullateCharge(charge_id)
+        ChargeLogic.annullateCharge(charge_id, token)
     except ChargeNotAnnullable as exc:
         return JsonResponse({'error': str(exc)}, status=400)
     return HttpResponse(status=200)
