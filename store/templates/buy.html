@@ -217,7 +217,7 @@
             $("#recently_bought_list").append(template);
 
             // Set template values
-            $("#recent_product_price").html(product.price.toFixed(2) + " &euro;").attr("id", "");
+            $("#recent_product_price").html(product.price.toFixed(2).replace(".", ",") + " &euro;").attr("id", "");
             $("#recent_product_name").text(product.name).attr("id", "");
             if (product.annullable) {
                 $("#recent_bought_revert").click(revert(product.purchase_id)).attr("id", "");
