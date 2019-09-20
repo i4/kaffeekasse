@@ -8,3 +8,5 @@
 - Ueberweisungsempfaenger nach Haeufigkei (auf den eingeloggten Nutzer bezogen) sortieren.
 
 - Beim rueckgaengig machen von Aufladungen Guthaben pruefen
+
+- Decimals mit comma statt punkt. Mit LANGUAGE_CODE = 'de-de' loesbar, dann kann man aber die decimals nicht einfach im template ins javascript schreiben
