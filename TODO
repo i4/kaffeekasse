@@ -6,3 +6,5 @@
 - Nutzer, die sich nie eingeloggt haben sollen auch in der frequent users list sein
 
 - Ueberweisungsempfaenger nach Haeufigkei (auf den eingeloggten Nutzer bezogen) sortieren.
+
+- Beim rueckgaengig machen von Aufladungen Guthaben pruefen
