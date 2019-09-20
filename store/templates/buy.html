@@ -194,12 +194,11 @@
                     },
                     success: data => {
                         clearError();
-                        recently_bought.filter(item => {
+                        recently_bought.forEach(item => {
                             if (item.purchase_id == id) {
                                 item.annullated = true;
                                 increaseMoney(item.price);
                             }
-                            return true;
                         });
                         updateRecentlyBoughtList();
                     },

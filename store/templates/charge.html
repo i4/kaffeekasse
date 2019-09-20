@@ -179,12 +179,11 @@
                     },
                     success: data => {
                         clearError();
-                        recent_charges.filter(item => {
+                        recent_charges.forEach(item => {
                             if (item.id == id) {
                                 item.annullated = true;
                                 reduceMoney(item.amount);
                             }
-                            return true;
                         });
                         updateRecentCharges();
                     },
