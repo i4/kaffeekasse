@@ -1,6 +1,8 @@
-- Sommerzeit vs. Winterzeit wird aktuell bei allen Funktionen, die mit Undo zu tun haben nicht nicht berücksichtigt. 
+- Sommerzeit vs. Winterzeit wird aktuell bei allen Funktionen, die mit Undo zu tun haben nicht nicht berücksichtigt.
 - Backendroutinen für Aufladen:
 	-> aufladen
 	-> undo
 	-> letzte_aufladungen
 - Nutzer, die sich nie eingeloggt haben sollen auch in der frequent users list sein
+
+- Ueberweisungsempfaenger nach Haeufigkei (auf den eingeloggten Nutzer bezogen) sortieren.
