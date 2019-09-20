@@ -3,3 +3,4 @@
 	-> aufladen
 	-> undo
 	-> letzte_aufladungen
+- Nutzer, die sich nie eingeloggt haben sollen auch in der frequent users list sein
