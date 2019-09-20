@@ -252,12 +252,18 @@ class ChargeLogic:
     def __updateUserMoney(user, amount):
         user.updateMoney(amount)
 
+    """
+    Annulates a charge that is not older than a given number of minutes. Returns False, if the purchase is too old,
+    returns True else.
+    @param charge_id: the id of the purchase to annullate
+    @config-param annullable_time: depends on T_ANNULLABLE_CHARGE_M
+    """
     @staticmethod
     def annullateCharge(charge_id, token):
-        # warning: summertime/wintertime currently is not respected in the following calculations. This should be
-        # implemented to avoid non-annullable transactions in the lost hour between summer- and wintertime
         annullable_time = config['T_ANNULLABLE_CHARGE_M']
 
+        # warning: summertime/wintertime currently is not respected in the following calculations. This should be
+        # implemented to avoid non-annullable transactions in the lost hour between summer- and wintertime
         now = datetime.now()
         time_limit = datetime.now() - timedelta(minutes=annullable_time)
         timezone = pytz.timezone('Europe/Berlin')
