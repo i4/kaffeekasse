@@ -194,3 +194,23 @@ class PurchaseLogic:
             user.updateMoney(purchase.price)
             print("user_id:", user.id, "purchase_id:", purchase.id, "user.money:", user.money)
 
+
+class ChargeLogic:
+    
+    """
+    Returns a list of the last charges of a specified user: [{'id': ..., 'amount': ...}, Decimal(...,...)]
+    @param user_id: the id of the specified user
+    @config-param max_charges: Number of charges to be shown. Depends on N_LAST_CHARGES
+    """
+    @staticmethod
+    def getLastChargesList(user_id):
+        max_charges = config['N_LAST_CHARGES'] 
+        charges = Charge.objects.filter(user=user_id).values('id', 'amount')
+        if max_charges < 0:
+            charges = list(charges.order_by('time_stamp').reverse())
+        else:
+            charges = list(charges.order_by('time_stamp').reverse())[:max_charges]
+        return charges
+
+
+
