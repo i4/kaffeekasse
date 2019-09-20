@@ -301,3 +301,23 @@ class ChargeLogic:
             user = list(User.objects.filter(id=charge.user.id))[0]
             charge.annullate()
             user.updateMoney((-1) * charge.amount)
+
+
+class TransferLogic:
+    """
+    Returns a list of users that are possible recepiants for a transfer of money. The list first containts receivers
+    that are often addressed by the specified user and after that users that have never been addressed.
+    @param user_id: the id of the user thats receivers should be shown
+    @config-param max_receivers: depends on N_TRANSFER_RECEIVERS
+    """ 
+    @staticmethod
+    def getFreuquentTransferTargeds(user_id):
+        max_receivers = config['N_TRANSFER_RECEIVERS']
+        transfers = Transfer.objects.filter(sender=user_id).exclude(receiver=None).exclude(receiver=user_id)
+        transfers = transfers.select_related('receiver')
+        transfers = transfers.values('receiver', 'receiver__nickname')
+        transfers = transfers.annotate(total=Count('receiver'))
+        transfers = transfers.order_by('total').reverse().order_by('receiver__nickname')
+        if max_receivers >= 0:
+            transfers = transfers[:max_receivers]
+        return list(transfers)
