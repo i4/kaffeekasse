@@ -321,3 +321,36 @@ class TransferLogic:
         if max_receivers >= 0:
             transfers = transfers[:max_receivers]
         return list(transfers)
+
+    """
+    Performs the transfer routine where a sender sends money to a receiver.
+    @param user_id: id of the user that wants to send money
+    @param receiver_id: id of the user that should get the money
+    @param amount: amount of money to be sent
+    @param token: unique token got by TokenLogic's getToken
+    """
+    @staticmethod
+    def transfer(user_id, receiver_id, amount, token):
+        sender = list(User.objects.filter(id=user_id))[0]
+        receiver = list(User.objects.filter(id=receiver_id))[0]
+        try:
+            with transfer.atomic():
+                transfer_id = TransferLogic.__createTransferTuple(sender, receiver, amount, token)
+                TransferLogic.__updateSenderMoney(sender, amount)
+                TransferLogic.__updateReceiverMoney(receiver, amount)
+        except IntegrityError:
+            return list(Transfers.objects.filter(token=token))[0]
+        return transfer_id
+
+
+    def __createTransferTuple(sender, receiver, amount, token):
+        transfer = Transfer(sender=sender, receiver=receiver, amount=amount, token=token, annulated=False)
+        transfer.save()
+        return transfer.id
+
+    def __updateSenderMoney(sender, amount):
+        sender.updateMoney((-1) * amount)
+
+    def __updateReceiverMoney(receiver, amount):
+        receiver.updateMoney(amount) 
+
