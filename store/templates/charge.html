@@ -15,52 +15,50 @@
 {% block content %}
 <div class="row">
     <div class="col-lg-4 col-md-6 col-12 mb-4">
-        <form>
-            <div class="row">
-                {% comment %} amount numpad {% endcomment %}
-                <div class="col-12 pb-3">
-                    <h4>Betrag</h4>
-                    <div id="amountNumpad" class="btn-group-vertical" role="group">
-                        <div class="btn-group">
-                            <input class="text-center form-control-lg mb-2" id="amount">
-                        </div>
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-outline-secondary py-3"
-                                onclick="document.getElementById('amount').value=document.getElementById('amount').value + '1';">1</button>
-                            <button type="button" class="btn btn-outline-secondary py-3"
-                                onclick="document.getElementById('amount').value=document.getElementById('amount').value + '2';">2</button>
-                            <button type="button" class="btn btn-outline-secondary py-3"
-                                onclick="document.getElementById('amount').value=document.getElementById('amount').value + '3';">3</button>
-                        </div>
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-outline-secondary py-3"
-                                onclick="document.getElementById('amount').value=document.getElementById('amount').value + '4';">4</button>
-                            <button type="button" class="btn btn-outline-secondary py-3"
-                                onclick="document.getElementById('amount').value=document.getElementById('amount').value + '5';">5</button>
-                            <button type="button" class="btn btn-outline-secondary py-3"
-                                onclick="document.getElementById('amount').value=document.getElementById('amount').value + '6';">6</button>
-                        </div>
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-outline-secondary py-3"
-                                onclick="document.getElementById('amount').value=document.getElementById('amount').value + '7';">7</button>
-                            <button type="button" class="btn btn-outline-secondary py-3"
-                                onclick="document.getElementById('amount').value=document.getElementById('amount').value + '8';">8</button>
-                            <button type="button" class="btn btn-outline-secondary py-3"
-                                onclick="document.getElementById('amount').value=document.getElementById('amount').value + '9';">9</button>
-                        </div>
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-outline-secondary py-3"
-                                onclick="document.getElementById('amount').value=document.getElementById('amount').value.slice(0, -1);">&lt;</button>
-                            <button type="button" class="btn btn-outline-secondary py-3"
-                                onclick="document.getElementById('amount').value=document.getElementById('amount').value + '0';">0</button>
-                            <button type="button" class="btn btn-outline-secondary py-3"
-                                onclick="document.getElementById('amount').value=document.getElementById('amount').value + ',';">,</button>
-                        </div>
+        <div class="row">
+            {% comment %} amount numpad {% endcomment %}
+            <div class="col-12 pb-3">
+                <h4>Betrag</h4>
+                <div id="amountNumpad" class="btn-group-vertical" role="group">
+                    <div class="btn-group">
+                        <input class="text-center form-control-lg mb-2" id="amount">
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-outline-secondary py-3"
+                            onclick="document.getElementById('amount').value=document.getElementById('amount').value + '1';">1</button>
+                        <button type="button" class="btn btn-outline-secondary py-3"
+                            onclick="document.getElementById('amount').value=document.getElementById('amount').value + '2';">2</button>
+                        <button type="button" class="btn btn-outline-secondary py-3"
+                            onclick="document.getElementById('amount').value=document.getElementById('amount').value + '3';">3</button>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-outline-secondary py-3"
+                            onclick="document.getElementById('amount').value=document.getElementById('amount').value + '4';">4</button>
+                        <button type="button" class="btn btn-outline-secondary py-3"
+                            onclick="document.getElementById('amount').value=document.getElementById('amount').value + '5';">5</button>
+                        <button type="button" class="btn btn-outline-secondary py-3"
+                            onclick="document.getElementById('amount').value=document.getElementById('amount').value + '6';">6</button>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-outline-secondary py-3"
+                            onclick="document.getElementById('amount').value=document.getElementById('amount').value + '7';">7</button>
+                        <button type="button" class="btn btn-outline-secondary py-3"
+                            onclick="document.getElementById('amount').value=document.getElementById('amount').value + '8';">8</button>
+                        <button type="button" class="btn btn-outline-secondary py-3"
+                            onclick="document.getElementById('amount').value=document.getElementById('amount').value + '9';">9</button>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-outline-secondary py-3"
+                            onclick="document.getElementById('amount').value=document.getElementById('amount').value.slice(0, -1);">&lt;</button>
+                        <button type="button" class="btn btn-outline-secondary py-3"
+                            onclick="document.getElementById('amount').value=document.getElementById('amount').value + '0';">0</button>
+                        <button type="button" class="btn btn-outline-secondary py-3"
+                            onclick="document.getElementById('amount').value=document.getElementById('amount').value + ',';">,</button>
                     </div>
                 </div>
             </div>
-            <button type="submit" class="btn btn-i4">Aufladen</button>
-        </form>
+        </div>
+        <button type="button" onclick="charge()" class="btn btn-i4">Aufladen</button>
     </div>
     <div class="col-lg-4 col-md-6 col-12 mb-4">
         <h4>Letzte Aufladungen</h4>
@@ -85,33 +83,122 @@
                 </div>
             </label>
         </template>
+        <template id="recent_charge_annullated_template">
+            <label class="list-group-item">
+                <div class="d-flex w-100 justify-content-between">
+                    <s><div class="text-muted" id="recent_charge_amount"></div></s>
+                </div>
+            </label>
+        </template>
     </div>
 </div>
 {% endblock %}
 
 {% block script %}
 <script>
-    var recent_charges = [{
-            id: 0,
-            amount: 12.12,
-            annullable: false,
-        }];
+    var recent_charges = [
+        {% for charge in recent_charges %} {
+            id: {{ charge.id }},
+            amount: {{ charge.amount }},
+            annullable: {% if charge.annullable %} true {% else %} false {% endif %},
+            annullated: {% if charge.annullated %} true {% else %} false {% endif %},
+        },
+        {% endfor %}
+    ];
 
-    updateRecentTransfers();
+    // Initial call
+    updateRecentCharges();
 
-    function onuser_idChange() {
-        // Set user_id in label
-        $("#user_idRangeLabel").text("Betrag: " + $("#user_idRange").val() + " €");
+    function charge() {
+        error = error => {
+            err = null;
+            if (error && "responseJSON" in error) {
+                err = error.responseJSON
+            }
+            showError(err, "Fehler beim Aufladen");
+        }
+
+        // Get amount from text field
+        var amount = $("#amount").val();
+        amount = parseFloat(amount);
+        if (isNaN(amount)) {
+            error(null);
+            return;
+        }
+
+        // Send request to the server using a new token
+        tokenCall(token => {
+            $.ajax({
+                url: "{% url "charge_money" %}",
+                method: "POST",
+                data: {
+                    amount: amount,
+                    token: token
+                },
+                success: data => {
+                    increaseMoney(amount);
+                    $("#amount").val("");
+                    addNewCharge(data.charge_id, amount);
+                },
+                error: error,
+            });
+        }, error);
     }
 
-    function updateRecentTransfers() {
+    // Add a new charge to the list and remove the last one
+    function addNewCharge(charge_id, amount) {
+        recent_charges.pop();
+        recent_charges.unshift({
+            id: charge_id,
+            amount: amount,
+            annullable: true,
+            annullated: false,
+        });
+        updateRecentCharges();
+    }
+
+    // Returns a function that can be called to revert the charge with where charge.id == id
+    function revert(id) {
+        error = error => {
+            showError(error, "Fehler beim R&uuml;ckg&auml;gig machen einer Aufladung");
+        };
+
+        return function() {
+            tokenCall(token => {
+                $.ajax({
+                    url: "{% url "revert_charge" %}",
+                    method: "POST",
+                    data: {
+                        charge_id: id,
+                        token: token
+                    },
+                    success: data => {
+                        recent_charges.filter(item => {
+                            if (item.id == id) {
+                                item.annullated = true;
+                                reduceMoney(item.amount);
+                            }
+                            return true;
+                        });
+                        updateRecentCharges();
+                    },
+                    error: error,
+                })
+            }, error);
+        }
+    }
+
+    // Update the list of recent charges with the values from recent_charges
+    function updateRecentCharges() {
         // Remove old values from list
         $("#recent_charges").empty();
-        for (charge of recent_charges) {
+        for (var charge of recent_charges) {
             // Clone template
-            var template = charge.annullable ?
-                $("#recent_charge_annullable_template") :
-                $("#recent_charge_template");
+            var template = charge.annullated ?
+                $("#recent_charge_annullated_template") :
+                (charge.annullable ?
+                    $("#recent_charge_annullable_template") :
+                    $("#recent_charge_template"));
             template = template.clone().prop('content');
 
             // Append template
@@ -119,6 +206,9 @@
 
             // Set template values
             $("#recent_charge_amount").html(charge.amount + "&euro;").attr("id", "");
+            if (charge.annullable) {
+                $("#recent_charge_revert").click(revert(charge.id)).attr("id", "");
+            }
         }
 
     }

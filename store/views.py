@@ -97,6 +97,18 @@ def revert_purchase(request):
 
 @login_required(login_url="index")
 @require_http_methods(["POST"])
+def charge_money(request):
+    print(request.POST)
+    user_id = request.user.id
+    token = request.POST.get("token")
+    amount = request.POST.get("amount")
+    amount = Decimal(amount)
+    charge_id = ChargeLogic.charge(user_id, amount, token)
+    return JsonResponse({'charge_id': charge_id})
+
+
+@login_required(login_url="index")
+@require_http_methods(["POST"])
 def revert_charge(request):
     charge_id = request.POST.get("charge_id")
     try:
