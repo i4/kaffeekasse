@@ -29,26 +29,61 @@ class UserLogic:
         return False
 
     """
-    Collects the users that have the most log ins on a client within a given time period.
+    Collects the users that have the most log ins on a client within a given time period. The rest of the list is filled
+    first with all other logins and than all users that have never logged in
     Returns a list of dictionaries on succes: [{'user__nickname': '...', 'user__id': ..., 'total': ...}, ...]
-    @config-param max_users: the maximum of users that should be shown. Depends on N_USERS_LOGIN
-    @config-param max_days: the maximum of days that have passed since the last login. Depends on T_USERS_LOGIN_D
+    @config-param max_users: the maximum of users that should be shown from the most recent ones. Depends on N_USERS_LOGIN
+    @config-param max_days: the maximum of days that have passed since the last login to count as recent login. Depends on T_USERS_LOGIN_D
     """
+    # @staticmethod
+    # def getFrequentUsersList():
+    #     max_users = config['N_USERS_LOGIN']
+    #     max_days = config['T_USERS_LOGIN_D']
+    #     time_stamp = date.today() - timedelta(days=max_days)
+    #     logins = Login.objects.filter(time_stamp__gte=time_stamp.strftime("%Y-%m-%d") + " 00:00")
+    #     logins = logins.select_related('user')
+    #     logins = logins.values('user__nickname', 'user__id')
+    #     logins = logins.annotate(total=Count('user__id'))
+    #     if max_users <= 0:
+    #         logins = logins.order_by('total').reverse()
+    #     else:
+    #         logins = logins.order_by('total').reverse()[:max_users]
+    #     return list(logins)
+
     @staticmethod
     def getFrequentUsersList():
         max_users = config['N_USERS_LOGIN']
         max_days = config['T_USERS_LOGIN_D']
         time_stamp = date.today() - timedelta(days=max_days)
-        logins = Login.objects.filter(time_stamp__gte=time_stamp.strftime("%Y-%m-%d") + " 00:00")
-        logins = logins.select_related('user')
-        logins = logins.values('user__nickname', 'user__id')
-        logins = logins.annotate(total=Count('user__id'))
-        if max_users <= 0:
-            logins = logins.order_by('total').reverse()
-        else:
-            logins = logins.order_by('total').reverse()[:max_users]
-        return list(logins)
 
+        recent_logins = Login.objects.filter(time_stamp__gte=time_stamp.strftime("%Y-%m-%d") + " 00:00")
+        recent_logins = recent_logins.select_related('user')
+        recent_logins = recent_logins.values('user__nickname', 'user__id')
+        recent_logins = recent_logins.annotate(total=Count('user__id'))
+        if max_users <= 0:
+            recent_logins = recent_logins.order_by('total').reverse()
+        else:
+            recent_logins = recent_logins.order_by('total').reverse()[:max_users]
+
+        old_logins = Login.objects.all()
+        old_logins = old_logins.select_related('user')
+        old_logins = old_logins.values('user__nickname', 'user__id')
+        old_logins = old_logins.exclude(user__id__in=[d['user__id'] for d in list(recent_logins)])
+        old_logins = old_logins.annotate(total=Count('user__id'))
+        old_logins = old_logins.order_by('total').reverse()
+        
+        no_logins = User.objects.exclude(id__in=[d['user__id'] for d in list(recent_logins) + list(old_logins)])
+        no_logins = no_logins.order_by('nickname')
+        no_logins = no_logins.values('nickname', 'id')
+        no_logins = no_logins.annotate(total=Count('id'))
+
+        for login in no_logins:
+            login['user__id'] = login.pop('id')
+            login['user__nickname'] = login.pop('nickname')
+            login['total'] = 0
+
+        return list(recent_logins) + list(old_logins) + list(no_logins)
+    
 
 class ProductLogic:
 
