@@ -199,7 +199,7 @@
         // Remove old values from list
         $("#recently_bought_list").empty();
 
-        for (product of recently_bought) {
+        for (var product of recently_bought) {
             console.log(product)
             // Get and clone correct template
             var template = product.annullated ?

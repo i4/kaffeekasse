@@ -148,7 +148,7 @@
     function updateRecentTransfers() {
         // Remove old values from list
         $("#recent_transfers").empty();
-        for (transfer of recent_transfers) {
+        for (var transfer of recent_transfers) {
             // Clone template
             var template = $("#recent_transfer_template");
             template = template.clone().prop('content');
