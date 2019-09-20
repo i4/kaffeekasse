@@ -176,7 +176,11 @@
 
     function revert(id) {
         error = error => {
-            showError(error.responseJSON, "Fehler beim R&uuml;ckg&auml;gig machen eines Einkaufes.");
+            err = null;
+            if (error && "responseJSON" in error) {
+                err = error.responseJSON
+            }
+            showError(err, "Fehler beim R&uuml;ckg&auml;gig machen eines Einkaufes.");
         }
 
         return function() {

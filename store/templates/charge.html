@@ -161,7 +161,11 @@
     // Returns a function that can be called to revert the charge with where charge.id == id
     function revert(id) {
         error = error => {
-            showError(error, "Fehler beim R&uuml;ckg&auml;gig machen einer Aufladung");
+            err = null;
+            if (error && "responseJSON" in error) {
+                err = error.responseJSON
+            }
+            showError(err, "Fehler beim R&uuml;ckg&auml;gig machen einer Aufladung");
         };
 
         return function() {
