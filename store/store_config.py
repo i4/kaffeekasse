@@ -18,6 +18,6 @@ KAFFEEKASSE = {'N_LAST_BOUGHT_PRODUCTS': 5,
                'T_MOST_BOUGHT_PRODUCTS_D': 30,
                'N_USERS_LOGIN': -1,
                'T_USERS_LOGIN_D': 356,
-               'N_LAST_CHARGES': -1,
+               'N_LAST_CHARGES': 10,
                'T_ANNULLABLE_CHARGE_M': 60,
                }
