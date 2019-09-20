@@ -168,7 +168,7 @@ class PurchaseLogic:
     @config-param annullable_time: depends on T_ANNULLABLE_PURCHASE_M
     """
     @staticmethod
-    def annullatePurchase(purchase_id):
+    def annullatePurchase(purchase_id, token):
         # warning: summertime/wintertime currently is not respected in the following calculations. This should be
         # implemented to avoid non-annullable transactions in the lost hour between summer- and wintertime
         annullable_time = config['T_ANNULLABLE_PURCHASE_M']
@@ -182,7 +182,7 @@ class PurchaseLogic:
         purchase_time = purchase.time_stamp
         if time_limit >= purchase_time:
             raise PurchaseNotAnnullable()
-        
+
         with transaction.atomic():
             user = list(User.objects.filter(id=purchase.user.id))[0]
             purchase.annullate()
@@ -190,17 +190,17 @@ class PurchaseLogic:
 
 
 class ChargeLogic:
-    
+
     """
     Returns a list of the last charges of a specified user: [{'id': ..., 'amount': Decimal(...,...), 'annullated': ...,
     'time_stamp': ..., 'annullable': ...}]
     @param user_id: the id of the specified user
     @config-param max_charges: Number of charges to be shown. Depends on N_LAST_CHARGES
-    @config-param annullable_time: time to annullate a charge. Depends on T_ANNULLABLE_CHARGE_M 
+    @config-param annullable_time: time to annullate a charge. Depends on T_ANNULLABLE_CHARGE_M
     """
     @staticmethod
     def getLastChargesList(user_id):
-        max_charges = config['N_LAST_CHARGES'] 
+        max_charges = config['N_LAST_CHARGES']
         annullable_time = config['T_ANNULLABLE_CHARGE_M']
         charges = Charge.objects.filter(user=user_id).values('id', 'amount', 'annullated', 'time_stamp')
 
@@ -223,9 +223,9 @@ class ChargeLogic:
                 charge.update({'annullable': True})
 
         return charges
-    
+
     """
-    Executes the charge logic. 
+    Executes the charge logic.
     @param user_id: id of the user that charges
     @param amount: the amount of money to be charged
     @param token: the unique token got by getToken()
@@ -253,7 +253,7 @@ class ChargeLogic:
         user.updateMoney(amount)
 
     @staticmethod
-    def annullateCharge(charge_id):
+    def annullateCharge(charge_id, token):
         # warning: summertime/wintertime currently is not respected in the following calculations. This should be
         # implemented to avoid non-annullable transactions in the lost hour between summer- and wintertime
         annullable_time = config['T_ANNULLABLE_CHARGE_M']
