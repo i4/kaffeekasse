@@ -226,3 +226,30 @@ class ChargeLogic:
 
         return charges
     
+    """
+    Executes the charge logic. 
+    @param user_id: id of the user that charges
+    @param amount: the amount of money to be charged
+    @param token: the unique token got by getToken()
+    """
+    @staticmethod
+    def charge(user_id, amount, token):
+        try:
+            with transaction.atomic():
+                user = list(User.objects.filter(id=user_id))[0]
+                charge_id = ChargeLogic.__createChargeTuple(user, amount, token)
+                ChargeLogic.__updateUserMoney(user, amount)
+        except IntegrityError:
+            charge = list(Charge.objects.filter(token=token).values('id'))[0]
+            return charge['id']
+        return charge_id
+
+    @staticmethod
+    def __createChargeTuple(user, amount, token):
+        charge = Charge(token=token, amount=amount, annullated=False, user_id=user.id)
+        charge.save()
+        return charge.id
+
+    @staticmethod
+    def __updateUserMoney(user, amount):
+        user.updateMoney(amount)
