@@ -212,5 +212,3 @@ class ChargeLogic:
             charges = list(charges.order_by('time_stamp').reverse())[:max_charges]
         return charges
 
-
-
