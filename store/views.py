@@ -40,7 +40,47 @@ def charge(request):
 @login_required(login_url="index")
 @require_http_methods(["GET"])
 def transfer(request):
-    return render(request, "transfer.html", {"Users": User.objects.all()})
+    dummyTransfers = [
+        {
+            "id": 1,
+            "annullated": True,
+            "annullable": False,
+            "amount": 12.4,
+            "receiver_nickname": "franz",
+        },
+        {
+            "id": 2,
+            "annullated": False,
+            "annullable": True,
+            "amount": 12.4,
+            "receiver_nickname": "hans"
+        },
+        {
+            "id": 3,
+            "annullated": True,
+            "annullable": False,
+            "amount": 12.4,
+            "receiver_nickname": "fritz"
+        },
+        {
+            "id": 4,
+            "annullated": True,
+            "annullable": False,
+            "amount": 11.4,
+            "receiver_nickname": "peter"
+        },
+        {
+            "id": 5,
+            "annullated": False,
+            "annullable": False,
+            "amount": 13.4,
+            "receiver_nickname": "scooter"
+        }
+    ]
+    return render(request, "transfer.html", {
+        "users": User.objects.all(),
+        "recent_transfers": dummyTransfers,
+    })
 
 
 # Authentication
@@ -120,6 +160,14 @@ def revert_charge(request):
     except ChargeNotAnnullable as exc:
         return JsonResponse({'error': str(exc)}, status=400)
     return HttpResponse(status=200)
+
+
+def transfer_money(request):
+    return JsonResponse({"transfer_id": 3})
+
+
+def revert_transfer(request):
+    return HttpResponse()
 
 
 # Test

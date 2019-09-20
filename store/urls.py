@@ -19,6 +19,8 @@ urlpatterns = [
     path('revert_purchase', views.revert_purchase, name="revert_purchase"),
     path('charge_money', views.charge_money, name="charge_money"),
     path('revert_charge', views.revert_charge, name="revert_charge"),
+    path('transfer_money', views.transfer_money, name="transfer_money"),
+    path('revert_transfer', views.revert_transfer, name="revert_transfer"),
 
     # Test
     path('test', views.test, name="test"),
