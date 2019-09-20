@@ -12,7 +12,7 @@ import pytz
 class UserLogic:
 
     """
-    Basic login function. On success the user is logged in and True is returned. On Failure nothing happens and False is
+    Basic login function. On success the user is logged in and True is returned and a login-tuple is created. On Failure nothing happens and False is
     returned.
     @param request: the request object
     @param user_id: id of the user that should log in
@@ -24,8 +24,11 @@ class UserLogic:
         except User.DoesNotExist:
             user = None
         if user is not None:
-            login(request, user)
-            return True
+            with transaction.atomic():
+                login_tuple = Login(user=user)
+                login_tuple.save()
+                login(request, user)
+                return True
         return False
 
     """
