@@ -187,8 +187,6 @@
             return;
         }
 
-        console.log("receiver: " + receiver)
-
         // Get amount from text field
         var amount = $("#amount").val().replace(',', '.');
         amount = parseFloat(amount);
@@ -197,8 +195,6 @@
             displayError("Ung&uuml;ltiger Betrag");
             return;
         }
-
-        console.log("amount: " + amount)
 
         // Send request to the server using a new token
         tokenCall(token => {

@@ -205,7 +205,6 @@
         $("#recently_bought_list").empty();
 
         for (var product of recently_bought) {
-            console.log(product)
             // Get and clone correct template
             var template = product.annullated ?
                 $("#recently_bought_annullated_template") :
