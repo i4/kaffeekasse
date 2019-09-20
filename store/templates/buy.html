@@ -13,9 +13,9 @@
 {% endblock %}
 
 {% block content %}
-{% comment %} Product list {% endcomment %}
 <div class="row">
     <div class="col-lg-4 col-md-6 col-12">
+        {% comment %} Most bought products {% endcomment %}
         <div class="col-12 mb-4">
             <h4>H&auml;ufig gekauft</h4>
             <ul class="list-group">
@@ -29,6 +29,7 @@
                 {% endfor %}
             </ul>
         </div>
+        {% comment %} Last bought products {% endcomment %}
         <div class="col-12 mb-4">
             <h4>
                 Letzte Eink&auml;ufe
@@ -66,6 +67,7 @@
             </template>
         </div>
     </div>
+    {% comment %} Drinks {% endcomment %}
     <div class="col-lg-4 col-md-6 col-12 mb-4">
         <h4>Getr&auml;nke</h4>
         <ul class="list-group">
@@ -79,6 +81,7 @@
             {% endfor %}
         </ul>
     </div>
+    {% comment %} Snacks {% endcomment %}
     <div class="col-lg-4 col-md-6 col-12 mb-4">
         <h4>Snacks</h4>
         <ul class="list-group">
@@ -97,6 +100,7 @@
 
 {% block script %}
 <script>
+    // All products
     const products = {
         {% for product in products %}
         {{ product.id }}: {
@@ -106,6 +110,7 @@
         {% endfor %}
     };
 
+    // List with products the user recently bought
     const recently_bought = [
         {% for product in recently_bought %}{
             id: {{ product.product_id }},
@@ -122,8 +127,10 @@
 
     function buy(id) {
         error = error => showError(error.responseJSON, "Fehler beim Einkaufen");
+
         id = parseInt(id);
         if (isNaN(id)) {
+            error();
             return;
         }
 
@@ -140,7 +147,8 @@
                     addLastBought(id, data.purchase_id);
                 },
                 error: error,
-            })}, error);
+            })
+        }, error);
     }
 
     function addLastBought(id, purchase_id) {
@@ -182,7 +190,8 @@
                         updateRecentlyBoughtList();
                     },
                     error: error,
-                })}, error);
+                })
+            }, error);
         }
     }
 
@@ -210,6 +219,5 @@
             }
         }
     }
-
 </script>
 {% endblock %}
