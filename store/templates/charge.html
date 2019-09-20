@@ -113,7 +113,7 @@
         error = error => {
             err = null;
             if (error && "responseJSON" in error) {
-                err = error.responseJSON
+                err = error.responseJSON;
             }
             showError(err, "Fehler beim Aufladen");
         }
