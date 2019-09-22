@@ -371,7 +371,7 @@ class TransferLogic:
                 TransferLogic.__updateSenderMoney(sender, amount)
                 TransferLogic.__updateReceiverMoney(receiver, amount)
         except IntegrityError:
-            return list(Transfers.objects.filter(token=token))[0]
+            return list(Transfer.objects.filter(token=token))[0]
         return transfer_id
 
     @staticmethod
