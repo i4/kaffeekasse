@@ -7,6 +7,7 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth import logout as auth_logout
 from .backend import *
 from .store_exceptions import *
+from .stresstest import *
 
 
 # Rendered pages
@@ -183,13 +184,25 @@ def revert_transfer(request):
 # Test
 
 
+def stressTest(request):
+    nthreads = 10
+    barrier = Barrier(nthreads + 1) 
+    lock = Lock()
+
+    for i in range(0, nthreads):
+        st = StressTester(i + 1, 0, 4, barrier, lock, 60)
+        st.start()
+
+    tmp = input("press any key to start")
+    barrier.wait()
+
+
 def test(request):
-    return render(request, "test.html", {})
-
-
-def test2(request):
     transfers = TransferLogic.getFreuquentTransferTargeds(1)
     for transfer in transfers:
         print(transfer)
     print("n_transfers:", len(transfers))
+
+def test2(request):
+    pass
 

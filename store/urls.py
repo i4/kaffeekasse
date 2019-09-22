@@ -23,6 +23,6 @@ urlpatterns = [
     path('revert_transfer', views.revert_transfer, name="revert_transfer"),
 
     # Test
-    path('test', views.test, name="test"),
+    path('stresstest', views.stressTest, name="stresstest"),
     path('test2', views.test2, name="test2"),
 ]
