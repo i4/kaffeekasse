@@ -178,8 +178,8 @@
         return function() {
             tokenCall(token => {
                 $.ajax({
-                    url: "{% url "buy" %}",
-                    method: "DELETE",
+                    url: "{% url "buy_revert" %}",
+                    method: "POST",
                     data: {
                         purchase_id: id,
                         token: token

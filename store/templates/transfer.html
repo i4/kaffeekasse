@@ -240,8 +240,8 @@
         return function() {
             tokenCall(token => {
                 $.ajax({
-                    url: "{% url "transfer" %}",
-                    method: "DELETE",
+                    url: "{% url "transfer_revert" %}",
+                    method: "POST",
                     data: {
                         transfer_id: id,
                         token: token
