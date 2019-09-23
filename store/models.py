@@ -9,7 +9,7 @@ from .store_exceptions import *
 class User(AbstractBaseUser):
     firstname = models.TextField(null=False)
     surname = models.TextField(null=False)
-    nickname = models.TextField()
+    nickname = models.TextField(null=False, unique=True)
     money = models.DecimalField(max_digits=6, decimal_places=2)
     password = models.TextField(null=True)
     USERNAME_FIELD = 'id'
