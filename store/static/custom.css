@@ -16,12 +16,24 @@
     margin-bottom: 10px;
     overflow:scroll;
     -webkit-overflow-scrolling: touch;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+.scroll-custom{
+    max-height: 630px;
+    margin-bottom: 10px;
+    overflow:scroll;
+    -webkit-overflow-scrolling: touch;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 .scroll-sm{
     max-height: 283px;
     margin-bottom: 10px;
     overflow:scroll;
     -webkit-overflow-scrolling: touch;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 .font-xl{
     font-size: x-large;

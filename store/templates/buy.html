@@ -18,7 +18,7 @@
         {% comment %} Most bought products {% endcomment %}
         <div class="col-12 mb-4">
             <h4>H&auml;ufig gekauft</h4>
-            <ul class="list-group">
+            <ul class="list-group scroll-sm">
                 {% for product in most_bought %}
                 <button onclick="buy({{ product.product_id }})" type="button" class="list-group-item list-group-item-action">
                     <div class="d-flex w-100 justify-content-between">
@@ -34,7 +34,7 @@
             <h4>
                 Letzte Eink&auml;ufe
             </h4>
-            <ul class="list-group" id="recently_bought_list">
+            <ul class="list-group scroll-sm" id="recently_bought_list">
             </ul>
             <template id="recently_bought_annullable_template">
                 <label class="list-group-item">
@@ -70,7 +70,7 @@
     {% comment %} Drinks {% endcomment %}
     <div class="col-lg-4 col-md-6 col-12 mb-4">
         <h4>Getr&auml;nke</h4>
-        <ul class="list-group">
+        <ul class="list-group scroll-custom">
             {% for drink in drinks %}
                 <button onclick="buy({{ drink.id }})" type="button" class="list-group-item list-group-item-action">
                     <div class="d-flex w-100 justify-content-between">
@@ -84,7 +84,7 @@
     {% comment %} Snacks {% endcomment %}
     <div class="col-lg-4 col-md-6 col-12 mb-4">
         <h4>Snacks</h4>
-        <ul class="list-group">
+        <ul class="list-group scroll-custom">
             {% for candy in candies %}
                 <button onclick="buy({{ candy.id }})" type="button" class="list-group-item list-group-item-action">
                     <div class="d-flex w-100 justify-content-between">
