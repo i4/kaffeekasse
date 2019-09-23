@@ -12,6 +12,4 @@
 
 - nickname muss unique werden!
 
-- letzte Einkäufe als anwählbarer Button
-
-- Unterstützung von Sonderzeichen im Frontend
+- aufladen sollte immer klappen, sofern positiver Betrag kommt
