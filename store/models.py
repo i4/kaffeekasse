@@ -22,6 +22,7 @@ class User(AbstractBaseUser):
         self.save()
         return True
 
+
 class Product(models.Model):
     name = models.TextField(null=False)
     category = models.TextField(null=False)
@@ -33,6 +34,7 @@ class Product(models.Model):
         self.save()
         return True
 
+
 class Charge(models.Model):
     token = models.BigIntegerField(null=False, unique=True)
     user = models.ForeignKey('user', on_delete=models.CASCADE, null=False)
@@ -43,6 +45,7 @@ class Charge(models.Model):
     def annullate(self):
         self.annullated = True
         self.save()
+
 
 class Purchase(models.Model):
     token = models.BigIntegerField(null=False, unique=True)
@@ -57,6 +60,7 @@ class Purchase(models.Model):
         self.annullated = True
         self.save()
 
+
 class Transfer(models.Model):
     token = models.BigIntegerField(null=False, unique=True)
     sender = models.ForeignKey('user', on_delete=models.SET_NULL, null=True,
@@ -67,9 +71,15 @@ class Transfer(models.Model):
     amount = models.DecimalField(max_digits=6, decimal_places=2)
     annullated = models.BooleanField(null=False)
 
+    def annullate(self):
+        self.annullated = True
+        self.save()
+
+
 class Login(models.Model):
     time_stamp = models.DateTimeField(null=False, auto_now=True)
     user  = models.ForeignKey('user', on_delete=models.CASCADE, null=False)
+
 
 class Token(models.Model):
     token = models.BigIntegerField(unique=True, default=0)

@@ -388,4 +388,25 @@ class TransferLogic:
     def __updateReceiverMoney(receiver, amount):
         receiver.updateMoney(amount) 
 
+    @staticmethod
+    def annullateTransfer(transfer_id, token):
+        annullable_time = config['T_ANNULLABLE_TRANSFER_M']
+
+        # warning: summertime/wintertime currently is not respected in the following calculations. This should be
+        # implemented to avoid non-annullable transactions in the lost hour between summer- and wintertime
+        now = datetime.now()
+        time_limit = datetime.now() - timedelta(minutes=annullable_time)
+        timezone = pytz.timezone('Europe/Berlin')
+        time_limit = timezone.localize(time_limit)
+
+        transfer = list(Transfer.objects.filter(id=transfer_id))
+        if time_limit > transfer.time_stamp:
+            raise TransferNotAnnullable()
+
+        receiver = list(User.objects.filter(id=transfer.receiver))[0]
+        sender = list(User.objects.filter(id=transfer.user))[0]
+        with transaction.atomic():
+            transfer.annulate()
+            receiver.updateMoney((-1) * transfer.amount)
+            sender.updateMoney(transfer.amount)
 
