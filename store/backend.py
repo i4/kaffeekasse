@@ -185,10 +185,11 @@ class PurchaseLogic:
         product.updateStock(-1)
 
     """
-    Annulates a purchase that is not older than a given number of minutes. Returns False, if the purchase is too old,
-    returns True else.
-    @param purchase_id: the id of the purchase to annullate
-    @config-param annullable_time: depends on T_ANNULLABLE_PURCHASE_M
+    Try to annullate a purchase performed by a specified user. THis will only fail if the purchase was performed too
+    long ago.
+    @param purchase_id: id of the purchase to be annullated
+    @param token: token received by tokenLogics get_token
+    @conifg-param annullable_time: depends on T_ANNULLABLE_PURCHASE_M
     """
     @staticmethod
     def annullatePurchase(purchase_id, token):
@@ -277,10 +278,11 @@ class ChargeLogic:
         user.charge(amount)
 
     """
-    Annulates a charge that is not older than a given number of minutes. Returns False, if the purchase is too old,
-    returns True else.
-    @param charge_id: the id of the purchase to annullate
-    @config-param annullable_time: depends on T_ANNULLABLE_CHARGE_M
+    Try to annullate a charge performed by a specified user. This will fail if either the charge was performed too
+    long ago or the user has less money on it's account than the amount of money charged.
+    @param charge_id: id of the charge to be annullated
+    @param token: token received by tokenLogics get_token
+    @conifg-param annullable_time: depends on T_ANNULLABLE_CHARGE_M
     """
     @staticmethod
     def annullateCharge(charge_id, token):
@@ -394,6 +396,13 @@ class TransferLogic:
     def __updateReceiverMoney(receiver, amount):
         receiver.incrementMoney(amount)
 
+    """
+    Try to annullate a transfer performed by a specified user. This will fail if either the transfer was performed too
+    long ago or the receiver of the money has less money on it's account than the amount of money transfered.
+    @param transfer_id: id of the transfer to be annullated
+    @param token: token received by tokenLogics get_token
+    @conifg-param annullable_time: depends on T_ANNULLABLE_TRANSFERS_M
+    """
     @staticmethod
     def annullateTransfer(transfer_id, token):
         annullable_time = config['T_ANNULLABLE_TRANSFERS_M']
