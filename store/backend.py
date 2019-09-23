@@ -32,11 +32,14 @@ class UserLogic:
         return False
 
     """
-    Collects the users that have the most log ins on a client within a given time period. The rest of the list is filled
-    first with all other logins and than all users that have never logged in
-    Returns a list of dictionaries on succes: [{'user__nickname': '...', 'user__id': ..., 'total': ...}, ...]
-    @config-param max_users: the maximum of users that should be shown from the most recent ones. Depends on N_USERS_LOGIN
-    @config-param max_days: the maximum of days that have passed since the last login to count as recent login. Depends on T_USERS_LOGIN_D
+    Concatinates the results of three db-queries: 
+    First part of the list: a number of users specified in max_users, that have most logins within a number of days
+    specified in max_days.
+    Second part of the list: all users that are not included in the first part of the list and have at least one login
+    Third part of the list: all users that are not included in the firt both parts
+    Returned list: [{'user': ..., 'user_nickname': ..., 'total': ...}]
+    @config-param max_users: depends on N_USERS_LOGIN
+    @config-param max_days: depends on T_USERS_LGIN_D
     """
     @staticmethod
     def getFrequentUsersList():
@@ -76,11 +79,11 @@ class UserLogic:
 class ProductLogic:
 
     """
-    Collects the prodcuts that are most bought within a given time period.
-    Returns a list of dictionries on success: [{'product__name': '...', 'product_id': ...,  'product__price': ..., 'total': ...}, ...]
-    @conifg-param max_products: the maximum of products that should be shown. Depends on N_MOST_BOUGHT_PRODUCTS
-    @config-param max_days: the maximum of days that have passed since the last logisince the purchase. Depends on
-        T_MOST_BOUGHT_PRODUCTS_D
+    Result of a db query asking for a number of products specified in max_products that were most bought within the
+    last max_days number of days. 
+    Returned list: [{'product__name': ..., 'product_id': ..., 'product__price': ...,'total': ...}]
+    @config-param max_products: depends on N_MOST_BOUGHT_PRODUCTS
+    @config-param max_days: depends on T_MOST_BOUGHT_PRODUCTS_D
     """
     @staticmethod
     def getMostBoughtProductsList():
@@ -95,12 +98,14 @@ class ProductLogic:
         return list(products)
 
     """
-    Collects the products that are most bought by one user.
-    Returns a list of dictionaries on success: [{'product__name': '...', 'product_id': 41, 'product__price': ...,
-    'purchase__id': ...,  'annullated': ..., time_stamp': ..., 'annullable': ...}]
-    @param user_id: the id of the user
-    @config-param max_products: the maximum of products that should be shown, depends on N_LAST_BOUGHT_PRODUCTS
-    @config-param annullable_time: the maximum time in minutes a purchase can be annullated. Depends on T_ANNULLABLE_PURCHASE_M
+    Resulst of a db query asking for a number of products specified in max_products that were recently bought by a
+    specified user. The result also contains information on the state of a possible annullation of the products
+    purchase.
+    Returned list: [{'product__name': ..., 'product_id': ..., 'product__price': ..., 'time_stamp': ..., 'id': ...,
+    'annullated': ..., 'annullable': ...}]
+    @param user_id: id of the specified user
+    @config-param max_products: depends on N_ANNULLABLE_PURCHASE
+    @config-param annullable_time: depends on T_ANNULLABLE_PURCHASE_M
     """
     @staticmethod
     def getLastBoughtProductsList(user_id):
@@ -216,11 +221,12 @@ class PurchaseLogic:
 class ChargeLogic:
 
     """
-    Returns a list of the last charges of a specified user: [{'id': ..., 'amount': Decimal(...,...), 'annullated': ...,
-    'time_stamp': ..., 'annullable': ...}]
-    @param user_id: the id of the specified user
-    @config-param max_charges: Number of charges to be shown. Depends on N_LAST_CHARGES
-    @config-param annullable_time: time to annullate a charge. Depends on T_ANNULLABLE_CHARGE_M
+    Result of a db query asking for a number of charges specified in max_charges that were recently performed by a
+    specified user. The result also contains information on the state of a possible annullation of the charge.  
+    Returned list: [{'id': ..., 'amount': ..., 'annullated': ..., 'time_stamp': ..., 'annullable': ...}]
+    @param user_id: id of the specified user
+    @config-param max_charges: depends on N_ANNULLABLE_CHARGES
+    @config-param annullable_time: depends on T_ANNULLABLE_CHARGE_M
     """
     @staticmethod
     def getLastChargesList(user_id):
@@ -274,8 +280,7 @@ class ChargeLogic:
 
     @staticmethod
     def __updateUserMoney(user, amount):
-        print("amount:", amount)
-        user.charge(amount)
+        user.incrementMoney(amount)
 
     """
     Try to annullate a charge performed by a specified user. This will fail if either the charge was performed too
@@ -308,11 +313,11 @@ class ChargeLogic:
 
 class TransferLogic:
     """
-    Returns a list of users that are possible recepiants for a transfer of money. The list first containts receivers
-    that are often addressed by the specified user and after that users that have never been addressed.
-    @param user_id: the id of the user thats receivers should be shown
-    @config-param max_receivers: depends on N_TRANSFERS_RECEIVERS
-    """ 
+    Result of a db query asking for a number of receivers specified in max_receivers that are often addresed by a specified user
+    Returned list: [{'receiver': ..., 'nickname': ...}]
+    @param user_id: id of the specified user
+    @config-param max_receivers: depends on N_TRANSFER_RECEIVERS
+    """
     @staticmethod
     def getFreuquentTransferTargeds(user_id):
         max_receivers = config['N_TRANSFERS_RECEIVERS']
@@ -331,8 +336,11 @@ class TransferLogic:
         return list(transfers)
 
     """
-    Returns a list of last transfers of a specified user sorted by the time of the transfer.
-    @param user_id: the id of the user that is logged in and wants to send money
+    Result of a db query asking for a number of transfers that have been recently performed by a specified user. Also
+    returns information on the state of possible annullation of the transfer. 
+    Returned list: [{'id': ..., 'annullated': ..., 'amount': ..., 'receiver_nickname': ..., 'time_stamp': ...,
+    'annullable': ...}]
+    @param user_id: id of the specified user
     @config-param max_transfers: depends on N_LAST_TRANSFERS
     @config-param annullable_time: depends on T_ANNULLABLE_TRANSFERS_M
     """
