@@ -10,10 +10,11 @@ from .store_exceptions import *
 from .stresstest import *
 
 
-# Rendered pages
-
 @require_http_methods(["GET"])
 def index(request):
+    """
+    GET: Return the rendered index page. Users can login here.
+    """
     return render(request, "index.html", {"users": UserLogic.getFrequentUsersList()})
 
 
@@ -21,6 +22,12 @@ def index(request):
 @require_http_methods(["GET", "POST"])
 @csrf_protect
 def buy(request):
+    """
+    GET: Return the rendered page to buy products
+    POST: Puchase a product
+        @body_param product_id: int
+        @body_param token: int
+    """
     if request.method == 'GET':  # Return the rendered page
         return render(request, "buy.html", {
             "most_bought": ProductLogic.getMostBoughtProductsList(),
@@ -46,7 +53,12 @@ def buy(request):
 @login_required(login_url="index")
 @require_http_methods(["POST"])
 @csrf_protect
-def buy_revert(request):  # Revert a purchase
+def buy_revert(request):
+    """
+    POST: Revert a purchase.
+        @body_param token: int
+        @body_param purchase_id: int
+    """
     purchase_id = request.POST.get("purchase_id")
     token = request.POST.get("token")
     try:
@@ -60,11 +72,17 @@ def buy_revert(request):  # Revert a purchase
 @require_http_methods(["GET", "POST"])
 @csrf_protect
 def charge(request):
-    if request.method == "GET":  # Show charge page
+    """
+    GET: Show the rendered page to charge money.
+    POST: Charge money.
+        @body_param token: int
+        @body_param amount: float
+    """
+    if request.method == "GET":
         return render(request, "charge.html", {
             "recent_charges": ChargeLogic.getLastChargesList(request.user.id),
         })
-    elif request.method == "POST":  # Perform a charge
+    elif request.method == "POST":
         user_id = request.user.id
         token = request.POST.get("token")
         amount = request.POST.get("amount")
@@ -76,7 +94,12 @@ def charge(request):
 @login_required(login_url="index")
 @require_http_methods(["POST"])
 @csrf_protect
-def charge_revert(request):  # Revert a charge
+def charge_revert(request):
+    """
+    POST: Revert a charge.
+        @body_param charge_id: int
+        @body_param token: int
+    """
     charge_id = request.POST.get("charge_id")
     token = request.POST.get("token")
     try:
@@ -92,6 +115,13 @@ def charge_revert(request):  # Revert a charge
 @require_http_methods(["GET", "POST"])
 @csrf_protect
 def transfer(request):
+    """
+    GET: Return the rendered page to transfer money to another user.
+    POST: Transfer money to another user.
+        @body_param token: int
+        @body_param receiver: int
+        @body_param amount: float
+    """
     if request.method == "GET":
         return render(request, "transfer.html", {
             "users": TransferLogic.getFreuquentTransferTargeds(request.user.id),
@@ -111,6 +141,11 @@ def transfer(request):
 @require_http_methods(["POST"])
 @csrf_protect
 def transfer_revert(request):
+    """
+    POST: Revert a transfer.
+        @body_param transfer_id: int
+        @body_param token: int
+    """
     transfer_id = request.POST.get('transfer_id')
     token = request.POST.get('token')
     try:
@@ -127,6 +162,10 @@ def transfer_revert(request):
 @require_http_methods(["POST"])
 @csrf_protect
 def login(request):
+    """
+    Login an user.
+    @body_param user_id: int
+    """
     if (UserLogic.login(request, request.POST.get("user_id"))):
         return HttpResponseRedirect(reverse("buy"))
     else:
@@ -136,6 +175,9 @@ def login(request):
 @login_required(login_url="index")
 @csrf_protect
 def logout(request):
+    """
+    Logout the current user.
+    """
     auth_logout(request)
     return HttpResponseRedirect(reverse("index"))
 
@@ -146,6 +188,9 @@ def logout(request):
 @require_http_methods(["POST"])
 @csrf_protect
 def getToken(request):
+    """
+    Return a new token used for the at-most-once protocol.
+    """
     token = TokenLogic.get_token()
     return JsonResponse({"token": token})
 
