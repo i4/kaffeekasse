@@ -1,15 +1,10 @@
 - Sommerzeit vs. Winterzeit wird aktuell bei allen Funktionen, die mit Undo zu tun haben nicht nicht berücksichtigt.
 
-- Beim rueckgaengig machen von Aufladungen Guthaben pruefen
-
 - Decimals mit comma statt punkt. Mit LANGUAGE_CODE = 'de-de' loesbar, dann kann man aber die decimals nicht einfach im template ins javascript schreiben
-
-- Beim RÜckgängig-machen von Überweisungen: was ist wenn beim receiver das Abbuchen des Geldes zu einem Minusstand
-  führt? Dann würde die Überweisung nicht annullierbar sein. Hier benötigen wir vielleicht so etwas wie ein '-f' für
-  die updateMoney() im user model
 
 - Funktionsbeschreibungen anpassen
 
 - nickname muss unique werden!
 
 - aufladen sollte immer klappen, sofern positiver Betrag kommt
+
