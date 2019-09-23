@@ -7,3 +7,5 @@
 - Beim RÜckgängig-machen von Überweisungen: was ist wenn beim receiver das Abbuchen des Geldes zu einem Minusstand
   führt? Dann würde die Überweisung nicht annullierbar sein. Hier benötigen wir vielleicht so etwas wie ein '-f' für
   die updateMoney() im user model
+
+- Funktionsbeschreibungen anpassen
