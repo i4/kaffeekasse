@@ -18,9 +18,9 @@ def index(request):
 
 
 @login_required(login_url="index")
-@require_http_methods(["GET", "POST", "DELETE"])
+@require_http_methods(["GET", "POST"])
 def buy(request):
-    if request.method == 'GET':
+    if request.method == 'GET':  # Return the rendered page
         return render(request, "buy.html", {
             "most_bought": ProductLogic.getMostBoughtProductsList(),
             "recently_bought": ProductLogic.getLastBoughtProductsList(request.user.id),
@@ -28,7 +28,7 @@ def buy(request):
             "candies": Product.objects.filter(category="candy").order_by('name'),
             "products": Product.objects.all(),
         })
-    elif request.method == 'POST':
+    elif request.method == 'POST':  # Perform a purchase
         user_id = request.user.id
         product_id = request.POST.get("product_id")
         token = request.POST.get("token")
@@ -40,68 +40,81 @@ def buy(request):
             return JsonResponse({"purchase_id": purchase_return_tuple})
         else:
             return HttpResponse(status=400)
-    elif request.method == 'DELETE':
-        purchase_id = request.POST.get("purchase_id")
-        token = request.POST.get("token")
-        try:
-            PurchaseLogic.annullatePurchase(purchase_id, token)
-        except PurchaseNotAnnullable as exc:
-            return JsonResponse({'error': str(exc)}, status=400)
-        return HttpResponse(status=200)
-
 
 
 @login_required(login_url="index")
-@require_http_methods(["GET", "POST", "DELETE"])
+@require_http_methods(["POST"])
+def buy_revert(request):  # Revert a purchase
+    purchase_id = request.POST.get("purchase_id")
+    token = request.POST.get("token")
+    try:
+        PurchaseLogic.annullatePurchase(purchase_id, token)
+    except PurchaseNotAnnullable as exc:
+        return JsonResponse({'error': str(exc)}, status=400)
+    return HttpResponse(status=200)
+
+
+@login_required(login_url="index")
+@require_http_methods(["GET", "POST"])
 def charge(request):
-    if request.method == "GET":
+    if request.method == "GET":  # Show charge page
         return render(request, "charge.html", {
             "recent_charges": ChargeLogic.getLastChargesList(request.user.id),
         })
-    elif request.method == "POST":
+    elif request.method == "POST":  # Perform a charge
         user_id = request.user.id
         token = request.POST.get("token")
         amount = request.POST.get("amount")
         amount = Decimal(amount)
         charge_id = ChargeLogic.charge(user_id, amount, token)
         return JsonResponse({'charge_id': charge_id})
-    elif request.method == "DELETE":
-        charge_id = request.POST.get("charge_id")
-        token = request.POST.get("token")
-        try:
-            ChargeLogic.annullateCharge(charge_id, token)
-        except ChargeNotAnnullable as exc:
-            return JsonResponse({'error': str(exc)}, status=400)
-        except UserNotEnoughMoney as exc:
-            return JsonResponse({'error': str(exc)}, status=400)
-        return HttpResponse(status=200)
 
 
 @login_required(login_url="index")
-@require_http_methods(["GET", "POST", "DELETE"])
+@require_http_methods(["POST"])
+def charge_revert(request):  # Revert a charge
+    charge_id = request.POST.get("charge_id")
+    token = request.POST.get("token")
+    try:
+        ChargeLogic.annullateCharge(charge_id, token)
+    except ChargeNotAnnullable as exc:
+        return JsonResponse({'error': str(exc)}, status=400)
+    except UserNotEnoughMoney as exc:
+        return JsonResponse({'error': str(exc)}, status=400)
+    return HttpResponse(status=200)
+
+
+@login_required(login_url="index")
+@require_http_methods(["GET", "POST"])
 def transfer(request):
     if request.method == "GET":
         return render(request, "transfer.html", {
             "users": TransferLogic.getFreuquentTransferTargeds(request.user.id),
             "recent_transfers": TransferLogic.getLastTransfers(request.user.id),
-            })
+        })
     elif request.method == "POST":
         user_id = request.user.id
         token = request.POST.get("token")
         receiver_id = request.POST.get("receiver")
         amount = Decimal(request.POST.get("amount"))
-        transfer_id = TransferLogic.transfer(user_id, receiver_id, amount, token)
+        transfer_id = TransferLogic.transfer(
+            user_id, receiver_id, amount, token)
         return JsonResponse({"transfer_id": transfer_id})
-    elif request.method == "DELETE":
-        transfer_id = request.POST.get('transfer_id')
-        token = request.POST.get('token')
-        try:
-            TransferLogic.annullateTransfer(transfer_id, token)
-        except TransferNotAnnullable as exc:
-            return JsonResponse({'error': str(exc)}, status=400)
-        except UserNotEnoughMoney as exc:
-            return JsonResponse({'error': str(exc)}, status=400)
-        return HttpResponse(status=200)
+
+
+@login_required(login_url="index")
+@require_http_methods(["POST"])
+def transfer_revert(request):
+    transfer_id = request.POST.get('transfer_id')
+    token = request.POST.get('token')
+    try:
+        TransferLogic.annullateTransfer(transfer_id, token)
+    except TransferNotAnnullable as exc:
+        return JsonResponse({'error': str(exc)}, status=400)
+    except UserNotEnoughMoney as exc:
+        return JsonResponse({'error': str(exc)}, status=400)
+    return HttpResponse(status=200)
+
 
 # Authentication
 
@@ -121,7 +134,6 @@ def logout(request):
 
 
 # At-most-once token
-
 
 @login_required(login_url="index")
 @require_http_methods(["POST"])
@@ -152,6 +164,6 @@ def test(request):
         print(transfer)
     print("n_transfers:", len(transfers))
 
+
 def test2(request):
     pass
-
