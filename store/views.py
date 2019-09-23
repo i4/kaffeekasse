@@ -24,8 +24,8 @@ def buy(request):
     return render(request, "buy.html", {
         "most_bought": ProductLogic.getMostBoughtProductsList(),
         "recently_bought": ProductLogic.getLastBoughtProductsList(request.user.id),
-        "drinks": Product.objects.filter(category="drink"),
-        "candies": Product.objects.filter(category="candy"),
+        "drinks": Product.objects.filter(category="drink").order_by('name'),
+        "candies": Product.objects.filter(category="candy").order_by('name'),
         "products": Product.objects.all(),
     })
 
