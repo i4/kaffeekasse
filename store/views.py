@@ -42,52 +42,9 @@ def charge(request):
 @require_http_methods(["GET"])
 def transfer(request):
     return render(request, "transfer.html", {
-        # "users": TransferLogic.getFreuquentTransferTargeds(request.user.id),
-        "users": User.objects.all(),
+        "users": TransferLogic.getFreuquentTransferTargeds(request.user.id),
         "recent_transfers": TransferLogic.getLastTransfers(request.user.id),
         })
-    # dummyTransfers = [
-    #     {
-    #         "id": 1,
-    #         "annullated": True,
-    #         "annullable": False,
-    #         "amount": 12.4,
-    #         "receiver_nickname": "franz",
-    #     },
-    #     {
-    #         "id": 2,
-    #         "annullated": False,
-    #         "annullable": True,
-    #         "amount": 12.4,
-    #         "receiver_nickname": "hans"
-    #     },
-    #     {
-    #         "id": 3,
-    #         "annullated": True,
-    #         "annullable": False,
-    #         "amount": 12.4,
-    #         "receiver_nickname": "fritz"
-    #     },
-    #     {
-    #         "id": 4,
-    #         "annullated": True,
-    #         "annullable": False,
-    #         "amount": 11.4,
-    #         "receiver_nickname": "peter"
-    #     },
-    #     {
-    #         "id": 5,
-    #         "annullated": False,
-    #         "annullable": False,
-    #         "amount": 13.4,
-    #         "receiver_nickname": "scooter"
-    #     }
-    # ]
-    # return render(request, "transfer.html", {
-    #     "users": User.objects.all(),
-    #     "recent_transfers": dummyTransfers,
-    # })
-
 
 # Authentication
 
