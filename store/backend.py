@@ -313,18 +313,6 @@ class TransferLogic:
     @staticmethod
     def getFreuquentTransferTargeds(user_id):
         max_receivers = config['N_TRANSFERS_RECEIVERS']
-        # transfers = Transfer.objects.filter(sender=user_id).exclude(receiver=None).exclude(receiver=user_id)
-        # transfers = transfers.select_related('receiver')
-        # transfers = transfers.values('receiver', 'receiver__nickname')
-        # transfers = transfers.annotate(total=Count('receiver'))
-        # transfers = transfers.order_by('total').reverse().order_by('receiver__nickname')
-        # if max_receivers >= 0:
-        #     transfers = transfers[:max_receivers]
-
-        # for transfer in transfers:
-        #     transfer['id'] = transfer.pop('receiver')
-        #     transfer['nickname'] = transfer.pop('receiver__nickname')
-
         transfers = Transfer.objects.filter(sender=user_id).exclude(receiver=None)
         transfers = transfers.select_related('receiver')
         transfers = transfers.values('receiver', 'receiver__nickname')
