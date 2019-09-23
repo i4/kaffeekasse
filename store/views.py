@@ -19,6 +19,7 @@ def index(request):
 
 @login_required(login_url="index")
 @require_http_methods(["GET", "POST"])
+@csrf_protect
 def buy(request):
     if request.method == 'GET':  # Return the rendered page
         return render(request, "buy.html", {
@@ -44,6 +45,7 @@ def buy(request):
 
 @login_required(login_url="index")
 @require_http_methods(["POST"])
+@csrf_protect
 def buy_revert(request):  # Revert a purchase
     purchase_id = request.POST.get("purchase_id")
     token = request.POST.get("token")
@@ -56,6 +58,7 @@ def buy_revert(request):  # Revert a purchase
 
 @login_required(login_url="index")
 @require_http_methods(["GET", "POST"])
+@csrf_protect
 def charge(request):
     if request.method == "GET":  # Show charge page
         return render(request, "charge.html", {
@@ -72,6 +75,7 @@ def charge(request):
 
 @login_required(login_url="index")
 @require_http_methods(["POST"])
+@csrf_protect
 def charge_revert(request):  # Revert a charge
     charge_id = request.POST.get("charge_id")
     token = request.POST.get("token")
@@ -86,6 +90,7 @@ def charge_revert(request):  # Revert a charge
 
 @login_required(login_url="index")
 @require_http_methods(["GET", "POST"])
+@csrf_protect
 def transfer(request):
     if request.method == "GET":
         return render(request, "transfer.html", {
@@ -104,6 +109,7 @@ def transfer(request):
 
 @login_required(login_url="index")
 @require_http_methods(["POST"])
+@csrf_protect
 def transfer_revert(request):
     transfer_id = request.POST.get('transfer_id')
     token = request.POST.get('token')
@@ -128,6 +134,7 @@ def login(request):
 
 
 @login_required(login_url="index")
+@csrf_protect
 def logout(request):
     auth_logout(request)
     return HttpResponseRedirect(reverse("index"))
@@ -137,6 +144,7 @@ def logout(request):
 
 @login_required(login_url="index")
 @require_http_methods(["POST"])
+@csrf_protect
 def getToken(request):
     token = TokenLogic.get_token()
     return JsonResponse({"token": token})
