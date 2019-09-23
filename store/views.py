@@ -42,7 +42,7 @@ def buy(request):
         token = request.POST.get("token")
         try:
             purchase_return_tuple = PurchaseLogic().purchase(user_id, product_id, token)
-        except UserNotEnoughMoney as exc:
+        except (UserNotEnoughMoney, NegativeMoneyAmount) as exc:
             return JsonResponse({'error': str(exc)}, status=400)
         if purchase_return_tuple >= 0:
             return JsonResponse({"purchase_id": purchase_return_tuple})
@@ -63,7 +63,7 @@ def buy_revert(request):
     token = request.POST.get("token")
     try:
         PurchaseLogic.annullatePurchase(purchase_id, token)
-    except PurchaseNotAnnullable as exc:
+    except (PurchaseNotAnnullable, UserNotEnoughMoney) as exc:
         return JsonResponse({'error': str(exc)}, status=400)
     return HttpResponse(status=200)
 
@@ -87,7 +87,10 @@ def charge(request):
         token = request.POST.get("token")
         amount = request.POST.get("amount")
         amount = Decimal(amount)
-        charge_id = ChargeLogic.charge(user_id, amount, token)
+        try:
+            charge_id = ChargeLogic.charge(user_id, amount, token)
+        except NegativeMoneyAmount as exc:
+            return JsonResponse({'error': str(exc)}, status=400)
         return JsonResponse({'charge_id': charge_id})
 
 
@@ -104,9 +107,7 @@ def charge_revert(request):
     token = request.POST.get("token")
     try:
         ChargeLogic.annullateCharge(charge_id, token)
-    except ChargeNotAnnullable as exc:
-        return JsonResponse({'error': str(exc)}, status=400)
-    except UserNotEnoughMoney as exc:
+    except (ChargeNotAnnullable, UserNotEnoughMoney) as exc:
         return JsonResponse({'error': str(exc)}, status=400)
     return HttpResponse(status=200)
 
@@ -132,8 +133,11 @@ def transfer(request):
         token = request.POST.get("token")
         receiver_id = request.POST.get("receiver")
         amount = Decimal(request.POST.get("amount"))
-        transfer_id = TransferLogic.transfer(
-            user_id, receiver_id, amount, token)
+        try:
+            transfer_id = TransferLogic.transfer(
+                user_id, receiver_id, amount, token)
+        except (UserNotEnoughMoney, NegativeMoneyAmount) as exc:
+            return JsonResponse({'error': str(exc)}, status=400)
         return JsonResponse({"transfer_id": transfer_id})
 
 
@@ -150,9 +154,7 @@ def transfer_revert(request):
     token = request.POST.get('token')
     try:
         TransferLogic.annullateTransfer(transfer_id, token)
-    except TransferNotAnnullable as exc:
-        return JsonResponse({'error': str(exc)}, status=400)
-    except UserNotEnoughMoney as exc:
+    except (TransferNotAnnullable, UserNotEnoughMoney) as exc:
         return JsonResponse({'error': str(exc)}, status=400)
     return HttpResponse(status=200)
 
