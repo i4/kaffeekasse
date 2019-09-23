@@ -121,6 +121,8 @@ def revert_charge(request):
         ChargeLogic.annullateCharge(charge_id, token)
     except ChargeNotAnnullable as exc:
         return JsonResponse({'error': str(exc)}, status=400)
+    except UserNotEnoughMoney as exc:
+        return JsonResponse({'error': str(exc)}, status=400)
     return HttpResponse(status=200)
 
 
@@ -140,6 +142,8 @@ def revert_transfer(request):
     try:
         TransferLogic.annullateTransfer(transfer_id, token)
     except TransferNotAnnullable as exc:
+        return JsonResponse({'error': str(exc)}, status=400)
+    except UserNotEnoughMoney as exc:
         return JsonResponse({'error': str(exc)}, status=400)
     return HttpResponse(status=200)
 

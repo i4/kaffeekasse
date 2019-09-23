@@ -31,23 +31,29 @@ class StressTester(Thread):
                 product = self.products[randint(0, len(self.products) - 1)]
                 product = list(Product.objects.filter(id=product))[0]
                 try:
-                    self.buy(product.id)
+                    for i in range(0, randint(0, 10)):
+                        self.buy(product.id)
                 except UserNotEnoughMoney:
                     charge_amount = Decimal(str(randint(ceil(product.price), 50)) + "." + str(randint(0, 99)))
                     self.charge(charge_amount)
                     self.buy(product.id)
                     actions.append('charged {}'.format(charge_amount))
+                except IntegrityError:
+                    pass
                 actions.append('bought {} for {}'.format(product.name, product.price))
             else:
                 receiver = self.users[randint(0, len(self.users) - 1)]
                 transfer_amount = randint(1, floor(user.money))
                 try:
-                    self.transfer(receiver, transfer_amount)
+                    for i in range(0, randint(0, 10)):
+                        self.transfer(receiver, transfer_amount)
                 except UserNotEnoughMoney:
                     charge_amount = Decimal(str(randint(ceil(transfer_amount), 50)) + "." + str(randint(0, 99)))
                     self.charge(charge_amount)
                     self.transfer(receiver, randint(1, floor(user.money)))
                     actions.append('charged {}'.format(charge_amount))
+                except IntegrityError:
+                    pass
                 actions.append('transfered {} to {}'.format(transfer_amount, receiver))
         self.lock.acquire()
         print("Thread {} running for user '{}' (id: {}):".format(current_thread().ident, user.nickname, user.id), actions)
