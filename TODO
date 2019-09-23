@@ -9,3 +9,5 @@
   die updateMoney() im user model
 
 - Funktionsbeschreibungen anpassen
+
+- nickname muss unique werden!
