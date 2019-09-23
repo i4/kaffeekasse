@@ -135,7 +135,13 @@ def transfer_money(request):
 
 
 def revert_transfer(request):
-    return HttpResponse()
+    transfer_id = request.POST.get('transfer_id')
+    token = request.POST.get('token')
+    try:
+        TransferLogic.annullateTransfer(transfer_id, token)
+    except TransferNotAnnullable as exc:
+        return JsonResponse({'error': str(exc)}, status=400)
+    return HttpResponse(status=200)
 
 
 # Test
