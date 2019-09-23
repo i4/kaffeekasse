@@ -103,7 +103,7 @@
         <h4>Alle Empf&auml;nger</h4>
         <ul class="list-group scroll-lg">
             {% for user in users %}
-                <button onclick="transfer({{user.id}})" type="button" class="list-group-item list-group-item-action">{{ user.nickname }}</button>
+                <button onclick="transfer({{user.id}})" type="button" class="list-group-item list-group-item-action">{{ user.username }}</button>
             {% endfor %}
         </ul>
     </div>
@@ -150,7 +150,7 @@
     var users = {
         {% for user in users %}
             {{ user.id }}: {
-                nickname: "{{ user.nickname }}"
+                username: "{{ user.username }}"
             },
         {% endfor %}
     };
@@ -158,7 +158,7 @@
     var recent_transfers = [
         {% for transfer in recent_transfers %} {
             id: {{ transfer.id }},
-            receiver_nickname: "{{ transfer.receiver_nickname }}",
+            receiver_username: "{{ transfer.receiver_username }}",
             amount: {{ transfer.amount }},
             annullable: {% if transfer.annullable %} true {% else %} false {% endif %},
             annullated: {% if transfer.annullated %} true {% else %} false {% endif %},
@@ -224,7 +224,7 @@
         recent_transfers.unshift({
             id: transfer_id,
             amount: amount,
-            receiver_nickname: users[receiver_id].nickname,
+            receiver_username: users[receiver_id].username,
             annullable: true,
             annullated: false,
         });
@@ -279,7 +279,7 @@
             $("#recent_transfers").append(template);
 
             // Set template values
-            $("#recent_transfer_recipient").html(transfer.receiver_nickname).attr("id", "");
+            $("#recent_transfer_recipient").html(transfer.receiver_username).attr("id", "");
             $("#recent_transfer_amount").html(transfer.amount.toFixed(2).replace(".", ",") + "&euro;").attr("id", "");
             if (transfer.annullable) {
                 $("#recent_transfer_revert").click(revert(transfer.id)).attr("id", "");

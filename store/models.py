@@ -6,13 +6,15 @@ from decimal import Decimal
 from .store_exceptions import *
 
 
-class User(AbstractBaseUser):
-    firstname = models.TextField(null=False)
-    surname = models.TextField(null=False)
-    nickname = models.TextField(null=False, unique=True)
-    money = models.DecimalField(max_digits=6, decimal_places=2)
+class User(AbstractUser):
+    username = models.TextField(null=False, unique=True)
     password = models.TextField(null=True)
-    USERNAME_FIELD = 'id'
+    is_active = models.BooleanField(null=True)
+    last_login = models.DateTimeField(null=True)
+    date_joined = models.DateTimeField(null=True)
+    is_staff = models.BooleanField(null=True)
+    email = models.BooleanField(null=True)
+    money = models.DecimalField(max_digits=6, decimal_places=2, default=0.0)
 
     def incrementMoney(self, amount):
         if amount < 0:

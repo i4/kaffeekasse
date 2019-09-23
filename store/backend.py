@@ -39,7 +39,7 @@ class UserLogic:
         specified in max_days.
         Second part of the list: all users that are not included in the first part of the list and have at least one login
         Third part of the list: all users that are not included in the firt both parts
-        Returned list: [{'user': ..., 'user_nickname': ..., 'total': ...}]
+        Returned list: [{'user': ..., 'user_username': ..., 'total': ...}]
         @config-param max_users: depends on N_USERS_LOGIN
         @config-param max_days: depends on T_USERS_LGIN_D
         """
@@ -49,7 +49,7 @@ class UserLogic:
 
         recent_logins = Login.objects.filter(time_stamp__gte=time_stamp.strftime("%Y-%m-%d") + " 00:00")
         recent_logins = recent_logins.select_related('user')
-        recent_logins = recent_logins.values('user__nickname', 'user__id')
+        recent_logins = recent_logins.values('user__username', 'user__id')
         recent_logins = recent_logins.annotate(total=Count('user__id'))
         if max_users <= 0:
             recent_logins = recent_logins.order_by('total').reverse()
@@ -58,19 +58,19 @@ class UserLogic:
 
         old_logins = Login.objects.all()
         old_logins = old_logins.select_related('user')
-        old_logins = old_logins.values('user__nickname', 'user__id')
+        old_logins = old_logins.values('user__username', 'user__id')
         old_logins = old_logins.exclude(user__id__in=[d['user__id'] for d in list(recent_logins)])
         old_logins = old_logins.annotate(total=Count('user__id'))
         old_logins = old_logins.order_by('total').reverse()
         
         no_logins = User.objects.exclude(id__in=[d['user__id'] for d in list(recent_logins) + list(old_logins)])
-        no_logins = no_logins.order_by('nickname')
-        no_logins = no_logins.values('nickname', 'id')
+        no_logins = no_logins.order_by('username')
+        no_logins = no_logins.values('username', 'id')
         no_logins = no_logins.annotate(total=Count('id'))
 
         for login in no_logins:
             login['user__id'] = login.pop('id')
-            login['user__nickname'] = login.pop('nickname')
+            login['user__username'] = login.pop('username')
             login['total'] = 0
 
         return list(recent_logins) + list(old_logins) + list(no_logins)
@@ -316,22 +316,22 @@ class TransferLogic:
     def getFreuquentTransferTargeds(user_id):
         """
         Result of a db query asking for a number of receivers specified in max_receivers that are often addresed by a specified user
-        Returned list: [{'receiver': ..., 'nickname': ...}]
+        Returned list: [{'receiver': ..., 'username': ...}]
         @param user_id: id of the specified user
         @config-param max_receivers: depends on N_TRANSFER_RECEIVERS
         """
         max_receivers = config['N_TRANSFERS_RECEIVERS']
         transfers = Transfer.objects.filter(sender=user_id).exclude(receiver=None)
         transfers = transfers.select_related('receiver')
-        transfers = transfers.values('receiver', 'receiver__nickname')
+        transfers = transfers.values('receiver', 'receiver__username')
         transfers = transfers.annotate(total=Count('receiver'))
-        transfers = transfers.order_by('receiver__nickname').order_by('total').reverse()
+        transfers = transfers.order_by('receiver__username').order_by('total').reverse()
         if max_receivers >= 0:
             transfers = transfers[:max_receivers]
 
         for transfer in transfers:
             transfer['id'] = transfer.pop('receiver')
-            transfer['nickname'] = transfer.pop('receiver__nickname')
+            transfer['username'] = transfer.pop('receiver__username')
 
         return list(transfers)
 
@@ -340,7 +340,7 @@ class TransferLogic:
         """
         Result of a db query asking for a number of transfers that have been recently performed by a specified user. Also
         returns information on the state of possible annullation of the transfer. 
-        Returned list: [{'id': ..., 'annullated': ..., 'amount': ..., 'receiver_nickname': ..., 'time_stamp': ...,
+        Returned list: [{'id': ..., 'annullated': ..., 'amount': ..., 'receiver_username': ..., 'time_stamp': ...,
         'annullable': ...}]
         @param user_id: id of the specified user
         @config-param max_transfers: depends on N_LAST_TRANSFERS
@@ -352,7 +352,7 @@ class TransferLogic:
         transfers = Transfer.objects.filter(sender=user_id)
         transfers = transfers.select_related('receiver')
         transfers = transfers.order_by('time_stamp').reverse()[:max_transfers]
-        transfers = transfers.values('id', 'annullated', 'amount', 'receiver__nickname', 'time_stamp')
+        transfers = transfers.values('id', 'annullated', 'amount', 'receiver__username', 'time_stamp')
 
         # warning: summertime/wintertime currently is not respected in the following calculations. This should be
         # implemented to avoid non-annullable transactions in the lost hour between summer- and wintertime
@@ -366,7 +366,7 @@ class TransferLogic:
                 transfer.update({'annullable': False})
             else:
                 transfer.update({'annullable': True})
-            transfer['receiver_nickname'] = transfer.pop('receiver__nickname')
+            transfer['receiver_username'] = transfer.pop('receiver__username')
         
         return list(transfers)
 

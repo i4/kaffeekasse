@@ -55,7 +55,7 @@
     <div class="col-sm-6 col-12">
         <ul class="list-group scroll-lg">
             {% for user in users %}
-                <button onclick="loginUser({{ user.user__id }})" type="button" class="list-group-item list-group-item-action">{{ user.user__nickname }}</button>
+                <button onclick="loginUser({{ user.user__id }})" type="button" class="list-group-item list-group-item-action">{{ user.user__username }}</button>
             {% endfor %}
         </ul>
     </div>

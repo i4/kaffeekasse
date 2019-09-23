@@ -56,7 +56,7 @@ class StressTester(Thread):
                     pass
                 actions.append('transfered {} to {}'.format(transfer_amount, receiver))
         self.lock.acquire()
-        print("Thread {} running for user '{}' (id: {}):".format(current_thread().ident, user.nickname, user.id), actions)
+        print("Thread {} running for user '{}' (id: {}):".format(current_thread().ident, user.username, user.id), actions)
         self.lock.release()
 
 
