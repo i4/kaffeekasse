@@ -199,7 +199,7 @@
         // Send request to the server using a new token
         tokenCall(token => {
             $.ajax({
-                url: "{% url "transfer_money" %}",
+                url: "{% url "transfer" %}",
                 method: "POST",
                 data: {
                     amount: amount,
@@ -240,8 +240,8 @@
         return function() {
             tokenCall(token => {
                 $.ajax({
-                    url: "{% url "revert_transfer" %}",
-                    method: "POST",
+                    url: "{% url "transfer" %}",
+                    method: "DELETE",
                     data: {
                         transfer_id: id,
                         token: token
