@@ -14,14 +14,22 @@ class User(AbstractBaseUser):
     password = models.TextField(null=True)
     USERNAME_FIELD = 'id'
 
-    def updateMoney(self, amount):
-        if self.money + amount < 0:
-            raise UserNotEnoughMoney()
-            return False
+    def incrementMoney(self, amount):
+        if amount < 0:
+            raise NegativeMoneyAmount()
         self.money += Decimal(amount)
         self.save()
         return True
 
+    def decrementMoney(self, amount):
+        if amount < 0:
+            raise NegativeMoneyAmount()
+        if self.money - amount < 0:
+            raise UserNotEnoughMoney()
+        self.money -= Decimal(amount)
+        self.save()
+        return True
+        
 
 class Product(models.Model):
     name = models.TextField(null=False)

@@ -178,7 +178,7 @@ class PurchaseLogic:
 
     @staticmethod
     def __updateUserMoney(user, price):
-        return user.updateMoney(price * (-1))
+        user.decrementMoney(price)
 
     @staticmethod
     def __updateProductStock(product):
@@ -209,7 +209,7 @@ class PurchaseLogic:
         with transaction.atomic():
             user = list(User.objects.filter(id=purchase.user.id))[0]
             purchase.annullate()
-            user.updateMoney(purchase.price)
+            user.incrementMoney(purchaes.price)
 
 
 class ChargeLogic:
@@ -273,7 +273,8 @@ class ChargeLogic:
 
     @staticmethod
     def __updateUserMoney(user, amount):
-        user.updateMoney(amount)
+        print("amount:", amount)
+        user.charge(amount)
 
     """
     Annulates a charge that is not older than a given number of minutes. Returns False, if the purchase is too old,
@@ -300,7 +301,7 @@ class ChargeLogic:
         with transaction.atomic():
             user = list(User.objects.filter(id=charge.user.id))[0]
             charge.annullate()
-            user.updateMoney((-1) * charge.amount)
+            user.decrementMoney(charge.amount)
 
 
 class TransferLogic:
@@ -387,11 +388,11 @@ class TransferLogic:
 
     @staticmethod
     def __updateSenderMoney(sender, amount):
-        sender.updateMoney((-1) * amount)
+        sender.decrementMoney(amount)
 
     @staticmethod
     def __updateReceiverMoney(receiver, amount):
-        receiver.updateMoney(amount) 
+        receiver.incrementMoney(amount)
 
     @staticmethod
     def annullateTransfer(transfer_id, token):
@@ -412,6 +413,6 @@ class TransferLogic:
         sender = list(User.objects.filter(id=transfer.sender_id))[0]
         with transaction.atomic():
             transfer.annullate()
-            receiver.updateMoney((-1) * transfer.amount)
-            sender.updateMoney(transfer.amount)
+            receiver.decrementMoney(transfer.amount)
+            sender.incrementMoney(transfer.amount)
 

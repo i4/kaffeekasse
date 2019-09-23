@@ -3,6 +3,11 @@ class UserNotEnoughMoney(Exception):
         super().__init__("Guthaben reicht nicht aus!")
 
 
+class NegativeMoneyAmount(Exception):
+    def __init__(sefl):
+        super().__init__("Positiver Betrag erwartet!")
+
+
 class NotAnnullable(Exception):
     def __init__(self):
         super().__init__("Nicht annullierbar!")
@@ -16,6 +21,7 @@ class PurchaseNotAnnullable(Exception):
 class ChargeNotAnnullable(Exception):
     def __init__(self):
         super().__init__("Aufladung ist nicht annullierbar!")
+
 
 class TransferNotAnnullable(Exception):
     def __init__(self):
