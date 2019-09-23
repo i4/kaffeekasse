@@ -2,5 +2,3 @@
 
 - Decimals mit comma statt punkt. Mit LANGUAGE_CODE = 'de-de' loesbar, dann kann man aber die decimals nicht einfach im template ins javascript schreiben
 
-- nickname muss unique werden!
-
