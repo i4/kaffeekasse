@@ -64,8 +64,13 @@ class ToplevelProductCategories(IntEnum):
 
 
 class ProductCategory(models.Model):
-    toplevel = models.IntegerField(choices=[(tag, tag.value) for tag in UserIdentifierTypes])
+    toplevel = models.IntegerField(choices=[(tag, tag.value) for tag in ToplevelProductCategories])
     sublevel = models.TextField(null=False, unique=True)
+
+
+class ProductIdentifierTypes(IntEnum):
+    ID = 0
+    BARCODE = 1
 
 
 # class ProductIdentifier(models.Model):
