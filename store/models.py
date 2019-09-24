@@ -13,7 +13,7 @@ class User(AbstractUser):
     last_login = models.DateTimeField(null=True)
     date_joined = models.DateTimeField(null=True)
     is_staff = models.BooleanField(null=True)
-    email = models.BooleanField(null=True)
+    email = models.EmailField(null=True)
     money = models.DecimalField(max_digits=6, decimal_places=2, default=0.0)
 
     def incrementMoney(self, amount):
