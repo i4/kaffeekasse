@@ -5,6 +5,7 @@ from django.utils import timezone
 from decimal import Decimal
 from .store_exceptions import *
 from enum import IntEnum
+from django.utils.translation import gettext_lazy as _
 
 
 
@@ -13,7 +14,7 @@ class User(AbstractUser):
     password = models.CharField(max_length=128, null=True)
     email = models.EmailField(null=True, blank=True)
     money = models.DecimalField(max_digits=6, decimal_places=2, default=0.0)
-    pk_login_enabled = models.BooleanField(null=False, default=True)
+    pk_login_enabled = models.BooleanField(_("Login aus Auswahlliste"),null=False, default=True)
 
     def incrementMoney(self, amount):
         if amount < 0:
