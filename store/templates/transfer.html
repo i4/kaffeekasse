@@ -280,7 +280,7 @@
 
             // Set template values
             $("#recent_transfer_recipient").html(transfer.receiver_username).attr("id", "");
-            $("#recent_transfer_amount").html(transfer.amount.toFixed(2).replace(".", ",") + "&euro;").attr("id", "");
+            $("#recent_transfer_amount").html(transfer.amount.toFixed(2) + "&euro;").attr("id", "");
             if (transfer.annullable) {
                 $("#recent_transfer_revert").click(revert(transfer.id)).attr("id", "");
             }
