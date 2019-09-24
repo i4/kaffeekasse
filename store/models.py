@@ -32,9 +32,10 @@ class User(AbstractUser):
 
 
 class IdentifierTypes(IntEnum):
-    ID = 0
-    BARCOD = 1
-    RFID = 2
+    FASTLOGIN = 0
+    ID = 1
+    BARCOD = 2
+    RFID = 3
 
 
 class UserIdentifier(models.Model):
