@@ -30,3 +30,7 @@ class TransferNotAnnullable(Exception):
 class UserIdentifierNotExists(Exception):
     def __init__(self):
         super().__init__("Kein Nutzer unter der Identifikationsnummer registriert!")
+
+class DisabledIdentifier(Exception):
+    def __init__(self):
+        super().__init__("Gewünschte Art der Identifizierung vom Nutzer gesperrt!")

@@ -13,6 +13,7 @@ class User(AbstractUser):
     password = models.CharField(max_length=128, null=True)
     email = models.EmailField(null=True, blank=True)
     money = models.DecimalField(max_digits=6, decimal_places=2, default=0.0)
+    pk_login_enabled = models.BooleanField(null=False)
 
     def incrementMoney(self, amount):
         if amount < 0:
