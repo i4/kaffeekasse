@@ -43,7 +43,6 @@ class UserIdentifierTypes(IntEnum):
     def to_dict():
         return {tag.name: tag.value for tag in UserIdentifierTypes}
 
-
 class UserIdentifier(models.Model):
     user = models.ForeignKey('user', on_delete=models.CASCADE, null=False)
     identifier_type = models.IntegerField(choices=[(tag, tag.value) for tag in UserIdentifierTypes])
@@ -78,7 +77,7 @@ class ProductIdentifierTypes(IntEnum):
 
 
 class ProductIdentifier(models.Model):
-    product = models.ForeignObject('product', on_delete=models.CASCADE, null=False)
+    product = models.ForeignKey('product', on_delete=models.CASCADE, null=False)
     identifier_type = models.IntegerField(choices=[(tag, tag.value) for tag in ProductIdentifierTypes])
     identifier = models.TextField()
 
