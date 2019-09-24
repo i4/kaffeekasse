@@ -10,11 +10,12 @@
 <div class="row">
     {% comment %} Numpad {% endcomment %}
     <div class="col-lg-4 col-md-6 col-12 pb-4">
-        <form action="login" method="POST" id="loginForm">
+        <form action="{% url "login" %}" method="POST" id="loginForm">
+            <input type="hidden" name="identifier_type" value="{{ ident_types.ID }}"/>
             {% csrf_token %}
             <div class="btn-group-vertical" role="group">
                 <div class="btn-group">
-                    <input class="text-center form-control-lg mb-2" id="user_id" name="user_id">
+                    <input class="text-center form-control-lg mb-2" id="user_id" name="identifier">
                 </div>
                 <div class="btn-group">
                     <button type="button" class="btn btn-outline-secondary py-3"
@@ -45,7 +46,7 @@
                         onclick="document.getElementById('user_id').value=document.getElementById('user_id').value.slice(0, -1);">&lt;</button>
                     <button type="button" class="btn btn-outline-secondary py-3"
                         onclick="document.getElementById('user_id').value=document.getElementById('user_id').value + '0';">0</button>
-                    <button type="button" class="btn btn-i4 py-3" onclick="login()">Login</button>
+                    <button type="button" class="btn btn-i4 py-3" onclick="loginID()">Login</button>
                 </div>
             </div>
         </form>
@@ -54,9 +55,14 @@
     {% comment %} User list {% endcomment %}
     <div class="col-sm-6 col-12">
         <ul class="list-group scroll-lg">
-            {% for user in users %}
-                <button onclick="loginUser({{ user.user__id }})" type="button" class="list-group-item list-group-item-action">{{ user.user__username }}</button>
-            {% endfor %}
+            <form action="{% url "login" %}" method="POST" id="pk_login_form">
+                {% csrf_token %}
+                <input type="hidden" id="pk_field" name="identifier"/>
+                <input type="hidden" name="identifier_type" value="{{ ident_types.PRIMARYKEY }}">
+                {% for user in users %}
+                    <button onclick="loginPK({{ user.user__id }})" type="button" class="list-group-item list-group-item-action">{{ user.user__username }}</button>
+                {% endfor %}
+            </form>
         </ul>
     </div>
 </div>
@@ -64,22 +70,28 @@
 
 {% block script %}
     <script>
-        function loginUser(id) {
-            // Convert id to int
+        function loginPK(pk) {
+            pk = parseInt(pk);
+            if (isNaN(pk)) {
+                displayError("Nutzer ist fehlerhaft.");
+            }
+
+            $("#pk_field").val(pk);
+            $("#pk_login_form").submit();
+        }
+
+        function loginID() {
+            var id = $("#user_id").val();
+
             id = parseInt(id);
             if (isNaN(id)) {
                 $("#user_id").val(null);
+                displayError("ID ist ung&uuml;ltig.");
                 return;
             }
 
-            // Set user_id value in form and submit form
             $("#user_id").val(id);
             $("#loginForm").submit();
-        }
-
-        function login() {
-            var id = $("#user_id").val();
-            loginUser(id);
         }
     </script>
 {% endblock %}
