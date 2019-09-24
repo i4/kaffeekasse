@@ -2,3 +2,19 @@
 
 - Decimals mit comma statt punkt. Mit LANGUAGE_CODE = 'de-de' loesbar, dann kann man aber die decimals nicht einfach im template ins javascript schreiben
 
+- new field: darf einzahlen
+
+- subkategoriesystem: zuerst: Wahl Kategorie -> Auswahl Produkt (hp)
+	-> Getränken / Snacks als Oberkategorie lassen und dann differenzieren
+
+- hide-feature für login-screen
+
+- Klasse, die alle IDs eines users gespeichert hat (kennung, rfid, sth) (hp)
+
+- Klasse, die alle Barcodes eines Products speichert (mehrere, weil ein Produkt mehrere Barcodes haben kann) (hp)
+
+- Produkt im Admin-Interface anlegen 
+
+- Überweisungen und Einzahlungen im Admin-Interface (lp)
+
+- rfid (lp)
