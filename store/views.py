@@ -171,10 +171,14 @@ def login(request):
     Login an user.
     @body_param user_id: int
     """
-    if (UserLogic.login(request, request.POST.get("user_id"))):
-        return HttpResponseRedirect(reverse("buy"))
-    else:
-        return HttpResponseRedirect("/store/")
+    identifier = request.POST.get('identifier')
+    ident_type = request.POST.get('identifier_type')
+    try:
+        UserLogic.login(request, identifier, ident_type)
+    except Exception:  # TODO: Specify exceptions
+        return HttpResponseRedirect(reverse("index"))
+
+    return HttpResponseRedirect(reverse("buy"))
 
 
 @login_required(login_url="index")
