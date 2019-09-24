@@ -26,3 +26,7 @@ class ChargeNotAnnullable(Exception):
 class TransferNotAnnullable(Exception):
     def __init__(self):
         super().__init__("Überweisung ist nicht annullierbar!")
+
+class UserIdentifierNotExists(Exception):
+    def __init__(self):
+        super().__init__("Kein Nutzer unter der Identifikationsnummer registriert!")

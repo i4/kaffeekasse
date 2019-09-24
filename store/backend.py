@@ -12,24 +12,31 @@ import pytz
 class UserLogic:
 
     @staticmethod
-    def login(request, user_id):
+    def __getUser(identifier, identifier_type):
+        idf = UserIdentifier.objects.filter(identifier=identifier, identifier_type=identifier_type)
+        idf = idf.select_related('user')
+        idf = list(idf)
+        if len(idf) == 0:
+            raise UserIdentifierNotExists()
+        idf = idf[0]
+        user = idf.user
+        return user
+
+
+    @staticmethod
+    def login(request, identifier, identifier_type):
         """
         Basic login function. On success the user is logged in and True is returned and a login-tuple is created. On Failure nothing happens and False is
         returned.
         @param request: the request object
         @param user_id: id of the user that should log in
         """
-        try:
-            user = User.objects.get(pk=user_id)
-        except User.DoesNotExist:
-            user = None
-        if user is not None:
-            with transaction.atomic():
-                login_tuple = Login(user=user)
-                login_tuple.save()
-                login(request, user)
-                return True
-        return False
+        user = UserLogic.__getUser(identifier, identifier_type)
+        with transaction.atomic():
+            login_tuple = Login(user=user)
+            login_tuple.save()
+            login(request, user)
+        
 
     @staticmethod
     def getFrequentUsersList():

@@ -4,6 +4,14 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.utils import timezone
 from decimal import Decimal
 from .store_exceptions import *
+from enum import IntEnum
+
+
+class UserIdentfierTypes(IntEnum):
+    ID = 0
+    BARCOD = 1
+    RFID = 2
+
 
 
 class User(AbstractUser):
@@ -29,6 +37,12 @@ class User(AbstractUser):
         return True
 
 
+class UserIdentifier(models.Model):
+    user = models.ForeignKey('user', on_delete=models.CASCADE, null=False)
+    identifier_type = models.IntegerField(choices=[(tag, tag.value) for tag in UserIdentfierTypes])
+    identifier = models.TextField(unique=True)
+
+
 class Product(models.Model):
     name = models.TextField(null=False)
     category = models.TextField(null=False)
@@ -39,6 +53,11 @@ class Product(models.Model):
         self.stock += amount
         self.save()
         return True
+
+
+# class ProductIdentifier(models.Model):
+#     product = models.ForeignObject('product', on_delete=models.CASCADE, null=False)
+#     identifier = models.TextField(unique=True)  
 
 
 class Charge(models.Model):
