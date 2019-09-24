@@ -39,6 +39,10 @@ class UserIdentifierTypes(IntEnum):
     BARCODE = 2
     RFID = 3
 
+    @staticmethod
+    def to_dict():
+        return {tag.name: tag.value for tag in UserIdentifierTypes}
+
 
 class UserIdentifier(models.Model):
     user = models.ForeignKey('user', on_delete=models.CASCADE, null=False)
