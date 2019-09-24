@@ -7,12 +7,6 @@ from .store_exceptions import *
 from enum import IntEnum
 
 
-class UserIdentfierTypes(IntEnum):
-    ID = 0
-    BARCOD = 1
-    RFID = 2
-
-
 
 class User(AbstractUser):
     username = models.CharField(max_length=128, unique=True)
@@ -38,8 +32,13 @@ class User(AbstractUser):
 
 
 class UserIdentifier(models.Model):
+    class IdentfierTypes(IntEnum):
+        ID = 0
+        BARCOD = 1
+        RFID = 2
+
     user = models.ForeignKey('user', on_delete=models.CASCADE, null=False)
-    identifier_type = models.IntegerField(choices=[(tag, tag.value) for tag in UserIdentfierTypes])
+    identifier_type = models.IntegerField(choices=[(tag, tag.value) for tag in IdentfierTypes])
     identifier = models.TextField(unique=True)
 
 
