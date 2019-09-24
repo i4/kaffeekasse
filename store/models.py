@@ -33,7 +33,7 @@ class User(AbstractUser):
         return True
 
 
-class IdentifierTypes(IntEnum):
+class UserIdentifierTypes(IntEnum):
     PRIMARYKEY = 0
     ID = 1
     BARCODE = 2
@@ -42,7 +42,7 @@ class IdentifierTypes(IntEnum):
 
 class UserIdentifier(models.Model):
     user = models.ForeignKey('user', on_delete=models.CASCADE, null=False)
-    identifier_type = models.IntegerField(choices=[(tag, tag.value) for tag in IdentifierTypes])
+    identifier_type = models.IntegerField(choices=[(tag, tag.value) for tag in UserIdentifierTypes])
     identifier = models.TextField(unique=True)
 
 
@@ -64,7 +64,7 @@ class ToplevelProductCategories(IntEnum):
 
 
 class ProductCategory(models.Model):
-    toplevel = models.IntegerField(choices=[(tag, tag.value) for tag in IdentifierTypes])
+    toplevel = models.IntegerField(choices=[(tag, tag.value) for tag in UserIdentifierTypes])
     sublevel = models.TextField(null=False, unique=True)
 
 
