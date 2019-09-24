@@ -34,7 +34,7 @@ class User(AbstractUser):
 class IdentifierTypes(IntEnum):
     PRIMARYKEY = 0
     ID = 1
-    BARCOD = 2
+    BARCODE = 2
     RFID = 3
 
 
@@ -58,7 +58,7 @@ class Product(models.Model):
 
 # class ProductIdentifier(models.Model):
 #     product = models.ForeignObject('product', on_delete=models.CASCADE, null=False)
-#     identifier = models.TextField(unique=True)  
+#     identifier = models.TextField(unique=True)
 
 
 class Charge(models.Model):
