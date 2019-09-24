@@ -175,7 +175,7 @@ def login(request):
     ident_type = request.POST.get('identifier_type')
     try:
         UserLogic.login(request, identifier, ident_type)
-    except Exception:  # TODO: Specify exceptions
+    except (UserIdentifierNotExists, DisabledIdentifier): 
         return HttpResponseRedirect(reverse("index"))
 
     return HttpResponseRedirect(reverse("buy"))
