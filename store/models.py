@@ -13,7 +13,7 @@ class User(AbstractUser):
     password = models.CharField(max_length=128, null=True)
     email = models.EmailField(null=True, blank=True)
     money = models.DecimalField(max_digits=6, decimal_places=2, default=0.0)
-    pk_login_enabled = models.BooleanField(null=False)
+    pk_login_enabled = models.BooleanField(null=False, default=True)
 
     def incrementMoney(self, amount):
         if amount < 0:
@@ -47,7 +47,7 @@ class UserIdentifier(models.Model):
 
 class Product(models.Model):
     name = models.TextField(null=False)
-    category = models.TextField(null=False)
+    category = models.ForeignKey('productcategory', on_delete=models.CASCADE)
     stock = models.IntegerField(null=False)
     price = models.DecimalField(max_digits=6, decimal_places=2)
 
@@ -55,6 +55,16 @@ class Product(models.Model):
         self.stock += amount
         self.save()
         return True
+
+
+class ToplevelProductCategories(IntEnum):
+    SNACK = 0
+    GETRAENK = 1
+
+
+class ProductCategory(models.Model):
+    toplevel = models.IntegerField(choices=[(tag, tag.value) for tag in IdentifierTypes])
+    sublevel = models.TextField(null=False, unique=True)
 
 
 # class ProductIdentifier(models.Model):
