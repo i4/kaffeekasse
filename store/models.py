@@ -9,7 +9,7 @@ from .store_exceptions import *
 class User(AbstractUser):
     username = models.TextField(null=False, unique=True)
     password = models.TextField(null=True)
-    email = None
+    email = models.EmailField(null=True, blank=True)
     money = models.DecimalField(max_digits=6, decimal_places=2, default=0.0)
 
     def incrementMoney(self, amount):
