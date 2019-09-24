@@ -32,13 +32,13 @@ class User(AbstractUser):
 
 
 class UserIdentifier(models.Model):
-    class IdentfierTypes(IntEnum):
+    class IdentifierTypes(IntEnum):
         ID = 0
         BARCOD = 1
         RFID = 2
 
     user = models.ForeignKey('user', on_delete=models.CASCADE, null=False)
-    identifier_type = models.IntegerField(choices=[(tag, tag.value) for tag in IdentfierTypes])
+    identifier_type = models.IntegerField(choices=[(tag, tag.value) for tag in IdentifierTypes])
     identifier = models.TextField(unique=True)
 
 
