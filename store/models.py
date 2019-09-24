@@ -32,7 +32,7 @@ class User(AbstractUser):
 
 
 class IdentifierTypes(IntEnum):
-    FASTLOGIN = 0
+    PRIMARYKEY = 0
     ID = 1
     BARCOD = 2
     RFID = 3
