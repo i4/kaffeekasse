@@ -7,8 +7,8 @@ from .store_exceptions import *
 
 
 class User(AbstractUser):
-    username = models.TextField(null=False, unique=True)
-    password = models.TextField(null=True)
+    username = models.CharField(max_length=128, unique=True)
+    password = models.CharField(max_length=128, null=True)
     email = models.EmailField(null=True, blank=True)
     money = models.DecimalField(max_digits=6, decimal_places=2, default=0.0)
 
@@ -27,7 +27,7 @@ class User(AbstractUser):
         self.money -= Decimal(amount)
         self.save()
         return True
-        
+
 
 class Product(models.Model):
     name = models.TextField(null=False)
@@ -46,7 +46,7 @@ class Charge(models.Model):
     user = models.ForeignKey('user', on_delete=models.CASCADE, null=False)
     time_stamp = models.DateTimeField(null=False, auto_now=True)
     amount = models.DecimalField(max_digits=6, decimal_places=2)
-    annullated = models.BooleanField(null=False) 
+    annullated = models.BooleanField(null=False)
 
     def annullate(self):
         self.annullated = True

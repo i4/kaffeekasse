@@ -2,13 +2,13 @@
 
 {% block navbar_items %}
 <li class="nav-item">
-    <a class="nav-link font-xl" href="/store/buy">Shop</a>
+    <a class="nav-link font-xl" href="{% url "buy" %}">Shop</a>
 </li>
 <li class="nav-item active">
     <a class="nav-link font-xl" href="#">Aufladen</a>
 </li>
 <li class="nav-item">
-    <a class="nav-link font-xl" href="/store/transfer">Überweisen</a>
+    <a class="nav-link font-xl" href="{% url "transfer" %}">Überweisen</a>
 </li>
 {% endblock %}
 
@@ -202,7 +202,7 @@
             $("#recent_charges").append(template);
 
             // Set template values
-            $("#recent_charge_amount").html(charge.amount.toFixed(2).replace(".", ",") + "&euro;").attr("id", "");
+            $("#recent_charge_amount").html(charge.amount.toFixed(2) + "&euro;").attr("id", "");
             if (charge.annullable) {
                 $("#recent_charge_revert").click(revert(charge.id)).attr("id", "");
             }

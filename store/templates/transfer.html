@@ -2,10 +2,10 @@
 
 {% block navbar_items %}
 <li class="nav-item">
-    <a class="nav-link font-xl" href="/store/buy">Shop</a>
+    <a class="nav-link font-xl" href="{% url "buy" %}">Shop</a>
 </li>
 <li class="nav-item">
-    <a class="nav-link font-xl" href="/store/charge">Aufladen</a>
+    <a class="nav-link font-xl" href="{% url "charge" %}">Aufladen</a>
 </li>
 <li class="nav-item active">
     <a class="nav-link font-xl" href="#">Überweisen</a>
@@ -280,7 +280,7 @@
 
             // Set template values
             $("#recent_transfer_recipient").html(transfer.receiver_username).attr("id", "");
-            $("#recent_transfer_amount").html(transfer.amount.toFixed(2).replace(".", ",") + "&euro;").attr("id", "");
+            $("#recent_transfer_amount").html(transfer.amount.toFixed(2) + "&euro;").attr("id", "");
             if (transfer.annullable) {
                 $("#recent_transfer_revert").click(revert(transfer.id)).attr("id", "");
             }
