@@ -20,6 +20,8 @@ class UserLogic:
             raise UserIdentifierNotExists()
         idf = idf[0]
         user = idf.user
+        if not user.pk_login_enabled:
+            raise DisabledIdentifier()
         return user
 
 
@@ -54,7 +56,7 @@ class UserLogic:
         max_days = config['T_USERS_LOGIN_D']
         time_stamp = date.today() - timedelta(days=max_days)
 
-        recent_logins = Login.objects.filter(time_stamp__gte=time_stamp.strftime("%Y-%m-%d") + " 00:00")
+        recent_logins = Login.objects.filter.filter(pk_login_enabled=True).(time_stamp__gte=time_stamp.strftime("%Y-%m-%d") + " 00:00")
         recent_logins = recent_logins.select_related('user')
         recent_logins = recent_logins.values('user__username', 'user__id')
         recent_logins = recent_logins.annotate(total=Count('user__id'))
@@ -63,14 +65,14 @@ class UserLogic:
         else:
             recent_logins = recent_logins.order_by('total').reverse()[:max_users]
 
-        old_logins = Login.objects.all()
+        old_logins = Login.objects.filter(pk_login_enabled=True)
         old_logins = old_logins.select_related('user')
         old_logins = old_logins.values('user__username', 'user__id')
         old_logins = old_logins.exclude(user__id__in=[d['user__id'] for d in list(recent_logins)])
         old_logins = old_logins.annotate(total=Count('user__id'))
         old_logins = old_logins.order_by('total').reverse()
         
-        no_logins = User.objects.exclude(id__in=[d['user__id'] for d in list(recent_logins) + list(old_logins)])
+        no_logins = User.objects.filter(pk_login_enabled=True).exclude(id__in=[d['user__id'] for d in list(recent_logins) + list(old_logins)])
         no_logins = no_logins.order_by('username')
         no_logins = no_logins.values('username', 'id')
         no_logins = no_logins.annotate(total=Count('id'))
