@@ -88,6 +88,18 @@ class UserLogic:
     
 
 class ProductLogic:
+    
+    @staticmethod
+    def __getProduct(identifer, identifier_type):
+        idf = ProductIdentifier.objects.identifier_type(identifier_type=identifier_type).filter(identifer=identifer)
+        idf = idf.select_related('product')
+        idf = list(idf)
+        if len(idf) == 0:
+            raise ProductIdentifierNotExists()
+        idf = idf[0]
+        product = idf.product
+        return product.id
+
 
     @staticmethod
     def getMostBoughtProductsList():

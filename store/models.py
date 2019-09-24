@@ -47,7 +47,7 @@ class UserIdentifierTypes(IntEnum):
 class UserIdentifier(models.Model):
     user = models.ForeignKey('user', on_delete=models.CASCADE, null=False)
     identifier_type = models.IntegerField(choices=[(tag, tag.value) for tag in UserIdentifierTypes])
-    identifier = models.TextField(unique=True)
+    identifier = models.TextField()
 
 
 class Product(models.Model):
@@ -77,9 +77,10 @@ class ProductIdentifierTypes(IntEnum):
     BARCODE = 1
 
 
-# class ProductIdentifier(models.Model):
-#     product = models.ForeignObject('product', on_delete=models.CASCADE, null=False)
-#     identifier = models.TextField(unique=True)
+class ProductIdentifier(models.Model):
+    product = models.ForeignObject('product', on_delete=models.CASCADE, null=False)
+    identifier_type = models.IntegerField(choices=[(tag, tag.value) for tag in ProductIdentifierTypes])
+    identifier = models.TextField()
 
 
 class Charge(models.Model):
