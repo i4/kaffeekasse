@@ -12,7 +12,7 @@ import pytz
 class UserLogic:
 
     @staticmethod
-    def __getUser(identifier, identifier_type):
+    def getUser(identifier, identifier_type):
         idf = UserIdentifier.objects.filter(identifier=identifier, identifier_type=identifier_type)
         idf = idf.select_related('user')
         idf = list(idf)
@@ -33,7 +33,7 @@ class UserLogic:
         @param request: the request object
         @param user_id: id of the user that should log in
         """
-        user = UserLogic.__getUser(identifier, identifier_type)
+        user = UserLogic.getUser(identifier, identifier_type)
         with transaction.atomic():
             login_tuple = Login(user=user)
             login_tuple.save()
@@ -90,7 +90,7 @@ class UserLogic:
 class ProductLogic:
     
     @staticmethod
-    def __getProduct(identifer, identifier_type):
+    def getProduct(identifer, identifier_type):
         idf = ProductIdentifier.objects.identifier_type(identifier_type=identifier_type).filter(identifer=identifer)
         idf = idf.select_related('product')
         idf = list(idf)
@@ -173,7 +173,7 @@ class TokenLogic:
 class PurchaseLogic:
 
     @staticmethod
-    def purchase(user_id, product_id, token):
+    def purchase(user_id, product_identifier, product_identifier_type, token):
         """
         Execute the purchase logic. Three db parties are included:
         *)  Purchase: include a new purchase-tuple with the user_id, product_id, the current time, the current products price
@@ -187,11 +187,13 @@ class PurchaseLogic:
         try:
             with transaction.atomic():
                 user = list(User.objects.filter(id=user_id))[0]
-                product = list(Product.objects.filter(id=product_id))[0]
+                product = ProductLogic.getProduct(product_identifier, product_identifier_type)
                 purchase_create_return_tuple = PurchaseLogic.__createPurchaseTuple(user, product, token)
                 PurchaseLogic.__updateUserMoney(user, product.price)
                 PurchaseLogic.__updateProductStock(product)
         except ObjectDoesNotExist:
+            return -1
+        except ProductIdentifierNotExists:
             return -1
         except IntegrityError:
             purchase = list(Purchase.objects.filter(token=token))[0]
