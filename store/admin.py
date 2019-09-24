@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User
+from .models import User, Product
 
 
 @admin.register(User)
@@ -12,3 +12,8 @@ class UserAdmin(admin.ModelAdmin):
         }),
     )
     pass
+
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ('name', 'price', 'category')
+    fields = ('name', 'price', 'category')
