@@ -156,6 +156,26 @@ class ProductLogic:
 
         return list(products)
 
+    @staticmethod
+    def getProductByCategory(category):
+        products = ProductCategory.objects.filter(toplevel=category)
+        products = products.select_related('product')
+        products = products.values('product__id, product__name, sublevel, product__price')
+        products = products.sort_by('sublevel')
+        for product in products:
+            product['id'] = candy.pop('product__id')
+            product['name'] = candy.pop('product__name')
+            product['price'] = candy.pop('product__price')
+            product['category'] = candy.pop('sublevel')
+        return products
+
+    def getCandies():
+        return getProductByCategory(ToplevelProductCategories.SNACK)
+
+    @staticmethod
+    def getDrinks():
+        return getProductByCategory(ToplevelProductCategories.GETRAENK)
+
 
 class TokenLogic:
 
