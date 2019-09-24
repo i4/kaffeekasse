@@ -8,7 +8,7 @@ class UserAdmin(admin.ModelAdmin):
                     'last_name', 'is_active', 'is_staff', 'money')
     fieldsets = (
         (None, {
-            'fields': ('username', 'first_name', 'last_name')
+            'fields': ('username', 'first_name', 'last_name', 'pk_login_enabled')
         }),
     )
     pass
