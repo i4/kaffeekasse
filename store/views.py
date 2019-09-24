@@ -169,7 +169,8 @@ def transfer_revert(request):
 def login(request):
     """
     Login an user.
-    @body_param user_id: int
+    @body_param identifier: string/int
+    @body_param identifier_type: int
     """
     identifier = request.POST.get('identifier')
     ident_type = request.POST.get('identifier_type')
