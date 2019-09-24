@@ -1,5 +1,5 @@
 from django.shortcuts import render, reverse
-from .models import User, Product
+from .models import User, Product, UserIdentifierTypes
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import login_required
@@ -15,7 +15,10 @@ def index(request):
     """
     GET: Return the rendered index page. Users can login here.
     """
-    return render(request, "index.html", {"users": UserLogic.getFrequentUsersList()})
+    return render(request, "index.html", {
+        "users": UserLogic.getFrequentUsersList(),
+        "ident_types": UserIdentifierTypes.to_dict(),
+    })
 
 
 @login_required(login_url="index")
