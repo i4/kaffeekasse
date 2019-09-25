@@ -38,12 +38,12 @@ class UserLogic:
             login_tuple = Login(user=user)
             login_tuple.save()
             login(request, user)
-        
+
 
     @staticmethod
     def getFrequentUsersList():
         """
-        Concatinates the results of three db-queries: 
+        Concatinates the results of three db-queries:
         First part of the list: a number of users specified in max_users, that have most logins within a number of days
         specified in max_days.
         Second part of the list: all users that are not included in the first part of the list and have at least one login
@@ -73,7 +73,7 @@ class UserLogic:
         old_logins = old_logins.exclude(user__id__in=[d['user__id'] for d in list(recent_logins)])
         old_logins = old_logins.annotate(total=Count('user__id'))
         old_logins = old_logins.order_by('total').reverse()
-        
+
         no_logins = User.objects.filter(pk_login_enabled=True).exclude(id__in=[d['user__id'] for d in list(recent_logins) + list(old_logins)])
         no_logins = no_logins.order_by('username')
         no_logins = no_logins.values('username', 'id')
@@ -85,10 +85,10 @@ class UserLogic:
             login['total'] = 0
 
         return list(recent_logins) + list(old_logins) + list(no_logins)
-    
+
 
 class ProductLogic:
-    
+
     @staticmethod
     def getProduct(identifer, identifier_type):
         idf = ProductIdentifier.objects.identifier_type(identifier_type=identifier_type).filter(identifer=identifer)
@@ -105,7 +105,7 @@ class ProductLogic:
     def getMostBoughtProductsList():
         """
         Result of a db query asking for a number of products specified in max_products that were most bought within the
-        last max_days number of days. 
+        last max_days number of days.
         Returned list: [{'product__name': ..., 'product_id': ..., 'product__price': ...,'total': ...}]
         @config-param max_products: depends on N_MOST_BOUGHT_PRODUCTS
         @config-param max_days: depends on T_MOST_BOUGHT_PRODUCTS_D
@@ -158,23 +158,37 @@ class ProductLogic:
 
     @staticmethod
     def getProductByCategory(category):
-        products = ProductCategory.objects.filter(toplevel=category)
-        products = products.select_related('product')
-        products = products.values('product__id, product__name, sublevel, product__price')
-        products = products.sort_by('sublevel')
-        for product in products:
-            product['id'] = candy.pop('product__id')
-            product['name'] = candy.pop('product__name')
-            product['price'] = candy.pop('product__price')
-            product['category'] = candy.pop('sublevel')
+        """
+        Returns a dict with a key for each sublevel category containing all products, where the toplevel category equals to the input category
+        @param category: Toplevel category (Use enum ToplevelProductCategories)
+        """
+        # Get sublevels
+        sublevels = ProductCategory.objects.filter(toplevel=category).values('sublevel')
+
+        # Get product
+        products = {}
+        for sublevel in sublevels:
+            # Get product for sublevel
+            sublevel = sublevel["sublevel"]
+            ps = ProductCategory.objects.filter(toplevel=category, sublevel=sublevel).prefetch_related('products').values('products__id', 'products__name', 'products__price').all()
+
+            # Rename keys
+            for p in ps:
+                p['id'] = p.pop('products__id')
+                p['name'] = p.pop('products__name')
+                p['price'] = p.pop('products__price')
+
+            products[sublevel] = list(ps)
+
         return products
 
+    @staticmethod
     def getCandies():
-        return getProductByCategory(ToplevelProductCategories.SNACK)
+        return ProductLogic.getProductByCategory(ToplevelProductCategories.SNACK)
 
     @staticmethod
     def getDrinks():
-        return getProductByCategory(ToplevelProductCategories.GETRAENK)
+        return ProductLogic.getProductByCategory(ToplevelProductCategories.GETRAENK)
 
 
 class TokenLogic:
@@ -269,7 +283,7 @@ class ChargeLogic:
     def getLastChargesList(user_id):
         """
         Result of a db query asking for a number of charges specified in max_charges that were recently performed by a
-        specified user. The result also contains information on the state of a possible annullation of the charge.  
+        specified user. The result also contains information on the state of a possible annullation of the charge.
         Returned list: [{'id': ..., 'amount': ..., 'annullated': ..., 'time_stamp': ..., 'annullable': ...}]
         @param user_id: id of the specified user
         @config-param max_charges: depends on N_ANNULLABLE_CHARGES
@@ -384,7 +398,7 @@ class TransferLogic:
     def getLastTransfers(user_id):
         """
         Result of a db query asking for a number of transfers that have been recently performed by a specified user. Also
-        returns information on the state of possible annullation of the transfer. 
+        returns information on the state of possible annullation of the transfer.
         Returned list: [{'id': ..., 'annullated': ..., 'amount': ..., 'receiver_username': ..., 'time_stamp': ...,
         'annullable': ...}]
         @param user_id: id of the specified user
@@ -412,7 +426,7 @@ class TransferLogic:
             else:
                 transfer.update({'annullable': True})
             transfer['receiver_username'] = transfer.pop('receiver__username')
-        
+
         return list(transfers)
 
     @staticmethod
