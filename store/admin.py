@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, Product
+from .models import User, Product, ProductCategory, UserIdentifier, ProductIdentifier
 
 
 @admin.register(User)
@@ -17,3 +17,18 @@ class UserAdmin(admin.ModelAdmin):
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('name', 'price', 'category')
     fields = ('name', 'price', 'category')
+
+@admin.register(ProductCategory)
+class ProductCategoryAdmin(admin.ModelAdmin):
+    list_display = ('id', 'toplevel', 'sublevel')
+    fields = ('toplevel', 'sublevel')
+
+@admin.register(UserIdentifier)
+class UserIdentifierAdmin(admin.ModelAdmin):
+    list_display = ('id', 'identifier', 'identifier_type')
+    fields = ('identifier', 'identifier_type')
+
+@admin.register(ProductIdentifier)
+class ProductIdentifierAdmin(admin.ModelAdmin):
+    list_display = ('id', 'identifier', 'identifier_type')
+    fields = ('identifier', 'identifier_type')
