@@ -149,6 +149,8 @@
         {% endfor %}
     ];
 
+    var barcode_buffer = "";
+
     updateRecentlyBoughtList();
 
     function buyPK(id) {
@@ -160,6 +162,10 @@
         }
 
         buy(id, {{ ident_types.PRIMARYKEY }});
+    }
+
+    function buyBarcode(identifier) {
+        buy(identifier, {{ ident_types.BARCODE }})
     }
 
     function buy(identifier, identifier_type) {
@@ -254,5 +260,21 @@
             }
         }
     }
+
+    // First unbind the event. Otherwise, the event handler is called twice.
+    $(document).unbind('keypress');
+
+    $(document).keypress(function(event){
+        event.preventDefault();
+        if (event.which == 13) {
+            buyBarcode(barcode_buffer);
+            barcode_buffer = "";
+            return;
+        }
+
+        input = String.fromCharCode(event.which);
+
+        barcode_buffer = barcode_buffer + input;
+    });
 </script>
 {% endblock %}
