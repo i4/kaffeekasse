@@ -140,11 +140,12 @@ def transfer(request):
     elif request.method == "POST":
         user_id = request.user.id
         token = request.POST.get("token")
-        receiver_id = request.POST.get("receiver")
+        receiver_id = request.POST.get("receiver_identifier")
+        receiver_identifier_type = request.POST.get("receiver_identifier_type")
         amount = Decimal(request.POST.get("amount"))
         try:
             transfer_id = TransferLogic.transfer(
-                user_id, receiver_id, amount, token)
+                user_id, receiver_id, receiver_identifier_type, amount, token)
         except (UserNotEnoughMoney, NegativeMoneyAmount) as exc:
             return JsonResponse({'error': str(exc)}, status=400)
         return JsonResponse({"transfer_id": transfer_id})
