@@ -92,14 +92,22 @@ class ProductLogic:
     @staticmethod
     def getProduct(identifier, identifier_type):
         print(identifier, identifier_type)
-        idf = ProductIdentifier.objects.filter(identifier_type=identifier_type).filter(identifier=identifier)
-        idf = idf.select_related('product')
-        idf = list(idf)
-        if len(idf) == 0:
-            raise ProductIdentifierNotExists()
-        idf = idf[0]
-        product = idf.product
-        return product.id
+        if int(identifier_type) == 2:
+            products = list(Product.objects.filter(id=int(identifier)))
+            print("products:", products)
+            if len(products) == 0:
+                raise ProductIdentifierNotExists()
+            product = products[0]
+            return product
+        else:
+            idf = ProductIdentifier.objects.filter(identifier_type=identifier_type).filter(identifier=identifier)
+            idf = idf.select_related('product')
+            idf = list(idf)
+            if len(idf) == 0:
+                raise ProductIdentifierNotExists()
+            idf = idf[0]
+            product = idf.product
+        return product
 
 
     @staticmethod
