@@ -215,7 +215,7 @@
                     reduceMoney(amount);
                     $("#amount").val("");
                     $("#user_id").val("");
-                    addNewTransfer(data.transfer_id, receiver, amount);
+                    addNewTransfer(data.transfer_id, data.receiver_id, amount);
                 },
                 error: error,
             });
