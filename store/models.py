@@ -51,7 +51,7 @@ class UserIdentifier(models.Model):
 
 class Product(models.Model):
     name = models.TextField(null=False)
-    category = models.ForeignKey('productcategory', on_delete=models.CASCADE)
+    category = models.ForeignKey('productcategory', on_delete=models.CASCADE, related_name="products")
     stock = models.IntegerField(null=False)
     price = models.DecimalField(max_digits=6, decimal_places=2)
 
@@ -76,6 +76,9 @@ class ProductIdentifierTypes(IntEnum):
     BARCODE = 1
     PRIMARYKEY = 2
 
+    @staticmethod
+    def to_dict():
+        return {tag.name: tag.value for tag in ProductIdentifierTypes}
 
 class ProductIdentifier(models.Model):
     product = models.ForeignKey('product', on_delete=models.CASCADE, null=False)
