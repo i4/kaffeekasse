@@ -90,8 +90,9 @@ class UserLogic:
 class ProductLogic:
 
     @staticmethod
-    def getProduct(identifer, identifier_type):
-        idf = ProductIdentifier.objects.identifier_type(identifier_type=identifier_type).filter(identifer=identifer)
+    def getProduct(identifier, identifier_type):
+        print(identifier, identifier_type)
+        idf = ProductIdentifier.objects.filter(identifier_type=identifier_type).filter(identifier=identifier)
         idf = idf.select_related('product')
         idf = list(idf)
         if len(idf) == 0:
@@ -226,13 +227,16 @@ class PurchaseLogic:
                 PurchaseLogic.__updateUserMoney(user, product.price)
                 PurchaseLogic.__updateProductStock(product)
         except ObjectDoesNotExist:
+            print("ObjectDoesNotExist")
             return -1
         except ProductIdentifierNotExists:
+            print("ProductIdentifierNotExists")
             return -1
         except IntegrityError:
-            purchase = list(Purchase.objects.filter(token=token))[0]
+            print("IntegrityError")
+            purchase = list(Purchase.objects.filter(token=token))[0], product.id
             return purchase.id
-        return purchase_create_return_tuple[1]
+        return purchase_create_return_tuple[1], product.id
 
     @staticmethod
     def __createPurchaseTuple(user, product, token):
