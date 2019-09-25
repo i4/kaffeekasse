@@ -175,6 +175,11 @@
         function displayError(message) {
             $("#alertDiv").html('<div class="alert alert-danger" role="alert">' + message + '</div>');
         }
+
+        {% if error %}
+            displayError("{{ error }}");
+        {% endif %}
+    </script>
     <script>
         var barcode_event = null;
         var barcode_buffer = "";
