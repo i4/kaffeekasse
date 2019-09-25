@@ -13,6 +13,11 @@ class UserLogic:
 
     @staticmethod
     def getUser(identifier, identifier_type):
+        """
+        Returns user that can be definitly identified by the unique combination identifier and identifier_type.
+        :param identifier: on of the user identifiers
+        :param identifier_type: type of the identifier
+        """
         idf = UserIdentifier.objects.filter(identifier=identifier, identifier_type=identifier_type)
         idf = idf.select_related('user')
         idf = list(idf)
@@ -91,10 +96,8 @@ class ProductLogic:
 
     @staticmethod
     def getProduct(identifier, identifier_type):
-        print(identifier, identifier_type)
         if int(identifier_type) == 2:
             products = list(Product.objects.filter(id=int(identifier)))
-            print("products:", products)
             if len(products) == 0:
                 raise ProductIdentifierNotExists()
             product = products[0]
@@ -234,14 +237,9 @@ class PurchaseLogic:
                 purchase_create_return_tuple = PurchaseLogic.__createPurchaseTuple(user, product, token)
                 PurchaseLogic.__updateUserMoney(user, product.price)
                 PurchaseLogic.__updateProductStock(product)
-        except ObjectDoesNotExist:
-            print("ObjectDoesNotExist")
-            return -1
-        except ProductIdentifierNotExists:
-            print("ProductIdentifierNotExists")
-            return -1
+        except (ObjectDoesNotExist, ProductIdentifierNotExists):
+            return -1, -1
         except IntegrityError:
-            print("IntegrityError")
             purchase = list(Purchase.objects.filter(token=token))[0], product.id
             return purchase.id
         return purchase_create_return_tuple[1], product.id
