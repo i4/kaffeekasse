@@ -470,8 +470,8 @@ class TransferLogic:
                 TransferLogic.__updateSenderMoney(sender, amount)
                 TransferLogic.__updateReceiverMoney(receiver, amount)
         except IntegrityError:
-            return list(Transfer.objects.filter(token=token))[0]
-        return transfer_id
+            return list(Transfer.objects.filter(token=token))[0], receiver.id
+        return transfer_id, receiver.id
 
     @staticmethod
     def __createTransferTuple(sender, receiver, amount, token):
