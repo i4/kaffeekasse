@@ -45,7 +45,7 @@ class UserIdentifierTypes(IntEnum):
 
 class UserIdentifier(models.Model):
     user = models.ForeignKey('user', on_delete=models.CASCADE, null=False)
-    identifier_type = models.IntegerField(choices=[(tag, tag.value) for tag in UserIdentifierTypes])
+    identifier_type = models.IntegerField(choices=[(tag.value, tag.value) for tag in UserIdentifierTypes])
     identifier = models.TextField()
 
 
@@ -82,7 +82,7 @@ class ProductIdentifierTypes(IntEnum):
 
 class ProductIdentifier(models.Model):
     product = models.ForeignKey('product', on_delete=models.CASCADE, null=False)
-    identifier_type = models.IntegerField(choices=[(tag, tag.value) for tag in ProductIdentifierTypes])
+    identifier_type = models.IntegerField(choices=[(tag.value, tag.value) for tag in ProductIdentifierTypes])
     identifier = models.TextField()
 
 
