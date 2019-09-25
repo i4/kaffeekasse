@@ -8,6 +8,7 @@ from django.contrib.auth import logout as auth_logout
 from .backend import *
 from .store_exceptions import *
 from .store_config import KAFFEEKASSE as config
+from decimal import InvalidOperation
 
 
 @require_http_methods(["GET"])
@@ -49,7 +50,7 @@ def buy(request):
         token = request.POST.get("token")
         try:
             purchase_return_tuple = PurchaseLogic.purchase(user_id, identifier, identifier_type, token)
-        except (UserNotEnoughMoney, NegativeMoneyAmount) as exc:
+        except (UserNotEnoughMoney, NegativeMoneyAmount, UserIdentifierNotExists, SerializationError) as exc:
             return JsonResponse({'error': str(exc)}, status=400)
         if purchase_return_tuple[0] >= 0:
             return JsonResponse({
@@ -74,7 +75,7 @@ def buy_revert(request):
     token = request.POST.get("token")
     try:
         PurchaseLogic.annullatePurchase(purchase_id, token)
-    except (PurchaseNotAnnullable, UserNotEnoughMoney) as exc:
+    except (PurchaseNotAnnullable, UserNotEnoughMoney, SerializationError) as exc:
         return JsonResponse({'error': str(exc)}, status=400)
     return HttpResponse(status=200)
 
@@ -98,10 +99,13 @@ def charge(request):
         user_id = request.user.id
         token = request.POST.get("token")
         amount = request.POST.get("amount")
-        amount = Decimal(amount)
+        try:
+            amount = Decimal(amount)
+        except InvalidOperation as exc:
+            return JsonResponse({'error': str(exc)}, status=400)
         try:
             charge_id = ChargeLogic.charge(user_id, amount, token)
-        except NegativeMoneyAmount as exc:
+        except (NegativeMoneyAmount, SerializationError) as exc:
             return JsonResponse({'error': str(exc)}, status=400)
         return JsonResponse({'charge_id': charge_id})
 
@@ -119,7 +123,7 @@ def charge_revert(request):
     token = request.POST.get("token")
     try:
         ChargeLogic.annullateCharge(charge_id, token)
-    except (ChargeNotAnnullable, UserNotEnoughMoney) as exc:
+    except (ChargeNotAnnullable, UserNotEnoughMoney, NegativeMoneyAmount, SerializationError) as exc:
         return JsonResponse({'error': str(exc)}, status=400)
     return HttpResponse(status=200)
 
@@ -147,11 +151,14 @@ def transfer(request):
         token = request.POST.get("token")
         receiver_id = request.POST.get("receiver_identifier")
         receiver_identifier_type = request.POST.get("identifier_type")
-        amount = Decimal(request.POST.get("amount"))
+        try:
+            amount = Decimal(request.POST.get("amount"))
+        except InvalidOperation as exc:
+            return JsonResponse({'error': str(exc)}, status=400)
         try:
             transfer_tuple = TransferLogic.transfer(
                 user_id, receiver_id, receiver_identifier_type, amount, token)
-        except (UserNotEnoughMoney, NegativeMoneyAmount) as exc:
+        except (UserNotEnoughMoney, NegativeMoneyAmount, UserIdentifierNotExists, SerializationError) as exc:
             return JsonResponse({'error': str(exc)}, status=400)
         return JsonResponse({"transfer_id": transfer_tuple[0], "receiver_id": transfer_tuple[1]})
 
@@ -169,7 +176,7 @@ def transfer_revert(request):
     token = request.POST.get('token')
     try:
         TransferLogic.annullateTransfer(transfer_id, token)
-    except (TransferNotAnnullable, UserNotEnoughMoney) as exc:
+    except (TransferNotAnnullable, UserNotEnoughMoney, NegativeMoneyAmount, SerializationError) as exc:
         return JsonResponse({'error': str(exc)}, status=400)
     return HttpResponse(status=200)
 
@@ -188,7 +195,7 @@ def login(request):
     ident_type = request.POST.get('identifier_type')
     try:
         UserLogic.login(request, identifier, ident_type)
-    except (UserIdentifierNotExists, DisabledIdentifier):
+    except (UserIdentifierNotExists, DisabledIdentifier, SerializationError):
         return HttpResponseRedirect(reverse("index"))
 
     return HttpResponseRedirect(reverse("buy"))
@@ -213,5 +220,8 @@ def getToken(request):
     """
     Return a new token used for the at-most-once protocol as JsonResponse.
     """
-    token = TokenLogic.get_token()
+    try:
+        token = TokenLogic.get_token()
+    except SerializationError as exc:
+        return JsonResponse({'error': str(exc)}, status=400)
     return JsonResponse({"token": token})
