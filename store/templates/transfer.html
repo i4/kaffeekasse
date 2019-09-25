@@ -166,6 +166,8 @@
         {% endfor %}
     ];
 
+    const max_recent_transfers = {{ config.N_LAST_TRANSFERS }};
+
     // Initial call
     updateRecentTransfers();
 
@@ -224,7 +226,9 @@
 
     // Add a new transfer to the list and remove the last one
     function addNewTransfer(transfer_id, receiver_id, amount) {
-        recent_transfers.pop();
+        if (recent_transfers.length >= max_recent_transfers) {
+            recent_transfers.pop();
+        }
         recent_transfers.unshift({
             id: transfer_id,
             amount: amount,

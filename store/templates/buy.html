@@ -149,6 +149,8 @@
         {% endfor %}
     ];
 
+    const max_recently_bought = {{ config.N_LAST_BOUGHT_PRODUCTS }}
+
     barcode_event = buyBarcode;
 
     updateRecentlyBoughtList();
@@ -194,7 +196,9 @@
     }
 
     function addLastBought(id, purchase_id) {
-        recently_bought.pop();
+        if (recently_bought.length >= max_recently_bought) {
+            recently_bought.pop();
+        }
         recently_bought.unshift({
             id: id,
             name: products[id].name,

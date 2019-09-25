@@ -106,6 +106,8 @@
         {% endfor %}
     ];
 
+    var max_recent_charges = {{ config.N_LAST_CHARGES }};
+
     // Initial call
     updateRecentCharges();
 
@@ -144,7 +146,9 @@
 
     // Add a new charge to the list and remove the last one
     function addNewCharge(charge_id, amount) {
-        recent_charges.pop();
+        if (recent_charges.length >= max_recent_charges) {
+            recent_charges.pop();
+        }
         recent_charges.unshift({
             id: charge_id,
             amount: amount,
