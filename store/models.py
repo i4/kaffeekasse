@@ -74,6 +74,7 @@ class ProductCategory(models.Model):
 class ProductIdentifierTypes(IntEnum):
     ID = 0
     BARCODE = 1
+    PRIMARYKEY = 2
 
 
 class ProductIdentifier(models.Model):
