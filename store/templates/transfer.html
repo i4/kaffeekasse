@@ -103,7 +103,7 @@
         <h4>Alle Empf&auml;nger</h4>
         <ul class="list-group scroll-lg">
             {% for user in users %}
-                <button onclick="transfer({{user.id}})" type="button" class="list-group-item list-group-item-action">{{ user.username }}</button>
+                <button onclick="transferPK({{user.id}})" type="button" class="list-group-item list-group-item-action">{{ user.username }}</button>
             {% endfor %}
         </ul>
     </div>
@@ -170,21 +170,24 @@
     updateRecentTransfers();
 
     function numpadTransfer() {
-        transfer($("#user_id").val())
-    }
-
-    function transfer(receiver) {
-        error = error => {
-            showError(error, "Fehler beim &Uuml;berweisen");
-        }
-
-
         // Convert receiver to int
-        receiver = parseInt(receiver);
-        if (isNaN(receiver)) {
+        id = parseInt(id);
+        if (isNaN(id)) {
             $("#user_id").val("");
             displayError("Ung&uuml;ltiger Empf&auml;nger");
             return;
+        }
+
+        transfer(id, {{ ident_type.ID }})
+    }
+
+    function transferPK(id) {
+        transfer(id, {{ ident_type.PRIMARYKEY }})
+    }
+
+    function transfer(receiver_identifier, identifier_type) {
+        error = error => {
+            showError(error, "Fehler beim &Uuml;berweisen");
         }
 
         // Get amount from text field
@@ -203,7 +206,8 @@
                 method: "POST",
                 data: {
                     amount: amount,
-                    receiver: receiver,
+                    receiver_identifier: receiver_identifier,
+                    identifier_type: identifier_type
                     token: token
                 },
                 success: data => {
