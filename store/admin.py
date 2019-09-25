@@ -15,8 +15,8 @@ class UserAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'price', 'category')
-    fields = ('name', 'price', 'category')
+    list_display = ('id', 'name', 'price', 'category', 'stock')
+    fields = ('name', 'price', 'category', 'stock')
 
 @admin.register(ProductCategory)
 class ProductCategoryAdmin(admin.ModelAdmin):
@@ -31,4 +31,4 @@ class UserIdentifierAdmin(admin.ModelAdmin):
 @admin.register(ProductIdentifier)
 class ProductIdentifierAdmin(admin.ModelAdmin):
     list_display = ('id', 'identifier', 'identifier_type')
-    fields = ('identifier', 'identifier_type')
+    fields = ('identifier', 'identifier_type', 'product')
