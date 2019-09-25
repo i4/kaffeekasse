@@ -42,10 +42,11 @@ def buy(request):
         })
     elif request.method == 'POST':  # Perform a purchase
         user_id = request.user.id
-        product_id = request.POST.get("product_id")
+        identifier = request.POST.get("identifier")
+        identifier_type = request.POST.get("identifier_type")
         token = request.POST.get("token")
         try:
-            purchase_return_tuple = PurchaseLogic().purchase(user_id, product_id, token)
+            purchase_return_tuple = PurchaseLogic().purchase(user_id, identifier, identifier_type, token)
         except (UserNotEnoughMoney, NegativeMoneyAmount) as exc:
             return JsonResponse({'error': str(exc)}, status=400)
         if purchase_return_tuple >= 0:
