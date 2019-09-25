@@ -19,6 +19,7 @@ class UserLogic:
         :param identifier: on of the user identifiers
         :param identifier_type: type of the identifier
         """
+        print(identifier, identifier_type)
         idf = UserIdentifier.objects.filter(identifier=identifier, identifier_type=identifier_type)
         idf = idf.select_related('user')
         idf = list(idf)

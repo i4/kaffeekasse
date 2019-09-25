@@ -142,7 +142,7 @@ def transfer(request):
         user_id = request.user.id
         token = request.POST.get("token")
         receiver_id = request.POST.get("receiver_identifier")
-        receiver_identifier_type = request.POST.get("receiver_identifier_type")
+        receiver_identifier_type = request.POST.get("identifier_type")
         amount = Decimal(request.POST.get("amount"))
         try:
             transfer_id = TransferLogic.transfer(
