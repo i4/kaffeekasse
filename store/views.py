@@ -1,5 +1,5 @@
 from django.shortcuts import render, reverse
-from .models import User, Product, UserIdentifierTypes
+from .models import User, Product, UserIdentifierTypes, ProductIdentifierTypes
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import login_required
@@ -35,9 +35,10 @@ def buy(request):
         return render(request, "buy.html", {
             "most_bought": ProductLogic.getMostBoughtProductsList(),
             "recently_bought": ProductLogic.getLastBoughtProductsList(request.user.id),
-            "drinks": Product.objects.filter(category="drink").order_by('name'),
-            "candies": Product.objects.filter(category="candy").order_by('name'),
+            "drinks": ProductLogic.getDrinks(),
+            "candies": ProductLogic.getCandies(),
             "products": Product.objects.all(),
+            "ident_types": ProductIdentifierTypes.to_dict(),
         })
     elif request.method == 'POST':  # Perform a purchase
         user_id = request.user.id
