@@ -397,25 +397,35 @@ class TransferLogic:
     def getFreuquentTransferTargets(user_id):
         """
         Result of a db query asking for a number of receivers specified in max_receivers that are often addresed by a specified user
+        Concatinates the result of two db queries:
+        First part of the list: a number of receivers specified in max_receivers that are often addressed by a specific
+        user
+        Second part of the list: all users excluded the users form the first part and the user itself
         Returned list: [{'receiver': ..., 'username': ...}]
         :param user_id: id of the specified user
         :config-param max_receivers: depends on N_TRANSFER_RECEIVERS
         """
         max_receivers = config['N_TRANSFERS_RECEIVERS']
-        transfers = Transfer.objects.filter(sender=user_id).exclude(receiver=None)
-        transfers = transfers.select_related('receiver')
-        transfers = transfers.values('receiver', 'receiver__username')
-        transfers = transfers.annotate(total=Count('receiver'))
-        transfers = transfers.order_by('receiver__username').order_by('total').reverse()
-        
-        if max_receivers >= 0:
-            transfers = transfers[:max_receivers]
+        recent_transfers = Transfer.objects.filter(sender=user_id).exclude(receiver=None)
+        recent_transfers = recent_transfers.select_related('receiver')
 
-        for transfer in transfers:
+        if max_receivers >= 0:
+            recent_transfers = recent_transfers[:max_receivers]
+        
+        other_transfers = User.objects.exclude(id__in=[d.receiver.id for d in list(recent_transfers)])
+        other_transfers = other_transfers.exclude(id=user_id)
+        other_transfers = other_transfers.values('id', 'username')
+        other_transfers = other_transfers.order_by('username')
+
+        recent_transfers = recent_transfers.values('receiver', 'receiver__username')
+        recent_transfers = recent_transfers.annotate(total=Count('receiver'))
+        recent_transfers = recent_transfers.order_by('receiver__username').order_by('total').reverse()
+         
+        for transfer in recent_transfers:
             transfer['id'] = transfer.pop('receiver')
             transfer['username'] = transfer.pop('receiver__username')
 
-        return list(transfers)
+        return list(recent_transfers) + list(other_transfers)
 
     @staticmethod
     def getLastTransfers(user_id):
