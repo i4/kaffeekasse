@@ -7,6 +7,7 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth import logout as auth_logout
 from .backend import *
 from .store_exceptions import *
+from .store_config import KAFFEEKASSE as config
 
 
 @require_http_methods(["GET"])
@@ -39,6 +40,7 @@ def buy(request):
             "candies": ProductLogic.getCandies(),
             "products": Product.objects.all(),
             "ident_types": ProductIdentifierTypes.to_dict(),
+            "config": config,
         })
     elif request.method == 'POST':  # Perform a purchase
         user_id = request.user.id
@@ -90,6 +92,7 @@ def charge(request):
     if request.method == "GET":
         return render(request, "charge.html", {
             "recent_charges": ChargeLogic.getLastChargesList(request.user.id),
+            "config": config,
         })
     elif request.method == "POST":
         user_id = request.user.id
@@ -137,6 +140,7 @@ def transfer(request):
             "users": TransferLogic.getFreuquentTransferTargets(request.user.id),
             "recent_transfers": TransferLogic.getLastTransfers(request.user.id),
             "ident_types": UserIdentifierTypes.to_dict(),
+            "config": config,
         })
     elif request.method == "POST":
         user_id = request.user.id
