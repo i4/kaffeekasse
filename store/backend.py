@@ -394,7 +394,7 @@ class ChargeLogic:
 
 class TransferLogic:
     @staticmethod
-    def getFreuquentTransferTargeds(user_id):
+    def getFreuquentTransferTargets(user_id):
         """
         Result of a db query asking for a number of receivers specified in max_receivers that are often addresed by a specified user
         Returned list: [{'receiver': ..., 'username': ...}]
@@ -407,6 +407,7 @@ class TransferLogic:
         transfers = transfers.values('receiver', 'receiver__username')
         transfers = transfers.annotate(total=Count('receiver'))
         transfers = transfers.order_by('receiver__username').order_by('total').reverse()
+        
         if max_receivers >= 0:
             transfers = transfers[:max_receivers]
 
