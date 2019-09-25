@@ -1,3 +1,7 @@
+from psycopg2.extensions import TransactionRollbackError
+from django.db import OperationalError
+
+
 class UserNotEnoughMoney(Exception):
     def __init__(self):
         super().__init__("Guthaben reicht nicht aus!")
@@ -41,4 +45,16 @@ class DisabledIdentifier(Exception):
 class ProductIdentifierNotExists(Exception):
     def __init__(self):
         super().__init__("Kein Produkt unter der Identifikationsnummer registriert!")
+
+
+class SerializationError(Exception):
+    def __init__(self):
+        super().__init__("Etwas ist schief gelaufen. Bitte versuch es erneut!")
+        
+
+def filterOperationalError(exception):
+    if exception.__cause__.__class__ == TransactionRollbackError:
+        raise SerializationError()
+    else:
+        raise exception
 

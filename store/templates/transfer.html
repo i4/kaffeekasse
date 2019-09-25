@@ -224,6 +224,8 @@
 
     // Add a new transfer to the list and remove the last one
     function addNewTransfer(transfer_id, receiver_id, amount) {
+		console.log(transfer_id)
+		console.log(receiver_id)
         recent_transfers.pop();
         recent_transfers.unshift({
             id: transfer_id,
