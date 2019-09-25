@@ -462,7 +462,6 @@ class TransferLogic:
         :param token: unique token got by TokenLogic's getToken
         """
         sender = list(User.objects.filter(id=user_id))[0]
-        receiver = list(User.objects.filter(id=receiver_id))[0]
         receiver = UserLogic.getUser(identifier=receiver_identifier, identifier_type=receiver_identifier_type)
         try:
             with transaction.atomic():
