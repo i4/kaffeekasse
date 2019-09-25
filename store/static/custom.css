@@ -8,8 +8,8 @@
     border: 2px solid black;
     border-color: #003865;
 }
-.navbar-dark{
-    background-color: #003865;
+.navbar-i4{
+    background-color: #003865 !important;
 }
 .scroll-lg{
     max-height: 650px;
