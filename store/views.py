@@ -136,6 +136,7 @@ def transfer(request):
         return render(request, "transfer.html", {
             "users": TransferLogic.getFreuquentTransferTargeds(request.user.id),
             "recent_transfers": TransferLogic.getLastTransfers(request.user.id),
+            "ident_types": UserIdentifierTypes.to_dict(),
         })
     elif request.method == "POST":
         user_id = request.user.id

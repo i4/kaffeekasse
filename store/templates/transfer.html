@@ -171,7 +171,7 @@
 
     function numpadTransfer() {
         // Convert receiver to int
-        id = parseInt(id);
+        var id = parseInt($("#user_id").val());
         if (isNaN(id)) {
             $("#user_id").val("");
             displayError("Ung&uuml;ltiger Empf&auml;nger");
