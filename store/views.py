@@ -210,30 +210,3 @@ def getToken(request):
     """
     token = TokenLogic.get_token()
     return JsonResponse({"token": token})
-
-
-# Test
-
-
-def stressTest(request):
-    nthreads = 10
-    barrier = Barrier(nthreads + 1)
-    lock = Lock()
-
-    for i in range(0, nthreads):
-        st = StressTester(i + 1, 0, 4, barrier, lock, 60)
-        st.start()
-
-    tmp = input("press any key to start")
-    barrier.wait()
-
-
-def test(request):
-    transfers = TransferLogic.getFreuquentTransferTargeds(1)
-    for transfer in transfers:
-        print(transfer)
-    print("n_transfers:", len(transfers))
-
-
-def test2(request):
-    pass
