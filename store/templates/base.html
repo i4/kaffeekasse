@@ -175,6 +175,28 @@
         function displayError(message) {
             $("#alertDiv").html('<div class="alert alert-danger" role="alert">' + message + '</div>');
         }
+    <script>
+        var barcode_event = null;
+        var barcode_buffer = "";
+
+        // First unbind the event. Otherwise, the event handler is called twice.
+        $(document).unbind('keypress');
+
+        $(document).keypress(function(event){
+            event.preventDefault();
+
+            // Newline. Barcode scanned completly.
+            if (event.which == 13) {
+                if (barcode_event != null) {
+                    barcode_event(barcode_buffer);
+                }
+                barcode_buffer = "";
+                return;
+            }
+
+            input = String.fromCharCode(event.which);
+            barcode_buffer = barcode_buffer + input;
+        });
     </script>
     {% block script %} {% endblock %}
 </body>

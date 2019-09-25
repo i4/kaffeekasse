@@ -149,7 +149,7 @@
         {% endfor %}
     ];
 
-    var barcode_buffer = "";
+    barcode_event = buyBarcode;
 
     updateRecentlyBoughtList();
 
@@ -260,21 +260,5 @@
             }
         }
     }
-
-    // First unbind the event. Otherwise, the event handler is called twice.
-    $(document).unbind('keypress');
-
-    $(document).keypress(function(event){
-        event.preventDefault();
-        if (event.which == 13) {
-            buyBarcode(barcode_buffer);
-            barcode_buffer = "";
-            return;
-        }
-
-        input = String.fromCharCode(event.which);
-
-        barcode_buffer = barcode_buffer + input;
-    });
 </script>
 {% endblock %}
