@@ -65,11 +65,26 @@
             </form>
         </ul>
     </div>
+
+    {% comment %} Hidden form for barcode login {% endcomment %}
+    <form action="{% url "login" %}" method="POST" id="barcode_login_form">
+        {% csrf_token %}
+        <input type="hidden" id="barcode" name="identifier">
+        <input type="hidden" name="identifier_type" value="{{ ident_types.BARCODE }}">
+    </form>
 </div>
 {% endblock %}
 
 {% block script %}
     <script>
+
+        function loginBarcode(identifier) {
+            $("#barcode").val(identifier);
+            $("#barcode_login_form").submit();
+        }
+
+        barcode_event = loginBarcode;
+
         function loginPK(pk) {
             pk = parseInt(pk);
             if (isNaN(pk)) {
