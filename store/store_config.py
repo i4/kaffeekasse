@@ -15,16 +15,16 @@ users are shown'
 N_LAST_TRANSFERS: number of transfers that should be shown in 'Letzte Überweisungen'
 T_ANNULLABLE_TRANSFERS_M: time in minutes a user has for a transfer to undo it
 """
-KAFFEEKASSE = {'N_LAST_BOUGHT_PRODUCTS': 5,
+KAFFEEKASSE = {'N_LAST_BOUGHT_PRODUCTS': 100,
                'T_LAST_BOUGHT_PRODUCTS_D': 30,
                'T_ANNULLABLE_PURCHASE_M': 60,
-               'N_MOST_BOUGHT_PRODUCTS': 5,
+               'N_MOST_BOUGHT_PRODUCTS': 10,
                'T_MOST_BOUGHT_PRODUCTS_D': 30,
                'N_USERS_LOGIN': 30,
                'T_USERS_LOGIN_D': 356,
                'N_LAST_CHARGES': 10,
                'T_ANNULLABLE_CHARGE_M': 60,
                'N_TRANSFERS_RECEIVERS': -1,
-               'N_LAST_TRANSFERS': 5,
+               'N_LAST_TRANSFERS': 10,
                'T_ANNULLABLE_TRANSFERS_M': 60,
                }

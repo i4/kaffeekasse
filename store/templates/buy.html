@@ -149,6 +149,8 @@
         {% endfor %}
     ];
 
+    barcode_event = buyBarcode;
+
     updateRecentlyBoughtList();
 
     function buyPK(id) {
@@ -160,6 +162,10 @@
         }
 
         buy(id, {{ ident_types.PRIMARYKEY }});
+    }
+
+    function buyBarcode(identifier) {
+        buy(identifier, {{ ident_types.BARCODE }})
     }
 
     function buy(identifier, identifier_type) {

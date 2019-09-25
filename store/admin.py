@@ -8,7 +8,7 @@ class UserAdmin(admin.ModelAdmin):
                     'last_name', 'is_active', 'is_staff', 'money')
     fieldsets = (
         (None, {
-            'fields': ('username', 'first_name', 'last_name', 'pk_login_enabled')
+            'fields': ('username', 'first_name', 'last_name', 'pk_login_enabled', 'money')
         }),
     )
     pass
@@ -25,10 +25,10 @@ class ProductCategoryAdmin(admin.ModelAdmin):
 
 @admin.register(UserIdentifier)
 class UserIdentifierAdmin(admin.ModelAdmin):
-    list_display = ('id', 'identifier', 'identifier_type')
-    fields = ('identifier', 'identifier_type')
+    list_display = ('id', 'identifier', 'identifier_type', 'user')
+    fields = ('identifier', 'identifier_type', 'user')
 
 @admin.register(ProductIdentifier)
 class ProductIdentifierAdmin(admin.ModelAdmin):
-    list_display = ('id', 'identifier', 'identifier_type')
+    list_display = ('id', 'identifier', 'identifier_type', 'product')
     fields = ('identifier', 'identifier_type', 'product')
