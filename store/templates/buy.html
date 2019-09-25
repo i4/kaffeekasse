@@ -20,7 +20,7 @@
             <h4>H&auml;ufig gekauft</h4>
             <ul class="list-group scroll-sm">
                 {% for product in most_bought %}
-                <button onclick="buy({{ product.product_id }})" type="button" class="list-group-item list-group-item-action">
+                <button onclick="buyPK({{ product.product_id }})" type="button" class="list-group-item list-group-item-action">
                     <div class="d-flex w-100 justify-content-between">
                         <div class="mb-1">{{ product.product__name }}</div>
                         <div>{{ product.product__price }} &euro;</div>
