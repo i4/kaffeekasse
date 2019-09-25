@@ -54,8 +54,8 @@ class UserLogic:
         Second part of the list: all users that are not included in the first part of the list and have at least one login
         Third part of the list: all users that are not included in the firt both parts
         Returned list: [{'user': ..., 'user_username': ..., 'total': ...}]
-        @config-param max_users: depends on N_USERS_LOGIN
-        @config-param max_days: depends on T_USERS_LGIN_D
+        :config-param max_users: depends on N_USERS_LOGIN
+        :config-param max_days: depends on T_USERS_LGIN_D
         """
         max_users = config['N_USERS_LOGIN']
         max_days = config['T_USERS_LOGIN_D']
@@ -119,8 +119,8 @@ class ProductLogic:
         Result of a db query asking for a number of products specified in max_products that were most bought within the
         last max_days number of days.
         Returned list: [{'product__name': ..., 'product_id': ..., 'product__price': ...,'total': ...}]
-        @config-param max_products: depends on N_MOST_BOUGHT_PRODUCTS
-        @config-param max_days: depends on T_MOST_BOUGHT_PRODUCTS_D
+        :config-param max_products: depends on N_MOST_BOUGHT_PRODUCTS
+        :config-param max_days: depends on T_MOST_BOUGHT_PRODUCTS_D
         """
         max_products = config['N_MOST_BOUGHT_PRODUCTS']
         max_days = config['T_MOST_BOUGHT_PRODUCTS_D']
@@ -141,8 +141,8 @@ class ProductLogic:
         Returned list: [{'product__name': ..., 'product_id': ..., 'product__price': ..., 'time_stamp': ..., 'id': ...,
         'annullated': ..., 'annullable': ...}]
         :param user_id: id of the specified user
-        @config-param max_products: depends on N_ANNULLABLE_PURCHASE
-        @config-param annullable_time: depends on T_ANNULLABLE_PURCHASE_M
+        :config-param max_products: depends on N_ANNULLABLE_PURCHASE
+        :config-param annullable_time: depends on T_ANNULLABLE_PURCHASE_M
         """
         max_products = config['N_LAST_BOUGHT_PRODUCTS']
         annullable_time = config['T_ANNULLABLE_PURCHASE_M']
@@ -296,8 +296,8 @@ class ChargeLogic:
         specified user. The result also contains information on the state of a possible annullation of the charge.
         Returned list: [{'id': ..., 'amount': ..., 'annullated': ..., 'time_stamp': ..., 'annullable': ...}]
         :param user_id: id of the specified user
-        @config-param max_charges: depends on N_ANNULLABLE_CHARGES
-        @config-param annullable_time: depends on T_ANNULLABLE_CHARGE_M
+        :config-param max_charges: depends on N_ANNULLABLE_CHARGES
+        :config-param annullable_time: depends on T_ANNULLABLE_CHARGE_M
         """
         max_charges = config['N_LAST_CHARGES']
         annullable_time = config['T_ANNULLABLE_CHARGE_M']
@@ -387,7 +387,7 @@ class TransferLogic:
         Result of a db query asking for a number of receivers specified in max_receivers that are often addresed by a specified user
         Returned list: [{'receiver': ..., 'username': ...}]
         :param user_id: id of the specified user
-        @config-param max_receivers: depends on N_TRANSFER_RECEIVERS
+        :config-param max_receivers: depends on N_TRANSFER_RECEIVERS
         """
         max_receivers = config['N_TRANSFERS_RECEIVERS']
         transfers = Transfer.objects.filter(sender=user_id).exclude(receiver=None)
@@ -412,8 +412,8 @@ class TransferLogic:
         Returned list: [{'id': ..., 'annullated': ..., 'amount': ..., 'receiver_username': ..., 'time_stamp': ...,
         'annullable': ...}]
         :param user_id: id of the specified user
-        @config-param max_transfers: depends on N_LAST_TRANSFERS
-        @config-param annullable_time: depends on T_ANNULLABLE_TRANSFERS_M
+        :config-param max_transfers: depends on N_LAST_TRANSFERS
+        :config-param annullable_time: depends on T_ANNULLABLE_TRANSFERS_M
         """
         max_transfers = config['N_LAST_TRANSFERS']
         annullable_time = config['T_ANNULLABLE_TRANSFERS_M']
