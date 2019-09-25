@@ -17,8 +17,4 @@ urlpatterns = [
 
     # At-most-once token
     path('token', views.getToken, name="getToken"),
-
-    # Test
-    path('stresstest', views.stressTest, name="stresstest"),
-    path('test2', views.test2, name="test2"),
 ]

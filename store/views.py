@@ -7,7 +7,6 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth import logout as auth_logout
 from .backend import *
 from .store_exceptions import *
-from .stresstest import *
 
 
 @require_http_methods(["GET"])
