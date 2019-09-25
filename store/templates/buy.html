@@ -70,30 +70,56 @@
     {% comment %} Drinks {% endcomment %}
     <div class="col-lg-4 col-md-6 col-12 mb-4">
         <h4>Getr&auml;nke</h4>
-        <ul class="list-group scroll-custom">
-            {% for drink in drinks %}
-                <button onclick="buy({{ drink.id }})" type="button" class="list-group-item list-group-item-action">
-                    <div class="d-flex w-100 justify-content-between">
-                        <div class="mb-1">{{ drink.name }}</div>
-                        <div> {{ drink.price }} &euro;</div>
+        <div class="accordion" id="accordionDrinks">
+            {% for sublevel_cat, prods in drinks.items %}
+                <div class="card">
+                    <button class="btn card-header collapsed text-left" type="button" data-toggle="collapse" data-target="#collapse{{ sublevel_cat }}" aria-expanded="false" aria-controls="collapse{{ sublevel_cat }}">
+                        {{ sublevel_cat }}
+                    </button>
+                    <div id="collapse{{ sublevel_cat }}" class="collapse" aria-labelledby="heading{{ sublevel_cat }}" data-parent="#accordionDrinks">
+                        <div class="card-body">
+                            <ul class="list-group">
+                                {% for prod in prods %}
+                                    <button onclick="buyPK({{ prod.id }})" type="button" class="list-group-item list-group-item-action">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <div class="mb-1">{{ prod.name }}</div>
+                                            <div> {{ prod.price }} &euro;</div>
+                                        </div>
+                                    </button>
+                                {% endfor %}
+                            </ul>
+                        </div>
                     </div>
-                </button>
+                </div>
             {% endfor %}
-        </ul>
+        </div>
     </div>
     {% comment %} Snacks {% endcomment %}
     <div class="col-lg-4 col-md-6 col-12 mb-4">
         <h4>Snacks</h4>
-        <ul class="list-group scroll-custom">
-            {% for candy in candies %}
-                <button onclick="buy({{ candy.id }})" type="button" class="list-group-item list-group-item-action">
-                    <div class="d-flex w-100 justify-content-between">
-                        <div class="mb-1">{{ candy.name }}</div>
-                        <div> {{ candy.price }} &euro;</div>
+        <div class="accordion" id="accordionCandies">
+            {% for sublevel_cat, prods in candies.items %}
+                <div class="card">
+                    <button class="btn card-header collapsed text-left" type="button" data-toggle="collapse" data-target="#collapse{{ sublevel_cat }}" aria-expanded="false" aria-controls="collapse{{ sublevel_cat }}">
+                        {{ sublevel_cat }}
+                    </button>
+                    <div id="collapse{{ sublevel_cat }}" class="collapse" aria-labelledby="heading{{ sublevel_cat }}" data-parent="#accordionCandies">
+                        <div class="card-body">
+                            <ul class="list-group">
+                                {% for prod in prods %}
+                                    <button onclick="buyPK({{ prod.id }})" type="button" class="list-group-item list-group-item-action">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <div class="mb-1">{{ prod.name }}</div>
+                                            <div> {{ prod.price }} &euro;</div>
+                                        </div>
+                                    </button>
+                                {% endfor %}
+                            </ul>
+                        </div>
                     </div>
-                </button>
+                </div>
             {% endfor %}
-        </ul>
+        </div>
     </div>
 </div>
 {% endblock %}
@@ -125,16 +151,20 @@
 
     updateRecentlyBoughtList();
 
-    function buy(id) {
-        error = error => {
-            showError(error, "Fehler beim Einkaufen");
-        }
-
+    function buyPK(id) {
         // Check if id is a valid integer
         id = parseInt(id);
         if (isNaN(id)) {
-            showError("Ung&uuml;tiges Produkt");
+            displayError("Ung&uuml;tiges Produkt");
             return;
+        }
+
+        buy(id, {{ ident_types.PRIMARYKEY }});
+    }
+
+    function buy(identifier, identifier_type) {
+        error = error => {
+            showError(error, "Fehler beim Einkaufen");
         }
 
         // Send request to the server using a new token
@@ -143,16 +173,17 @@
                 url: "{% url "buy" %}",
                 method: "POST",
                 data: {
-                    product_id: id,
+                    identifier: identifier,
+                    identifier_type: identifier,
                     token: token
                 },
                 success: function(data) {
                     clearError();
-                    reduceMoney(products[id].price);
-                    addLastBought(id, data.purchase_id);
+                    reduceMoney(products[data.product_id].price);
+                    addLastBought(data.product_id, data.purchase_id);
                 },
                 error: error,
-            })
+            });
         }, error);
     }
 
@@ -168,7 +199,6 @@
         });
         updateRecentlyBoughtList();
     }
-
 
     function revert(id) {
         error = error => {
@@ -195,7 +225,7 @@
                         updateRecentlyBoughtList();
                     },
                     error: error,
-                })
+                });
             }, error);
         }
     }
