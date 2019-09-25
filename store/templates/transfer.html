@@ -178,11 +178,11 @@
             return;
         }
 
-        transfer(id, {{ ident_type.ID }})
+        transfer(id, {{ ident_types.ID }})
     }
 
     function transferPK(id) {
-        transfer(id, {{ ident_type.PRIMARYKEY }})
+        transfer(id, {{ ident_types.PRIMARYKEY }})
     }
 
     function transfer(receiver_identifier, identifier_type) {
