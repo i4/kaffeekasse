@@ -52,7 +52,7 @@ class UserIdentifier(models.Model):
 class Product(models.Model):
     name = models.TextField(null=False)
     category = models.ForeignKey('productcategory', on_delete=models.CASCADE, related_name="products")
-    stock = models.IntegerField(null=False)
+    stock = models.IntegerField(null=False, default=0)
     price = models.DecimalField(max_digits=6, decimal_places=2)
 
     def updateStock(self, amount):
