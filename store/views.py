@@ -27,9 +27,10 @@ def index(request):
 def buy(request):
     """
     GET: Return the rendered page to buy products
-    POST: Puchase a product
-        @body_param product_id: int
-        @body_param token: int
+    POST: Puchase a product and return the product id and the purchase id as JsonResponse
+        :body_param identifier:  The identifier of the product
+        :body_param identifier_type: int The identifier type of the product
+        :body_param token: int
     """
     if request.method == 'GET':  # Return the rendered page
         return render(request, "buy.html", {
@@ -65,8 +66,8 @@ def buy(request):
 def buy_revert(request):
     """
     POST: Revert a purchase.
-        @body_param token: int
-        @body_param purchase_id: int
+        :body_param token: int
+        :body_param purchase_id: int
     """
     purchase_id = request.POST.get("purchase_id")
     token = request.POST.get("token")
@@ -84,8 +85,8 @@ def charge(request):
     """
     GET: Show the rendered page to charge money.
     POST: Charge money.
-        @body_param token: int
-        @body_param amount: float
+        :body_param token: int
+        :body_param amount: float
     """
     if request.method == "GET":
         return render(request, "charge.html", {
@@ -109,8 +110,8 @@ def charge(request):
 def charge_revert(request):
     """
     POST: Revert a charge.
-        @body_param charge_id: int
-        @body_param token: int
+        :body_param charge_id: int
+        :body_param token: int
     """
     charge_id = request.POST.get("charge_id")
     token = request.POST.get("token")
@@ -128,9 +129,9 @@ def transfer(request):
     """
     GET: Return the rendered page to transfer money to another user.
     POST: Transfer money to another user.
-        @body_param token: int
-        @body_param receiver: int
-        @body_param amount: float
+        :body_param token: int
+        :body_param receiver: int
+        :body_param amount: float
     """
     if request.method == "GET":
         return render(request, "transfer.html", {
@@ -156,8 +157,8 @@ def transfer(request):
 def transfer_revert(request):
     """
     POST: Revert a transfer.
-        @body_param transfer_id: int
-        @body_param token: int
+        :body_param transfer_id: int
+        :body_param token: int
     """
     transfer_id = request.POST.get('transfer_id')
     token = request.POST.get('token')
@@ -175,14 +176,14 @@ def transfer_revert(request):
 def login(request):
     """
     Login an user.
-    @body_param identifier: string/int
-    @body_param identifier_type: int
+    :body_param identifier: string/int
+    :body_param identifier_type: int
     """
     identifier = request.POST.get('identifier')
     ident_type = request.POST.get('identifier_type')
     try:
         UserLogic.login(request, identifier, ident_type)
-    except (UserIdentifierNotExists, DisabledIdentifier): 
+    except (UserIdentifierNotExists, DisabledIdentifier):
         return HttpResponseRedirect(reverse("index"))
 
     return HttpResponseRedirect(reverse("buy"))
@@ -205,7 +206,7 @@ def logout(request):
 @csrf_protect
 def getToken(request):
     """
-    Return a new token used for the at-most-once protocol.
+    Return a new token used for the at-most-once protocol as JsonResponse.
     """
     token = TokenLogic.get_token()
     return JsonResponse({"token": token})
