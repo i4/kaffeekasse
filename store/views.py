@@ -166,7 +166,7 @@ def transfer(request):
         try:
             transfer_tuple = TransferLogic.transfer(
                 user_id, receiver_id, receiver_identifier_type, amount, token)
-        except (UserNotEnoughMoney, NegativeMoneyAmount, UserIdentifierNotExists) as exc:
+        except (UserNotEnoughMoney, NegativeMoneyAmount, UserIdentifierNotExists, SenderEqualsReceiverError) as exc:
             return JsonResponse({'error': str(exc)}, status=400)
         except SerializationError as exc:
             return JsonResponse({'error': str(exc)}, status=503)

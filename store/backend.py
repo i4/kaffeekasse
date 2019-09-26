@@ -486,7 +486,8 @@ class TransferLogic:
         Performs the transfer routine where a sender sends money to a receiver. Two db relations are included:
         *)  User, where the sender aswell as the receiver are from
         *)  Transfer, where the newly created transfer is saved to
-        Possible Exceptions: UserNotEnoughMoney, NegativeMoneyAmount, UserIdentifierNotExists, SerializationError
+        Possible Exceptions: UserNotEnoughMoney, NegativeMoneyAmount, UserIdentifierNotExists, SerializationError,
+        SenderEqualsReceiverError
         :param user_id: id of the user that wants to send money
         :param receiver_id: id of the user that should get the money
         :param amount: amount of money to be sent
@@ -494,6 +495,9 @@ class TransferLogic:
         """
         sender = list(User.objects.filter(id=user_id))[0]
         receiver = UserLogic.getUser(identifier=receiver_identifier, identifier_type=receiver_identifier_type)
+        if sender.id == receiver.id:
+            raise SenderEqualsReceiverError()
+
         try:
             with transaction.atomic():
                 transfer_id = TransferLogic.__createTransferTuple(sender, receiver, amount, token)

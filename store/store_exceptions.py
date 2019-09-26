@@ -58,3 +58,7 @@ def filterOperationalError(exception):
     else:
         raise exception
 
+class SenderEqualsReceiverError(Exception):
+    def __init__(self):
+        super().__init__("Absender darf nicht auch der Adressat sein!")
+
