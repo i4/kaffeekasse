@@ -50,8 +50,10 @@ def buy(request):
         token = request.POST.get("token")
         try:
             purchase_return_tuple = PurchaseLogic.purchase(user_id, identifier, identifier_type, token)
-        except (UserNotEnoughMoney, NegativeMoneyAmount, UserIdentifierNotExists, SerializationError) as exc:
+        except (UserNotEnoughMoney, NegativeMoneyAmount, UserIdentifierNotExists) as exc:
             return JsonResponse({'error': str(exc)}, status=400)
+        except SerializationError as exc:
+            return JsonResponse({'error': str(exc)}, status=503)
         if purchase_return_tuple[0] >= 0:
             return JsonResponse({
                 "purchase_id": purchase_return_tuple[0],
@@ -75,8 +77,10 @@ def buy_revert(request):
     token = request.POST.get("token")
     try:
         PurchaseLogic.annullatePurchase(purchase_id, token)
-    except (PurchaseNotAnnullable, UserNotEnoughMoney, SerializationError) as exc:
+    except (PurchaseNotAnnullable, UserNotEnoughMoney) as exc:
         return JsonResponse({'error': str(exc)}, status=400)
+    except SerializationError as exc:
+        return JsonResponse({'error': str(exc)}, status=503)
     return HttpResponse(status=200)
 
 
@@ -105,8 +109,10 @@ def charge(request):
             return JsonResponse({'error': str(exc)}, status=400)
         try:
             charge_id = ChargeLogic.charge(user_id, amount, token)
-        except (NegativeMoneyAmount, SerializationError) as exc:
+        except NegativeMoneyAmount as exc:
             return JsonResponse({'error': str(exc)}, status=400)
+        except SerializationError as exc:
+            return JsonResponse({'error': str(exc)}, status=503)
         return JsonResponse({'charge_id': charge_id})
 
 
@@ -123,8 +129,10 @@ def charge_revert(request):
     token = request.POST.get("token")
     try:
         ChargeLogic.annullateCharge(charge_id, token)
-    except (ChargeNotAnnullable, UserNotEnoughMoney, NegativeMoneyAmount, SerializationError) as exc:
+    except (ChargeNotAnnullable, UserNotEnoughMoney, NegativeMoneyAmount) as exc:
         return JsonResponse({'error': str(exc)}, status=400)
+    except SerializationError as exc:
+        return JsonResponse({'error': str(exc)}, status=503)
     return HttpResponse(status=200)
 
 
@@ -158,8 +166,10 @@ def transfer(request):
         try:
             transfer_tuple = TransferLogic.transfer(
                 user_id, receiver_id, receiver_identifier_type, amount, token)
-        except (UserNotEnoughMoney, NegativeMoneyAmount, UserIdentifierNotExists, SerializationError) as exc:
+        except (UserNotEnoughMoney, NegativeMoneyAmount, UserIdentifierNotExists) as exc:
             return JsonResponse({'error': str(exc)}, status=400)
+        except SerializationError as exc:
+            return JsonResponse({'error': str(exc)}, status=503)
         return JsonResponse({"transfer_id": transfer_tuple[0], "receiver_id": transfer_tuple[1]})
 
 
@@ -176,8 +186,10 @@ def transfer_revert(request):
     token = request.POST.get('token')
     try:
         TransferLogic.annullateTransfer(transfer_id, token)
-    except (TransferNotAnnullable, UserNotEnoughMoney, NegativeMoneyAmount, SerializationError) as exc:
+    except (TransferNotAnnullable, UserNotEnoughMoney, NegativeMoneyAmount) as exc:
         return JsonResponse({'error': str(exc)}, status=400)
+    except SerializationError as exc:
+        return JsonResponse({'error': str(exc)}, status=503)
     return HttpResponse(status=200)
 
 
@@ -223,5 +235,5 @@ def getToken(request):
     try:
         token = TokenLogic.get_token()
     except SerializationError as exc:
-        return JsonResponse({'error': str(exc)}, status=400)
+        return JsonResponse({'error': str(exc)}, status=503)
     return JsonResponse({"token": token})
