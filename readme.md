@@ -40,5 +40,5 @@ Database transactions that consist of several individual transactions are sent t
 
 ## License
 
-This project and the logo is licensed under the GLPv3 License - see the [GLPv3](GLPv3) file for details
+This project and the logo is licensed under the GLPv3 License - see the [GLPv3](GLPv3.md) file for details
 
