@@ -31,6 +31,9 @@ The client requests a new token from the server, which it sends together with th
 If anything didn't work, the user sees an error message.
 Database transactions that consist of several individual transactions are sent to the database as one transaction and either all or none are executed.
 
+### Config
+All configurable parameters are stored in store/store_config.py. See this file for more information.
+
 
 
 ## Authors
