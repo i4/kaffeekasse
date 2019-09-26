@@ -17,7 +17,7 @@ class UserLogic:
     def getUser(identifier, identifier_type):
         """
         Returns user that can be definitly identified by the unique combination identifier and identifier_type.
-        Possible Exceptions: UserIdentifierNotExists, DisabledIdentifier
+        Possible Exceptions: UserIdentifierNotExists
         :param identifier: on of the user identifiers
         :param identifier_type: type of the identifier
         """
@@ -28,8 +28,6 @@ class UserLogic:
             raise UserIdentifierNotExists()
         idf = idf[0]
         user = idf.user
-        if not user.pk_login_enabled:
-            raise DisabledIdentifier()
         return user
 
 
@@ -39,13 +37,15 @@ class UserLogic:
         Basic login function. On success the user is logged in and True is returned and a login-tuple is created. On Failure nothing happens and False is
         returned.
         Basis login function.
-        Possible Exceptions: UserIdentifierNotExists, DisabledIdentifier, SerializationError
+        Possible Exceptions: UserIdentifierNotExists, DisabledIdentifier, SerializationError, DisabledIdentifier
         :param request: the request object
         :param user_id: id of the user that should log in
         """
         user = UserLogic.getUser(identifier, identifier_type)
         try:
             with transaction.atomic():
+                if int(identifier_type) == UserIdentifierTypes.PRIMARYKEY and not user.pk_login_enabled:
+                    raise DisabledIdentifier()
                 login_tuple = Login(user=user)
                 login_tuple.save()
                 login(request, user)
