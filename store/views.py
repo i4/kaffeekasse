@@ -16,6 +16,7 @@ def index(request):
     """
     GET: Return the rendered index page. Users can login here.
     """
+    auth_logout(request)
     return render(request, "index.html", {
         "users": UserLogic.getFrequentUsersList(),
         "ident_types": UserIdentifierTypes.to_dict(),
