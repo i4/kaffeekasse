@@ -51,7 +51,6 @@ class UserLogic:
                 login(request, user)
         except OperationalError as exc:
             filterOperationalError(exc)
-            
 
     @staticmethod
     def getFrequentUsersList():
@@ -430,7 +429,7 @@ class TransferLogic:
 
         if max_receivers >= 0:
             recent_transfers = recent_transfers[:max_receivers]
-        
+
         other_transfers = User.objects.exclude(id__in=[d.receiver.id for d in list(recent_transfers)])
         other_transfers = other_transfers.exclude(id=user_id)
         other_transfers = other_transfers.values('id', 'username')
@@ -439,7 +438,7 @@ class TransferLogic:
         recent_transfers = recent_transfers.values('receiver', 'receiver__username')
         recent_transfers = recent_transfers.annotate(total=Count('receiver'))
         recent_transfers = recent_transfers.order_by('receiver__username').order_by('total').reverse()
-         
+
         for transfer in recent_transfers:
             transfer['id'] = transfer.pop('receiver')
             transfer['username'] = transfer.pop('receiver__username')
@@ -554,4 +553,3 @@ class TransferLogic:
                 sender.incrementMoney(transfer.amount)
         except OperationalError as exc:
             filterOperationalError(exc)
-

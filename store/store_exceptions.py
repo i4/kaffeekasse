@@ -50,7 +50,6 @@ class ProductIdentifierNotExists(Exception):
 class SerializationError(Exception):
     def __init__(self):
         super().__init__("Etwas ist schief gelaufen. Bitte versuch es erneut!")
-        
 
 def filterOperationalError(exception):
     if exception.__cause__.__class__ == TransactionRollbackError:
@@ -61,4 +60,3 @@ def filterOperationalError(exception):
 class SenderEqualsReceiverError(Exception):
     def __init__(self):
         super().__init__("Absender darf nicht auch der Adressat sein!")
-
