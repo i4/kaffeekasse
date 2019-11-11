@@ -2,10 +2,8 @@
 <html lang=de>
 <head>
     <title>{% block title %}Kaffeekasse 2000 XT{% endblock %}</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
-        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-
     {% load static %}
+    <link rel="stylesheet" href="{% static "bootstrap-4.1.3/bootstrap.min.css"%}">
     <link rel="stylesheet" href="{% static "custom.css" %}">
 </head>
 <body>
@@ -41,10 +39,9 @@
     </div>
 
     {% comment %} Javascript {% endcomment %}
-    <script src="https://code.jquery.com/jquery-latest.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
-        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
-        crossorigin="anonymous"></script>
+    <script src="{% static "jquery-latest.js" %}"></script>
+    <script src="{% static "bootstrap-4.1.3/bootstrap.min.js" %}"></script>
+
     {% comment %} Money {% endcomment %}
     {% if user.is_authenticated %}
     <script>
