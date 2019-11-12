@@ -1,17 +1,17 @@
-.btn-i4{
+.btn-i4 {
     background-color: #003865;
     color: white;
 }
-.btn-outline-i4{
+.btn-outline-i4 {
     background-color: #FFFFFF;
     color: #003865;
     border: 2px solid black;
     border-color: #003865;
 }
-.navbar-i4{
+.navbar-i4 {
     background-color: #003865 !important;
 }
-.scroll-lg{
+.scroll-lg {
     max-height: 650px;
     margin-bottom: 10px;
     overflow:scroll;
@@ -19,7 +19,7 @@
     overflow-y: scroll;
     overflow-x: hidden;
 }
-.scroll-custom{
+.scroll-custom {
     max-height: 630px;
     margin-bottom: 10px;
     overflow:scroll;
@@ -27,7 +27,7 @@
     overflow-y: scroll;
     overflow-x: hidden;
 }
-.scroll-sm{
+.scroll-sm {
     max-height: 283px;
     margin-bottom: 10px;
     overflow:scroll;
@@ -35,9 +35,9 @@
     overflow-y: scroll;
     overflow-x: hidden;
 }
-.font-xl{
+.font-xl {
     font-size: x-large;
 }
-.font-lg{
+.font-lg {
     font-size: large;
 }
