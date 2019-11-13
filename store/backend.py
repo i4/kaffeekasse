@@ -56,8 +56,8 @@ class UserLogic:
 
         try:
             with transaction.atomic():
-                login_tuple = Login(user=user)
-                login_tuple.save()
+                x = Login(user=user)
+                x.save()
                 login(request, user)
         except OperationalError as exc:
             filterOperationalError(exc)
