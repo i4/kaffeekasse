@@ -25,6 +25,9 @@ class UserLogic:
         assert type(ident) is str
         assert type(ident_type) is int
 
+        if ident_type == UserIdentifier.PRIMARYKEY:
+            return User.objects.get(id=ident)
+
         idf = UserIdentifier.objects.filter(ident=ident, ident_type=ident_type)
         idf = idf.select_related('user')
         idf = list(idf)
