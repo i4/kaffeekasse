@@ -416,21 +416,15 @@ class ChargeLogic:
         try:
             with transaction.atomic():
                 user = User.objects.get(id=user_id)
-
+                user.incrementMoney(amount)
                 charge = Charge(token=token, amount=amount, annullated=False, user_id=user.id)
                 charge.save()
-
-                user.incrementMoney(amount)
-
                 return charge.id
-
         except IntegrityError:
             charge = Charge.objects.get(token=token).values('id')
             return charge['id']
-
         except OperationalError as exc:
             filterOperationalError(exc)
-
         assert False
 
     @staticmethod
