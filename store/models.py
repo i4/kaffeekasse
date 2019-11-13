@@ -55,6 +55,9 @@ class Product(models.Model):
     stock = models.IntegerField(default=0)
     price = models.DecimalField(max_digits=6, decimal_places=2)
 
+    def __str__(self):
+        return self.name
+
 
 class ProductCategory(models.Model):
     SNACK = 0
