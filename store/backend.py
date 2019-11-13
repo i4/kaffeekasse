@@ -414,24 +414,22 @@ class ChargeLogic:
         try:
             with transaction.atomic():
                 user = User.objects.get(id=user_id)
-                charge_id = ChargeLogic.__createChargeTuple(user, amount, token)
-                ChargeLogic.__updateUserMoney(user, amount)
+
+                charge = Charge(token=token, amount=amount, annullated=False, user_id=user.id)
+                charge.save()
+
+                user.incrementMoney(amount)
+
+                return charge.id
+
         except IntegrityError:
             charge = Charge.objects.get(token=token).values('id')
             return charge['id']
+
         except OperationalError as exc:
             filterOperationalError(exc)
-        return charge_id
 
-    @staticmethod
-    def __createChargeTuple(user, amount, token):
-        charge = Charge(token=token, amount=amount, annullated=False, user_id=user.id)
-        charge.save()
-        return charge.id
-
-    @staticmethod
-    def __updateUserMoney(user, amount):
-        user.incrementMoney(amount)
+        assert False
 
     @staticmethod
     def annullateCharge(charge_id, token):
