@@ -71,7 +71,7 @@
                 </div>
                 <div class="text-right">
                     <button class="btn btn-i4" id="recent_charge_revert">
-                        R&uuml;ckg&auml;ngig
+                        Rückgängig
                     </button>
                 </div>
             </label>
@@ -120,7 +120,7 @@
         var amount = $("#amount").val().replace(',', '.');
         amount = parseFloat(amount);
         if (isNaN(amount)) {
-            displayError("Ung&uuml;ltiger Betrag");
+            displayError("Ungültiger Betrag");
             return;
         }
 
@@ -161,7 +161,7 @@
     // Returns a function that can be called to revert the charge where charge.id == id
     function revert(id) {
         error = error => {
-            showError(error, "Fehler beim R&uuml;ckg&auml;gig machen einer Aufladung");
+            showError(error, "Fehler beim Rückgängig machen einer Aufladung");
         };
 
         return function() {
@@ -206,7 +206,7 @@
             $("#recent_charges").append(template);
 
             // Set template values
-            $("#recent_charge_amount").html(charge.amount.toFixed(2) + "&euro;").attr("id", "");
+            $("#recent_charge_amount").html(charge.amount.toFixed(2) + " €").attr("id", "");
             if (charge.annullable) {
                 $("#recent_charge_revert").click(revert(charge.id)).attr("id", "");
             }

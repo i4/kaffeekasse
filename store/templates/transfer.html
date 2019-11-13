@@ -59,7 +59,7 @@
 
         {% comment %} User numpad {% endcomment %}
         <div class="pb-4">
-            <h4>Empf&auml;nger</h4>
+            <h4>Empfänger</h4>
             <div class="btn-group-vertical" role="group">
                 <div class="btn-group">
                     <input readonly="true" class="text-center form-control-lg mb-2" id="user_id">
@@ -100,7 +100,7 @@
     </div>
     {% comment %} User list {% endcomment %}
     <div class="col-lg-4 col-md-6 col-12">
-        <h4>Alle Empf&auml;nger</h4>
+        <h4>Alle Empfänger</h4>
         <ul class="list-group scroll-lg">
             {% for user in users %}
                 <button onclick="transferPK({{user.id}})" type="button" class="list-group-item list-group-item-action">{{ user.username }}</button>
@@ -109,7 +109,7 @@
     </div>
     {% comment %} Recent transfers {% endcomment %}
     <div class="col-lg-4 col-md-6 col-12 mb-4">
-        <h4>Letzte &Uuml;berweisungen</h4>
+        <h4>Letzte Überweisungen</h4>
         <ul class="list-group" id="recent_transfers">
         </ul>
         <template id="recent_transfer_annullable_template">
@@ -120,7 +120,7 @@
                 </div>
                 <div class="text-right">
                     <button class="btn btn-i4" id="recent_transfer_revert">
-                        R&uuml;ckg&auml;ngig
+                        Rückgängig
                     </button>
                 </div>
             </label>
@@ -176,7 +176,7 @@
         var id = parseInt($("#user_id").val());
         if (isNaN(id)) {
             $("#user_id").val("");
-            displayError("Ung&uuml;ltiger Empf&auml;nger");
+            displayError("Ungültiger Empfänger");
             return;
         }
 
@@ -189,7 +189,7 @@
 
     function transfer(receiver_identifier, identifier_type) {
         error = error => {
-            showError(error, "Fehler beim &Uuml;berweisen");
+            showError(error, "Fehler beim Überweisen");
         }
 
         // Get amount from text field
@@ -197,7 +197,7 @@
         amount = parseFloat(amount);
         if (isNaN(amount)) {
             $("#amount").val("");
-            displayError("Ung&uuml;ltiger Betrag");
+            displayError("Ungültiger Betrag");
             return;
         }
 
@@ -242,7 +242,7 @@
     // Returns a function that can be called to revert the transfer where transfer.id == id
     function revert(id) {
         error = error => {
-            showError(error, "Fehler beim R&uuml;ckg&auml;gig machen einer&Uuml;berweisung");
+            showError(error, "Fehler beim Rückgängig machen einer Überweisung");
         }
 
         return function() {
@@ -288,7 +288,7 @@
 
             // Set template values
             $("#recent_transfer_recipient").html(transfer.receiver_username).attr("id", "");
-            $("#recent_transfer_amount").html(transfer.amount.toFixed(2) + "&euro;").attr("id", "");
+            $("#recent_transfer_amount").html(transfer.amount.toFixed(2) + " €").attr("id", "");
             if (transfer.annullable) {
                 $("#recent_transfer_revert").click(revert(transfer.id)).attr("id", "");
             }

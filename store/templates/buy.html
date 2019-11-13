@@ -17,22 +17,23 @@
     <div class="col-lg-4 col-md-6 col-12">
         {% comment %} Most bought products {% endcomment %}
         <div class="col-12 mb-4">
-            <h4>H&auml;ufig gekauft</h4>
+            <h4>Häufig gekauft</h4>
             <ul class="list-group scroll-sm">
                 {% for product in most_bought %}
                 <button onclick="buyPK({{ product.product_id }})" type="button" class="list-group-item list-group-item-action">
                     <div class="d-flex w-100 justify-content-between">
                         <div class="mb-1">{{ product.product__name }}</div>
-                        <div>{{ product.product__price }} &euro;</div>
+                        <div>{{ product.product__price }} €</div>
                     </div>
                 </button>
                 {% endfor %}
             </ul>
         </div>
+
         {% comment %} Last bought products {% endcomment %}
         <div class="col-12 mb-4">
             <h4>
-                Letzte Eink&auml;ufe
+                Letzte Einkäufe
             </h4>
             <ul class="list-group scroll-sm" id="recently_bought_list">
             </ul>
@@ -44,7 +45,7 @@
                     </div>
                     <div class="text-right">
                         <button class="btn btn-i4" id="recent_bought_revert">
-                            R&uuml;ckg&auml;ngig
+                            Rückgängig
                         </button>
                     </div>
                 </label>
@@ -69,7 +70,7 @@
     </div>
     {% comment %} Drinks {% endcomment %}
     <div class="col-lg-4 col-md-6 col-12 mb-4">
-        <h4>Getr&auml;nke</h4>
+        <h4>Getränke</h4>
         <div class="accordion" id="accordionDrinks">
             {% for sublevel_cat, prods in drinks.items %}
                 <div class="card">
@@ -83,7 +84,7 @@
                                     <button onclick="buyPK({{ prod.id }})" type="button" class="list-group-item list-group-item-action">
                                         <div class="d-flex w-100 justify-content-between">
                                             <div class="mb-1">{{ prod.name }}</div>
-                                            <div> {{ prod.price }} &euro;</div>
+                                            <div> {{ prod.price }} €</div>
                                         </div>
                                     </button>
                                 {% endfor %}
@@ -110,7 +111,7 @@
                                     <button onclick="buyPK({{ prod.id }})" type="button" class="list-group-item list-group-item-action">
                                         <div class="d-flex w-100 justify-content-between">
                                             <div class="mb-1">{{ prod.name }}</div>
-                                            <div> {{ prod.price }} &euro;</div>
+                                            <div> {{ prod.price }} €</div>
                                         </div>
                                     </button>
                                 {% endfor %}
@@ -159,7 +160,7 @@
         // Check if id is a valid integer
         id = parseInt(id);
         if (isNaN(id)) {
-            displayError("Ung&uuml;tiges Produkt");
+            displayError("Ungültiges Produkt");
             return;
         }
 
@@ -212,7 +213,7 @@
 
     function revert(id) {
         error = error => {
-            showError(error, "Fehler beim R&uuml;ckg&auml;gig machen eines Einkaufes.");
+            showError(error, "Fehler beim Rückgängig machen eines Einkaufes.");
         }
 
         return function() {
@@ -257,7 +258,7 @@
             $("#recently_bought_list").append(template);
 
             // Set template values
-            $("#recent_product_price").html(product.price.toFixed(2) + " &euro;").attr("id", "");
+            $("#recent_product_price").html(product.price.toFixed(2) + " €").attr("id", "");
             $("#recent_product_name").html(product.name).attr("id", "");
             if (product.annullable) {
                 $("#recent_bought_revert").click(revert(product.purchase_id)).attr("id", "");
