@@ -1,8 +1,9 @@
 from django.contrib import admin
-from .models import User, Product, ProductCategory, UserIdentifier, ProductIdentifier
+
+import store.models as models
 
 
-@admin.register(User)
+@admin.register(models.User)
 class UserAdmin(admin.ModelAdmin):
     list_display = ('id', 'username', 'first_name',
                     'last_name', 'is_active', 'is_staff', 'money')
@@ -13,22 +14,22 @@ class UserAdmin(admin.ModelAdmin):
     )
     pass
 
-@admin.register(UserIdentifier)
+@admin.register(models.UserIdentifier)
 class UserIdentifierAdmin(admin.ModelAdmin):
     list_display = ('id', 'identifier', 'identifier_type', 'user')
     fields = ('identifier', 'identifier_type', 'user')
 
-@admin.register(Product)
+@admin.register(models.Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'price', 'category', 'stock')
     fields = ('name', 'price', 'category', 'stock')
 
-@admin.register(ProductCategory)
+@admin.register(models.ProductCategory)
 class ProductCategoryAdmin(admin.ModelAdmin):
     list_display = ('id', 'toplevel', 'sublevel')
     fields = ('toplevel', 'sublevel')
 
-@admin.register(ProductIdentifier)
+@admin.register(models.ProductIdentifier)
 class ProductIdentifierAdmin(admin.ModelAdmin):
     list_display = ('id', 'identifier', 'identifier_type', 'product')
     fields = ('identifier', 'identifier_type', 'product')
