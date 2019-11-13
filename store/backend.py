@@ -581,28 +581,21 @@ class TransferLogic:
 
         try:
             with transaction.atomic():
-                transfer_id = TransferLogic.__createTransferTuple(sender, receiver, amount, token)
-                TransferLogic.__updateSenderMoney(sender, amount)
-                TransferLogic.__updateReceiverMoney(receiver, amount)
+                transfer = Transfer(sender=sender, receiver=receiver, amount=amount, token=token, annullated=False)
+                transfer.save()
+
+                sender.decrementMoney(amount)
+                receiver.incrementMoney(amount)
+
+                return transfer.id, receiver.id
+
         except IntegrityError:
             return Transfer.objects.get(token=token), receiver.id
+
         except OperationalError as exc:
             filterOperationalError(exc)
-        return transfer_id, receiver.id
 
-    @staticmethod
-    def __createTransferTuple(sender, receiver, amount, token):
-        transfer = Transfer(sender=sender, receiver=receiver, amount=amount, token=token, annullated=False)
-        transfer.save()
-        return transfer.id
-
-    @staticmethod
-    def __updateSenderMoney(sender, amount):
-        sender.decrementMoney(amount)
-
-    @staticmethod
-    def __updateReceiverMoney(receiver, amount):
-        receiver.incrementMoney(amount)
+        assert False
 
     @staticmethod
     def annullateTransfer(transfer_id, token):
