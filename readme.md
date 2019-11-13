@@ -26,7 +26,7 @@ The http request handlers are located in store/views.py. All exceptions that are
 
 ### At-Most-Once
 
-At-Most-Once is guaranteed for purchases, money recharching.
+At-Most-Once is guaranteed for purchases, money recharging.
 The client requests a new token from the server, which it sends together with the actual request. The server checks whether it has already used this token for another request of this type. If so, it aborts and returns success to the client. Otherwise, the request is normally processed.
 If anything didn't work, the user sees an error message.
 Database transactions that consist of several individual transactions are sent to the database as one transaction and either all or none are executed.
