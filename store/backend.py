@@ -109,7 +109,7 @@ class ProductLogic:
         :param identifier: on of the user identifiers
         :param identifier_type: type of the identifier
         """
-        if int(identifier_type) == 2:
+        if int(identifier_type) == ProductIdentifier.PRIMARYKEY:
             products = list(Product.objects.filter(id=int(identifier)))
             if len(products) == 0:
                 raise ProductIdentifierNotExists()
