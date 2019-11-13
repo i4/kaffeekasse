@@ -20,7 +20,6 @@ class User(AbstractUser):
             raise NegativeMoneyAmount()
         self.money += Decimal(amount)
         self.save()
-        return True
 
     def decrementMoney(self, amount):
         if amount < 0:
@@ -29,7 +28,6 @@ class User(AbstractUser):
             raise UserNotEnoughMoney()
         self.money -= Decimal(amount)
         self.save()
-        return True
 
 
 class UserIdentifier(models.Model):
