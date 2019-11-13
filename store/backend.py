@@ -376,12 +376,12 @@ class ChargeLogic:
 
         max_charges = config['N_LAST_CHARGES']
         annullable_time = config['T_ANNULLABLE_CHARGE_M']
-        charges = Charge.objects.filter(user=user_id).values('id', 'amount', 'annullated', 'time_stamp')
-
-        if max_charges < 0:
-            charges = list(charges.order_by('time_stamp').reverse())
-        else:
-            charges = list(charges.order_by('time_stamp').reverse())[:max_charges]
+        charges = Charge.objects.filter(user=user_id) \
+                .values('id', 'amount', 'annullated', 'time_stamp') \
+                .order_by('time_stamp') \
+                .reverse()
+        if max_charges >= 0:
+            charges = charges[:max_charges]
 
         # warning: summertime/wintertime currently is not respected in the following calculations. This should be
         # implemented to avoid non-annullable transactions in the lost hour between summer- and wintertime
