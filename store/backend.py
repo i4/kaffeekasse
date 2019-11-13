@@ -16,7 +16,7 @@ class UserLogic:
     @staticmethod
     def getUser(identifier, identifier_type):
         """
-        Returns user that can be definitly identified by the unique
+        Returns user that can be definitely identified by the unique
         combination identifier and identifier_type.
 
         :param identifier: on of the user identifiers
@@ -39,8 +39,6 @@ class UserLogic:
         returned and a login-tuple is created. On Failure nothing happens and
         False is returned.
 
-        Basis login function.
-
         :param request: the request object
         :param user_id: id of the user that should log in
         """
@@ -58,19 +56,19 @@ class UserLogic:
     @staticmethod
     def getFrequentUsersList():
         """
-        Concatinates the results of three db-queries:
+        Concatenates the results of three db-queries:
 
         - First part of the list: a number of users specified in max_users,
           that have most logins within a number of days specified in max_days.
         - Second part of the list: all users that are not included in the
           first part of the list and have at least one login
-        - Third part of the list: all users that are not included in the firt
+        - Third part of the list: all users that are not included in the first
           both parts
 
         Returned list: [{'user': ..., 'user_username': ..., 'total': ...}]
 
         :config-param max_users: depends on N_USERS_LOGIN
-        :config-param max_days: depends on T_USERS_LGIN_D
+        :config-param max_days: depends on T_USERS_LOGIN_D
         """
         max_users = config['N_USERS_LOGIN']
         max_days = config['T_USERS_LOGIN_D']
@@ -112,7 +110,7 @@ class ProductLogic:
     @staticmethod
     def getProduct(identifier, identifier_type):
         """
-        Returns product that can be definitly identified by the unique
+        Returns product that can be definitely identified by the unique
         combination identifier and identifier_type.
 
         :param identifier: on of the user identifiers
@@ -162,9 +160,9 @@ class ProductLogic:
     @staticmethod
     def getLastBoughtProductsList(user_id):
         """
-        Resulst of a db query asking for a number of products specified in
+        Result of a db query asking for a number of products specified in
         max_products that were recently bought by a specified user. The result
-        also contains information on the state of a possible annullation of the
+        also contains information on the state of a possible annulation of the
         products purchase.
 
         Returned list: [{'product__name': ..., 'product_id': ...,
