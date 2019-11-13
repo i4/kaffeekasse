@@ -228,7 +228,10 @@ class ProductLogic:
         for sublevel in sublevels:
             # Get product for sublevel
             sublevel = sublevel["sublevel"]
-            ps = ProductCategory.objects.filter(toplevel=category, sublevel=sublevel).prefetch_related('products').values('products__id', 'products__name', 'products__price').all()
+            ps = ProductCategory.objects.filter(toplevel=category, sublevel=sublevel) \
+                    .prefetch_related('products') \
+                    .values('products__id', 'products__name', 'products__price') \
+                    .all()
 
             # Rename keys
             for p in ps:
