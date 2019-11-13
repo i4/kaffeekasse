@@ -57,7 +57,6 @@ class Product(models.Model):
     def updateStock(self, amount):
         self.stock += amount
         self.save()
-        return True
 
 
 class ProductCategory(models.Model):
