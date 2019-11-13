@@ -130,20 +130,17 @@ class ProductLogic:
         assert type(ident_type) is int
 
         if ident_type == ProductIdentifier.PRIMARYKEY:
-            products = list(Product.objects.filter(id=ident))
-            if len(products) == 0:
+            try:
+                return Product.objects.get(id=ident)
+            except Product.DoesNotExist:
                 raise ProductIdentifierNotExists()
-            product = products[0]
-            return product
-        else:
-            idf = ProductIdentifier.objects.filter(ident_type=ident_type).filter(ident=ident)
-            idf = idf.select_related('product')
-            idf = list(idf)
-            if len(idf) == 0:
-                raise ProductIdentifierNotExists()
-            idf = idf[0]
-            product = idf.product
-        return product
+
+        x = ProductIdentifier.objects.filter(ident_type=ident_type).filter(ident=ident) \
+                .select_related('product') \
+                .first()
+        if x is None:
+            raise ProductIdentifierNotExists()
+        return x.product
 
     @staticmethod
     def getMostBoughtProductsList():
