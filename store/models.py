@@ -71,6 +71,12 @@ class ProductCategory(models.Model):
     toplevel = models.IntegerField(_("Toplevel category"), choices=choices)
     sublevel = models.TextField(_("Sublevel category"), unique=True)
 
+    def __str__(self):
+        for x in ProductCategory.choices:
+            if x[0] == self.toplevel:
+                toplevel = x[1]
+        return '{}: {}'.format(toplevel, self.sublevel)
+
 
 class ProductIdentifier(models.Model):
     ID = 0
