@@ -1,5 +1,5 @@
 from django.shortcuts import render, reverse
-from .models import User, Product, UserIdentifierTypes
+from .models import User, Product
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import login_required
@@ -19,7 +19,7 @@ def index(request):
     auth_logout(request)
     return render(request, "index.html", {
         "users": UserLogic.getFrequentUsersList(),
-        "ident_types": UserIdentifierTypes.to_dict(),
+        "ident_types": UserIdentifier,
     })
 
 
@@ -152,7 +152,7 @@ def transfer(request):
         return render(request, "transfer.html", {
             "users": TransferLogic.getFreuquentTransferTargets(request.user.id),
             "recent_transfers": TransferLogic.getLastTransfers(request.user.id),
-            "ident_types": UserIdentifierTypes.to_dict(),
+            "ident_types": UserIdentifier,
             "config": config,
         })
     elif request.method == "POST":

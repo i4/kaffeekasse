@@ -4,7 +4,6 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.utils import timezone
 from decimal import Decimal
 from .store_exceptions import *
-from enum import IntEnum
 from django.utils.translation import gettext_lazy as _
 
 
@@ -33,19 +32,21 @@ class User(AbstractUser):
         return True
 
 
-class UserIdentifierTypes(IntEnum):
+class UserIdentifier(models.Model):
     PRIMARYKEY = 0
     ID = 1
     BARCODE = 2
     RFID = 3
 
-    @staticmethod
-    def to_dict():
-        return {tag.name: tag.value for tag in UserIdentifierTypes}
+    choices = [
+        (PRIMARYKEY, 'Pk'),
+        (ID, 'Id'),
+        (BARCODE, 'Barcode'),
+        (RFID, 'RFID'),
+    ]
 
-class UserIdentifier(models.Model):
     user = models.ForeignKey('user', on_delete=models.CASCADE)
-    identifier_type = models.IntegerField(choices=[(tag.value, tag.value) for tag in UserIdentifierTypes])
+    identifier_type = models.IntegerField(choices=choices)
     identifier = models.TextField()
 
 

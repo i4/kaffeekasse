@@ -44,7 +44,7 @@ class UserLogic:
         user = UserLogic.getUser(identifier, identifier_type)
         try:
             with transaction.atomic():
-                if int(identifier_type) == UserIdentifierTypes.PRIMARYKEY and not user.pk_login_enabled:
+                if int(identifier_type) == UserIdentifier.PRIMARYKEY and not user.pk_login_enabled:
                     raise DisabledIdentifier()
                 login_tuple = Login(user=user)
                 login_tuple.save()
