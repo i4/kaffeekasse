@@ -113,10 +113,6 @@ class Transfer(models.Model):
     amount = models.DecimalField(max_digits=6, decimal_places=2)
     annullated = models.BooleanField()
 
-    def annullate(self):
-        self.annullated = True
-        self.save()
-
 
 class Login(models.Model):
     time_stamp = models.DateTimeField(auto_now=True)

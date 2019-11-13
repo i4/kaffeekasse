@@ -633,7 +633,8 @@ class TransferLogic:
 
         try:
             with transaction.atomic():
-                transfer.annullate()
+                transfer.annullated = True
+                transfer.save()
                 receiver.decrementMoney(transfer.amount)
                 sender.incrementMoney(transfer.amount)
         except OperationalError as exc:
