@@ -36,7 +36,9 @@ class UserIdentifier(models.Model):
     RFID = 3
 
     choices = [
-        (PRIMARYKEY, 'Pk'),
+        # NOTE: Don't list PRIMARYKEY here, it's not stored in UserIdentifier
+        # but only controls using the user's primary key (as stored in User)
+        # as identifier.
         (ID, 'Id'),
         (BARCODE, 'Barcode'),
         (RFID, 'RFID'),
