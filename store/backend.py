@@ -301,7 +301,8 @@ class PurchaseLogic:
                 purchase.save()
 
                 user.decrementMoney(product.price)
-                product.updateStock(-1)
+                product.stock -= 1
+                product.save()
 
                 return purchase.id, product.id
 
