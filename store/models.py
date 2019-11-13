@@ -74,18 +74,19 @@ class ProductCategory(models.Model):
     sublevel = models.TextField(_("Sublevel category"), unique=True)
 
 
-class ProductIdentifierTypes(IntEnum):
+class ProductIdentifier(models.Model):
     ID = 0
     BARCODE = 1
     PRIMARYKEY = 2
 
-    @staticmethod
-    def to_dict():
-        return {tag.name: tag.value for tag in ProductIdentifierTypes}
+    choices = [
+        (ID, 'Id'),
+        (BARCODE, 'Barcode'),
+        (PRIMARYKEY, 'Pk'),
+    ]
 
-class ProductIdentifier(models.Model):
     product = models.ForeignKey('product', on_delete=models.CASCADE)
-    identifier_type = models.IntegerField(choices=[(tag.value, tag.value) for tag in ProductIdentifierTypes])
+    identifier_type = models.IntegerField(choices=choices)
     identifier = models.TextField()
 
 
