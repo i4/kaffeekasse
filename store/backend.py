@@ -464,8 +464,9 @@ class ChargeLogic:
         try:
             with transaction.atomic():
                 user = User.objects.get(id=charge.user.id)
-                charge.annullate()
                 user.decrementMoney(charge.amount)
+                charge.annullated = True
+                charge.save()
         except OperationalError as exc:
             filterOperationalError(exc)
 

@@ -92,10 +92,6 @@ class Charge(models.Model):
     amount = models.DecimalField(max_digits=6, decimal_places=2)
     annullated = models.BooleanField()
 
-    def annullate(self):
-        self.annullated = True
-        self.save()
-
 
 class Purchase(models.Model):
     token = models.BigIntegerField(unique=True)
