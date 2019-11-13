@@ -50,10 +50,12 @@ class UserLogic:
         assert type(ident_type) is int
 
         user = UserLogic.getUser(ident, ident_type)
+
+        if ident_type == UserIdentifier.PRIMARYKEY and not user.pk_login_enabled:
+            raise DisabledIdentifier()
+
         try:
             with transaction.atomic():
-                if ident_type == UserIdentifier.PRIMARYKEY and not user.pk_login_enabled:
-                    raise DisabledIdentifier()
                 login_tuple = Login(user=user)
                 login_tuple.save()
                 login(request, user)
