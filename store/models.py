@@ -14,7 +14,7 @@ class User(AbstractUser):
     password = models.CharField(max_length=128, null=True)
     email = models.EmailField(null=True, blank=True)
     money = models.DecimalField(max_digits=6, decimal_places=2, default=0.0)
-    pk_login_enabled = models.BooleanField(_("Login aus Auswahlliste"),null=False, default=True)
+    pk_login_enabled = models.BooleanField(_("Login aus Auswahlliste"), default=True)
 
     def incrementMoney(self, amount):
         if amount < 0:
@@ -44,15 +44,15 @@ class UserIdentifierTypes(IntEnum):
         return {tag.name: tag.value for tag in UserIdentifierTypes}
 
 class UserIdentifier(models.Model):
-    user = models.ForeignKey('user', on_delete=models.CASCADE, null=False)
+    user = models.ForeignKey('user', on_delete=models.CASCADE)
     identifier_type = models.IntegerField(choices=[(tag.value, tag.value) for tag in UserIdentifierTypes])
     identifier = models.TextField()
 
 
 class Product(models.Model):
-    name = models.TextField(null=False)
+    name = models.TextField()
     category = models.ForeignKey('productcategory', on_delete=models.CASCADE, related_name="products")
-    stock = models.IntegerField(null=False, default=0)
+    stock = models.IntegerField(default=0)
     price = models.DecimalField(max_digits=6, decimal_places=2)
 
     def updateStock(self, amount):
@@ -68,7 +68,7 @@ class ToplevelProductCategories(IntEnum):
 
 class ProductCategory(models.Model):
     toplevel = models.IntegerField(_("Toplevel category"), choices=[(tag, tag.value) for tag in ToplevelProductCategories])
-    sublevel = models.TextField(_("Sublevel category"), null=False, unique=True)
+    sublevel = models.TextField(_("Sublevel category"), unique=True)
 
 
 class ProductIdentifierTypes(IntEnum):
@@ -81,17 +81,17 @@ class ProductIdentifierTypes(IntEnum):
         return {tag.name: tag.value for tag in ProductIdentifierTypes}
 
 class ProductIdentifier(models.Model):
-    product = models.ForeignKey('product', on_delete=models.CASCADE, null=False)
+    product = models.ForeignKey('product', on_delete=models.CASCADE)
     identifier_type = models.IntegerField(choices=[(tag.value, tag.value) for tag in ProductIdentifierTypes])
     identifier = models.TextField()
 
 
 class Charge(models.Model):
-    token = models.BigIntegerField(null=False, unique=True)
-    user = models.ForeignKey('user', on_delete=models.CASCADE, null=False)
-    time_stamp = models.DateTimeField(null=False, auto_now=True)
+    token = models.BigIntegerField(unique=True)
+    user = models.ForeignKey('user', on_delete=models.CASCADE)
+    time_stamp = models.DateTimeField(auto_now=True)
     amount = models.DecimalField(max_digits=6, decimal_places=2)
-    annullated = models.BooleanField(null=False)
+    annullated = models.BooleanField()
 
     def annullate(self):
         self.annullated = True
@@ -99,13 +99,13 @@ class Charge(models.Model):
 
 
 class Purchase(models.Model):
-    token = models.BigIntegerField(null=False, unique=True)
-    user = models.ForeignKey('user', on_delete=models.CASCADE, null=False)
+    token = models.BigIntegerField(unique=True)
+    user = models.ForeignKey('user', on_delete=models.CASCADE)
     product = models.ForeignKey('product', on_delete=models.SET_NULL,
             null=True)
-    time_stamp = models.DateTimeField(null=False, auto_now=True)
+    time_stamp = models.DateTimeField(auto_now=True)
     price = models.DecimalField(max_digits=6, decimal_places=2)
-    annullated = models.BooleanField(null=False)
+    annullated = models.BooleanField()
 
     def annullate(self):
         self.annullated = True
@@ -113,14 +113,14 @@ class Purchase(models.Model):
 
 
 class Transfer(models.Model):
-    token = models.BigIntegerField(null=False, unique=True)
+    token = models.BigIntegerField(unique=True)
     sender = models.ForeignKey('user', on_delete=models.SET_NULL, null=True,
             related_name='sender')
     receiver  = models.ForeignKey('user', on_delete=models.SET_NULL,
             null=True, related_name='receiver')
-    time_stamp = models.DateTimeField(null=False, auto_now=True)
+    time_stamp = models.DateTimeField(auto_now=True)
     amount = models.DecimalField(max_digits=6, decimal_places=2)
-    annullated = models.BooleanField(null=False)
+    annullated = models.BooleanField()
 
     def annullate(self):
         self.annullated = True
@@ -128,8 +128,8 @@ class Transfer(models.Model):
 
 
 class Login(models.Model):
-    time_stamp = models.DateTimeField(null=False, auto_now=True)
-    user  = models.ForeignKey('user', on_delete=models.CASCADE, null=False)
+    time_stamp = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey('user', on_delete=models.CASCADE)
 
 
 class Token(models.Model):
