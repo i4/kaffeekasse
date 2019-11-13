@@ -187,7 +187,7 @@
         transfer(id, {{ ident_types.PRIMARYKEY }})
     }
 
-    function transfer(receiver_identifier, identifier_type) {
+    function transfer(receiver_ident, ident_type) {
         error = error => {
             showError(error, "Fehler beim Überweisen");
         }
@@ -208,8 +208,8 @@
                 method: "POST",
                 data: {
                     amount: amount,
-                    receiver_identifier: receiver_identifier,
-                    identifier_type: identifier_type,
+                    receiver_ident: receiver_ident,
+                    ident_type: ident_type,
                     token: token
                 },
                 success: data => {

@@ -46,8 +46,8 @@ class UserIdentifier(models.Model):
     ]
 
     user = models.ForeignKey('user', on_delete=models.CASCADE)
-    identifier_type = models.IntegerField(choices=choices)
-    identifier = models.TextField()
+    ident_type = models.IntegerField(choices=choices)
+    ident = models.TextField()
 
 
 class Product(models.Model):
@@ -87,8 +87,8 @@ class ProductIdentifier(models.Model):
     ]
 
     product = models.ForeignKey('product', on_delete=models.CASCADE)
-    identifier_type = models.IntegerField(choices=choices)
-    identifier = models.TextField()
+    ident_type = models.IntegerField(choices=choices)
+    ident = models.TextField()
 
 
 class Charge(models.Model):

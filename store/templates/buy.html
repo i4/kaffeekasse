@@ -169,11 +169,11 @@
         buy(id, {{ ident_types.PRIMARYKEY }});
     }
 
-    function buyBarcode(identifier) {
-        buy(identifier, {{ ident_types.BARCODE }})
+    function buyBarcode(ident) {
+        buy(ident, {{ ident_types.BARCODE }})
     }
 
-    function buy(identifier, identifier_type) {
+    function buy(ident, ident_type) {
         error = error => {
             showError(error, "Fehler beim Einkaufen");
         }
@@ -184,8 +184,8 @@
                 url: "{% url "buy" %}",
                 method: "POST",
                 data: {
-                    identifier: identifier,
-                    identifier_type: identifier_type,
+                    ident: ident,
+                    ident_type: ident_type,
                     token: token
                 },
                 success: function(data) {

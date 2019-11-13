@@ -17,7 +17,7 @@ class UserAdmin(admin.ModelAdmin):
 
 @admin.register(models.UserIdentifier)
 class UserIdentifierAdmin(admin.ModelAdmin):
-    list_display = ('user', 'identifier_type', 'identifier')
+    list_display = ('user', 'ident_type', 'ident')
 
 
 @admin.register(models.Product)
@@ -33,7 +33,7 @@ class ProductCategoryAdmin(admin.ModelAdmin):
 
 @admin.register(models.ProductIdentifier)
 class ProductIdentifierAdmin(admin.ModelAdmin):
-    list_display = ('product', 'identifier_type', 'identifier')
+    list_display = ('product', 'ident_type', 'ident')
 
 
 @admin.register(models.Charge)

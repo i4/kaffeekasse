@@ -30,8 +30,8 @@ def buy(request):
     """
     GET: Return the rendered page to buy products
     POST: Puchase a product and return the product id and the purchase id as JsonResponse
-        :body_param identifier:  The identifier of the product
-        :body_param identifier_type: int The identifier type of the product
+        :body_param ident:  The identifier of the product
+        :body_param ident_type: int The identifier type of the product
         :body_param token: int
     """
 
@@ -48,12 +48,12 @@ def buy(request):
 
     elif request.method == 'POST':  # Perform a purchase
         user_id = request.user.id
-        identifier = request.POST.get("identifier")
-        identifier_type = request.POST.get("identifier_type")
+        ident = request.POST.get("ident")
+        ident_type = request.POST.get("ident_type")
         token = request.POST.get("token")
 
         try:
-            purchase_return_tuple = PurchaseLogic.purchase(user_id, identifier, identifier_type, token)
+            purchase_return_tuple = PurchaseLogic.purchase(user_id, ident, ident_type, token)
         except (UserNotEnoughMoney, NegativeMoneyAmount, UserIdentifierNotExists) as exc:
             return JsonResponse({'error': str(exc)}, status=400)
         except SerializationError as exc:
@@ -164,15 +164,15 @@ def transfer(request):
     elif request.method == "POST":
         user_id = request.user.id
         token = request.POST.get("token")
-        receiver_id = request.POST.get("receiver_identifier")
-        receiver_identifier_type = request.POST.get("identifier_type")
+        receiver_id = request.POST.get("receiver_ident")
+        receiver_ident_type = request.POST.get("ident_type")
         try:
             amount = Decimal(request.POST.get("amount"))
         except InvalidOperation as exc:
             return JsonResponse({'error': str(exc)}, status=400)
         try:
             transfer_tuple = TransferLogic.transfer(
-                user_id, receiver_id, receiver_identifier_type, amount, token)
+                user_id, receiver_id, receiver_ident_type, amount, token)
         except (UserNotEnoughMoney, NegativeMoneyAmount, UserIdentifierNotExists, SenderEqualsReceiverError) as exc:
             return JsonResponse({'error': str(exc)}, status=400)
         except SerializationError as exc:
@@ -207,13 +207,13 @@ def transfer_revert(request):
 def login(request):
     """
     Login an user.
-    :body_param identifier: string/int
-    :body_param identifier_type: int
+    :body_param ident: string/int
+    :body_param ident_type: int
     """
-    identifier = request.POST.get('identifier')
-    ident_type = request.POST.get('identifier_type')
+    ident = request.POST.get('ident')
+    ident_type = request.POST.get('ident_type')
     try:
-        UserLogic.login(request, identifier, ident_type)
+        UserLogic.login(request, ident, ident_type)
     except (UserIdentifierNotExists, DisabledIdentifier, SerializationError):
         return HttpResponseRedirect(reverse("index"))
 

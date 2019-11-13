@@ -11,11 +11,11 @@
     {% comment %} Numpad {% endcomment %}
     <div class="col-lg-4 col-md-6 col-12 pb-4">
         <form action="{% url "login" %}" method="POST" id="loginForm">
-            <input type="hidden" name="identifier_type" value="{{ ident_types.ID }}"/>
+            <input type="hidden" name="ident_type" value="{{ ident_types.ID }}"/>
             {% csrf_token %}
             <div class="btn-group-vertical" role="group">
                 <div class="btn-group">
-                    <input readonly="true" class="text-center form-control-lg mb-2" id="user_id" name="identifier">
+                    <input readonly="true" class="text-center form-control-lg mb-2" id="user_id" name="ident">
                 </div>
                 <div class="btn-group">
                     <button type="button" class="btn btn-outline-secondary py-3"
@@ -57,8 +57,8 @@
         <ul class="list-group scroll-lg">
             <form action="{% url "login" %}" method="POST" id="pk_login_form">
                 {% csrf_token %}
-                <input type="hidden" id="pk_field" name="identifier"/>
-                <input type="hidden" name="identifier_type" value="{{ ident_types.PRIMARYKEY }}">
+                <input type="hidden" id="pk_field" name="ident"/>
+                <input type="hidden" name="ident_type" value="{{ ident_types.PRIMARYKEY }}">
                 {% for user in users %}
                     <button onclick="loginPK({{ user.user__id }})" type="button" class="list-group-item list-group-item-action">{{ user.user__username }}</button>
                 {% endfor %}
@@ -69,8 +69,8 @@
     {% comment %} Hidden form for barcode login {% endcomment %}
     <form action="{% url "login" %}" method="POST" id="barcode_login_form">
         {% csrf_token %}
-        <input type="hidden" id="barcode" name="identifier">
-        <input type="hidden" name="identifier_type" value="{{ ident_types.BARCODE }}">
+        <input type="hidden" id="barcode" name="ident">
+        <input type="hidden" name="ident_type" value="{{ ident_types.BARCODE }}">
     </form>
 </div>
 {% endblock %}
@@ -78,8 +78,8 @@
 {% block script %}
     <script>
 
-        function loginBarcode(identifier) {
-            $("#barcode").val(identifier);
+        function loginBarcode(ident) {
+            $("#barcode").val(ident);
             $("#barcode_login_form").submit();
         }
 

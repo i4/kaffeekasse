@@ -13,16 +13,16 @@ from django.db import OperationalError
 
 class UserLogic:
     @staticmethod
-    def getUser(identifier, identifier_type):
+    def getUser(ident, ident_type):
         """
         Returns user that can be definitely identified by the unique
-        combination identifier and identifier_type.
+        combination ident and ident_type.
 
-        :param identifier: on of the user identifiers
-        :param identifier_type: type of the identifier
+        :param ident: on of the user identifiers
+        :param ident_type: type of the identifier
         """
 
-        idf = UserIdentifier.objects.filter(identifier=identifier, identifier_type=identifier_type)
+        idf = UserIdentifier.objects.filter(ident=ident, ident_type=ident_type)
         idf = idf.select_related('user')
         idf = list(idf)
         if len(idf) == 0:
@@ -32,7 +32,7 @@ class UserLogic:
         return user
 
     @staticmethod
-    def login(request, identifier, identifier_type):
+    def login(request, ident, ident_type):
         """
         Basic login function. On success the user is logged in and True is
         returned and a login-tuple is created. On Failure nothing happens and
@@ -42,10 +42,10 @@ class UserLogic:
         :param user_id: id of the user that should log in
         """
 
-        user = UserLogic.getUser(identifier, identifier_type)
+        user = UserLogic.getUser(ident, ident_type)
         try:
             with transaction.atomic():
-                if int(identifier_type) == UserIdentifier.PRIMARYKEY and not user.pk_login_enabled:
+                if int(ident_type) == UserIdentifier.PRIMARYKEY and not user.pk_login_enabled:
                     raise DisabledIdentifier()
                 login_tuple = Login(user=user)
                 login_tuple.save()
@@ -108,23 +108,23 @@ class UserLogic:
 
 class ProductLogic:
     @staticmethod
-    def getProduct(identifier, identifier_type):
+    def getProduct(ident, ident_type):
         """
         Returns product that can be definitely identified by the unique
-        combination identifier and identifier_type.
+        combination ident and ident_type.
 
-        :param identifier: on of the user identifiers
-        :param identifier_type: type of the identifier
+        :param ident: on of the user identifiers
+        :param ident_type: type of the identifier
         """
 
-        if int(identifier_type) == ProductIdentifier.PRIMARYKEY:
-            products = list(Product.objects.filter(id=int(identifier)))
+        if int(ident_type) == ProductIdentifier.PRIMARYKEY:
+            products = list(Product.objects.filter(id=int(ident)))
             if len(products) == 0:
                 raise ProductIdentifierNotExists()
             product = products[0]
             return product
         else:
-            idf = ProductIdentifier.objects.filter(identifier_type=identifier_type).filter(identifier=identifier)
+            idf = ProductIdentifier.objects.filter(ident_type=ident_type).filter(ident=ident)
             idf = idf.select_related('product')
             idf = list(idf)
             if len(idf) == 0:
@@ -255,7 +255,7 @@ class TokenLogic:
 
 class PurchaseLogic:
     @staticmethod
-    def purchase(user_id, product_identifier, product_identifier_type, token):
+    def purchase(user_id, product_ident, product_ident_type, token):
         """
         Execute the purchase logic. Three db relations are included:
 
@@ -273,7 +273,7 @@ class PurchaseLogic:
         try:
             with transaction.atomic():
                 user = User.objects.get(id=user_id)
-                product = ProductLogic.getProduct(product_identifier, product_identifier_type)
+                product = ProductLogic.getProduct(product_ident, product_ident_type)
                 purchase_create_return_tuple = PurchaseLogic.__createPurchaseTuple(user, product, token)
                 PurchaseLogic.__updateUserMoney(user, product.price)
                 PurchaseLogic.__updateProductStock(product)
@@ -526,7 +526,7 @@ class TransferLogic:
         return list(transfers)
 
     @staticmethod
-    def transfer(user_id, receiver_identifier, receiver_identifier_type, amount, token):
+    def transfer(user_id, receiver_ident, receiver_ident_type, amount, token):
         """
         Performs the transfer routine where a sender sends money to a
         receiver. Two db relations are included:
@@ -541,7 +541,7 @@ class TransferLogic:
         """
 
         sender = User.objects.get(id=user_id)
-        receiver = UserLogic.getUser(identifier=receiver_identifier, identifier_type=receiver_identifier_type)
+        receiver = UserLogic.getUser(ident=receiver_ident, ident_type=receiver_ident_type)
         if sender.id == receiver.id:
             raise SenderEqualsReceiverError()
 
