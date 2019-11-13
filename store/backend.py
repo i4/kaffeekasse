@@ -296,9 +296,15 @@ class PurchaseLogic:
             with transaction.atomic():
                 user = User.objects.get(id=user_id)
                 product = ProductLogic.getProduct(product_ident, product_ident_type)
-                purchase_create_return_tuple = PurchaseLogic.__createPurchaseTuple(user, product, token)
-                PurchaseLogic.__updateUserMoney(user, product.price)
-                PurchaseLogic.__updateProductStock(product)
+
+                purchase = Purchase(user=user, product=product, price=product.price, token=token, annullated=False)
+                purchase.save()
+
+                user.decrementMoney(product.price)
+                product.updateStock(-1)
+
+                return purchase.id, product.id
+
         except (ObjectDoesNotExist, ProductIdentifierNotExists):
             return -1, -1
         except IntegrityError:
@@ -307,21 +313,7 @@ class PurchaseLogic:
         except OperationalError as exc:
             filterOperationalError(exc)
             return -1, -1
-        return purchase_create_return_tuple[1], product.id
-
-    @staticmethod
-    def __createPurchaseTuple(user, product, token):
-        purchase = Purchase(user=user, product=product, price=product.price, token=token, annullated=False)
-        purchase.save()
-        return True, purchase.id
-
-    @staticmethod
-    def __updateUserMoney(user, price):
-        user.decrementMoney(price)
-
-    @staticmethod
-    def __updateProductStock(product):
-        product.updateStock(-1)
+        assert False
 
     @staticmethod
     def annullatePurchase(purchase_id, token):
