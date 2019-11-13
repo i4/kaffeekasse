@@ -34,6 +34,7 @@ def buy(request):
         :body_param identifier_type: int The identifier type of the product
         :body_param token: int
     """
+
     if request.method == 'GET':  # Return the rendered page
         return render(request, "buy.html", {
             "most_bought": ProductLogic.getMostBoughtProductsList(),
@@ -44,17 +45,20 @@ def buy(request):
             "ident_types": ProductIdentifier,
             "config": config,
         })
+
     elif request.method == 'POST':  # Perform a purchase
         user_id = request.user.id
         identifier = request.POST.get("identifier")
         identifier_type = request.POST.get("identifier_type")
         token = request.POST.get("token")
+
         try:
             purchase_return_tuple = PurchaseLogic.purchase(user_id, identifier, identifier_type, token)
         except (UserNotEnoughMoney, NegativeMoneyAmount, UserIdentifierNotExists) as exc:
             return JsonResponse({'error': str(exc)}, status=400)
         except SerializationError as exc:
             return JsonResponse({'error': str(exc)}, status=503)
+
         if purchase_return_tuple[0] >= 0:
             return JsonResponse({
                 "purchase_id": purchase_return_tuple[0],
@@ -74,8 +78,10 @@ def buy_revert(request):
         :body_param token: int
         :body_param purchase_id: int
     """
+
     purchase_id = request.POST.get("purchase_id")
     token = request.POST.get("token")
+
     try:
         PurchaseLogic.annullatePurchase(purchase_id, token)
     except (PurchaseNotAnnullable, UserNotEnoughMoney) as exc:
