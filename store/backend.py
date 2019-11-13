@@ -16,7 +16,8 @@ class UserLogic:
     @staticmethod
     def getUser(identifier, identifier_type):
         """
-        Returns user that can be definitly identified by the unique combination identifier and identifier_type.
+        Returns user that can be definitly identified by the unique
+        combination identifier and identifier_type.
 
         :param identifier: on of the user identifiers
         :param identifier_type: type of the identifier
@@ -34,8 +35,10 @@ class UserLogic:
     @staticmethod
     def login(request, identifier, identifier_type):
         """
-        Basic login function. On success the user is logged in and True is returned and a login-tuple is created. On Failure nothing happens and False is
-        returned.
+        Basic login function. On success the user is logged in and True is
+        returned and a login-tuple is created. On Failure nothing happens and
+        False is returned.
+
         Basis login function.
 
         :param request: the request object
@@ -56,11 +59,16 @@ class UserLogic:
     def getFrequentUsersList():
         """
         Concatinates the results of three db-queries:
-        First part of the list: a number of users specified in max_users, that have most logins within a number of days
-        specified in max_days.
-        Second part of the list: all users that are not included in the first part of the list and have at least one login
-        Third part of the list: all users that are not included in the firt both parts
+
+        - First part of the list: a number of users specified in max_users,
+          that have most logins within a number of days specified in max_days.
+        - Second part of the list: all users that are not included in the
+          first part of the list and have at least one login
+        - Third part of the list: all users that are not included in the firt
+          both parts
+
         Returned list: [{'user': ..., 'user_username': ..., 'total': ...}]
+
         :config-param max_users: depends on N_USERS_LOGIN
         :config-param max_days: depends on T_USERS_LGIN_D
         """
@@ -104,7 +112,8 @@ class ProductLogic:
     @staticmethod
     def getProduct(identifier, identifier_type):
         """
-        Returns product that can be definitly identified by the unique combination identifier and identifier_type.
+        Returns product that can be definitly identified by the unique
+        combination identifier and identifier_type.
 
         :param identifier: on of the user identifiers
         :param identifier_type: type of the identifier
@@ -129,12 +138,17 @@ class ProductLogic:
     @staticmethod
     def getMostBoughtProductsList():
         """
-        Result of a db query asking for a number of products specified in max_products that were most bought within the
-        last max_days number of days.
-        Returned list: [{'product__name': ..., 'product_id': ..., 'product__price': ...,'total': ...}]
+        Result of a db query asking for a number of products specified in
+        max_products that were most bought within the last max_days number of
+        days.
+
+        Returned list: [{'product__name': ..., 'product_id': ...,
+                         'product__price': ...,'total': ...}]
+
         :config-param max_products: depends on N_MOST_BOUGHT_PRODUCTS
         :config-param max_days: depends on T_MOST_BOUGHT_PRODUCTS_D
         """
+
         max_products = config['N_MOST_BOUGHT_PRODUCTS']
         max_days = config['T_MOST_BOUGHT_PRODUCTS_D']
         time_stamp = date.today() - timedelta(days=max_days)
@@ -148,15 +162,20 @@ class ProductLogic:
     @staticmethod
     def getLastBoughtProductsList(user_id):
         """
-        Resulst of a db query asking for a number of products specified in max_products that were recently bought by a
-        specified user. The result also contains information on the state of a possible annullation of the products
-        purchase.
-        Returned list: [{'product__name': ..., 'product_id': ..., 'product__price': ..., 'time_stamp': ..., 'id': ...,
-        'annullated': ..., 'annullable': ...}]
+        Resulst of a db query asking for a number of products specified in
+        max_products that were recently bought by a specified user. The result
+        also contains information on the state of a possible annullation of the
+        products purchase.
+
+        Returned list: [{'product__name': ..., 'product_id': ...,
+                         'product__price': ..., 'time_stamp': ..., 'id': ...,
+                         'annullated': ..., 'annullable': ...}]
+
         :param user_id: id of the specified user
         :config-param max_products: depends on N_ANNULLABLE_PURCHASE
         :config-param annullable_time: depends on T_ANNULLABLE_PURCHASE_M
         """
+
         max_products = config['N_LAST_BOUGHT_PRODUCTS']
         annullable_time = config['T_ANNULLABLE_PURCHASE_M']
         products = Purchase.objects.filter(user=user_id)
@@ -183,9 +202,12 @@ class ProductLogic:
     @staticmethod
     def getProductByCategory(category):
         """
-        Returns a dict with a key for each sublevel category containing all products, where the toplevel category equals to the input category
+        Returns a dict with a key for each sublevel category containing all
+        products, where the toplevel category equals to the input category
+
         :param category: Toplevel category
         """
+
         # Get sublevels
         sublevels = ProductCategory.objects.filter(toplevel=category).values('sublevel')
 
@@ -220,8 +242,10 @@ class TokenLogic:
     @staticmethod
     def get_token():
         """
-        Generates a new and unique token as 64-bit integer to be used in a at-most-once client-server-interaction.
+        Generates a new and unique token as 64-bit integer to be used in a
+        at-most-once client-server-interaction.
         """
+
         try:
             with transaction.atomic():
                 token = list(Token.objects.all())[0]
@@ -237,8 +261,10 @@ class PurchaseLogic:
     def purchase(user_id, product_identifier, product_identifier_type, token):
         """
         Execute the purchase logic. Three db relations are included:
-        *)  Purchase: include a new purchase-tuple with the user_id, product_id, the current time, the current products price
-            and the unique token
+
+        *)  Purchase: include a new purchase-tuple with the user_id,
+            product_id, the current time, the current products price and the
+            unique token
         *)  User: update the users money
         *)  Product: update the product stock
 
@@ -246,6 +272,7 @@ class PurchaseLogic:
         :param product_id: the id of the product
         :param token: the unique transaction-token generated by the get_token function
         """
+
         try:
             with transaction.atomic():
                 user = list(User.objects.filter(id=user_id))[0]
@@ -280,13 +307,14 @@ class PurchaseLogic:
     @staticmethod
     def annullatePurchase(purchase_id, token):
         """
-        Try to annullate a purchase performed by a specified user. This will only fail if the purchase was performed too
-        long ago.
+        Try to annullate a purchase performed by a specified user. This will
+        only fail if the purchase was performed too long ago.
 
         :param purchase_id: id of the purchase to be annullated
         :param token: token received by tokenLogics get_token
         @conifg-param annullable_time: depends on T_ANNULLABLE_PURCHASE_M
         """
+
         annullable_time = config['T_ANNULLABLE_PURCHASE_M']
 
         # warning: summertime/wintertime currently is not respected in the following calculations. This should be
@@ -314,13 +342,19 @@ class ChargeLogic:
     @staticmethod
     def getLastChargesList(user_id):
         """
-        Result of a db query asking for a number of charges specified in max_charges that were recently performed by a
-        specified user. The result also contains information on the state of a possible annullation of the charge.
-        Returned list: [{'id': ..., 'amount': ..., 'annullated': ..., 'time_stamp': ..., 'annullable': ...}]
+        Result of a db query asking for a number of charges specified in
+        max_charges that were recently performed by a specified user. The
+        result also contains information on the state of a possible
+        annullation of the charge.
+
+        Returned list: [{'id': ..., 'amount': ..., 'annullated': ...,
+                         'time_stamp': ..., 'annullable': ...}]
+
         :param user_id: id of the specified user
         :config-param max_charges: depends on N_ANNULLABLE_CHARGES
         :config-param annullable_time: depends on T_ANNULLABLE_CHARGE_M
         """
+
         max_charges = config['N_LAST_CHARGES']
         annullable_time = config['T_ANNULLABLE_CHARGE_M']
         charges = Charge.objects.filter(user=user_id).values('id', 'amount', 'annullated', 'time_stamp')
@@ -355,6 +389,7 @@ class ChargeLogic:
         :param amount: the amount of money to be charged
         :param token: the unique token got by getToken()
         """
+
         try:
             with transaction.atomic():
                 user = list(User.objects.filter(id=user_id))[0]
@@ -380,13 +415,15 @@ class ChargeLogic:
     @staticmethod
     def annullateCharge(charge_id, token):
         """
-        Try to annullate a charge performed by a specified user. This will fail if either the charge was performed too
-        long ago or the user has less money on it's account than the amount of money charged.
+        Try to annullate a charge performed by a specified user. This will
+        fail if either the charge was performed too long ago or the user has
+        less money on it's account than the amount of money charged.
 
         :param charge_id: id of the charge to be annullated
         :param token: token received by tokenLogics get_token
         @conifg-param annullable_time: depends on T_ANNULLABLE_CHARGE_M
         """
+
         annullable_time = config['T_ANNULLABLE_CHARGE_M']
 
         # warning: summertime/wintertime currently is not respected in the following calculations. This should be
@@ -412,15 +449,22 @@ class TransferLogic:
     @staticmethod
     def getFreuquentTransferTargets(user_id):
         """
-        Result of a db query asking for a number of receivers specified in max_receivers that are often addresed by a specified user
-        Concatinates the result of two db queries:
-        First part of the list: a number of receivers specified in max_receivers that are often addressed by a specific
-        user
-        Second part of the list: all users excluded the users form the first part and the user itself
+        Result of a db query asking for a number of receivers specified in
+        max_receivers that are often addresed by a specified user Concatinates
+        the result of two db queries:
+
+        First part of the list: a number of receivers specified in
+        max_receivers that are often addressed by a specific user
+
+        Second part of the list: all users excluded the users form the first
+        part and the user itself
+
         Returned list: [{'receiver': ..., 'username': ...}]
+
         :param user_id: id of the specified user
         :config-param max_receivers: depends on N_TRANSFER_RECEIVERS
         """
+
         max_receivers = config['N_TRANSFERS_RECEIVERS']
         recent_transfers = Transfer.objects.filter(sender=user_id).exclude(receiver=None)
         recent_transfers = recent_transfers.select_related('receiver')
@@ -446,14 +490,19 @@ class TransferLogic:
     @staticmethod
     def getLastTransfers(user_id):
         """
-        Result of a db query asking for a number of transfers that have been recently performed by a specified user. Also
-        returns information on the state of possible annullation of the transfer.
-        Returned list: [{'id': ..., 'annullated': ..., 'amount': ..., 'receiver_username': ..., 'time_stamp': ...,
-        'annullable': ...}]
+        Result of a db query asking for a number of transfers that have been
+        recently performed by a specified user. Also returns information on
+        the state of possible annullation of the transfer.
+
+        Returned list: [{'id': ..., 'annullated': ..., 'amount': ...,
+                         'receiver_username': ..., 'time_stamp': ...,
+                         'annullable': ...}]
+
         :param user_id: id of the specified user
         :config-param max_transfers: depends on N_LAST_TRANSFERS
         :config-param annullable_time: depends on T_ANNULLABLE_TRANSFERS_M
         """
+
         max_transfers = config['N_LAST_TRANSFERS']
         annullable_time = config['T_ANNULLABLE_TRANSFERS_M']
 
@@ -480,7 +529,9 @@ class TransferLogic:
     @staticmethod
     def transfer(user_id, receiver_identifier, receiver_identifier_type, amount, token):
         """
-        Performs the transfer routine where a sender sends money to a receiver. Two db relations are included:
+        Performs the transfer routine where a sender sends money to a
+        receiver. Two db relations are included:
+
         *)  User, where the sender aswell as the receiver are from
         *)  Transfer, where the newly created transfer is saved to
 
@@ -489,6 +540,7 @@ class TransferLogic:
         :param amount: amount of money to be sent
         :param token: unique token got by TokenLogic's getToken
         """
+
         sender = list(User.objects.filter(id=user_id))[0]
         receiver = UserLogic.getUser(identifier=receiver_identifier, identifier_type=receiver_identifier_type)
         if sender.id == receiver.id:
@@ -522,13 +574,16 @@ class TransferLogic:
     @staticmethod
     def annullateTransfer(transfer_id, token):
         """
-        Try to annullate a transfer performed by a specified user. This will fail if either the transfer was performed too
-        long ago or the receiver of the money has less money on it's account than the amount of money transfered.
+        Try to annullate a transfer performed by a specified user. This will
+        fail if either the transfer was performed too long ago or the receiver
+        of the money has less money on it's account than the amount of money
+        transfered.
 
         :param transfer_id: id of the transfer to be annullated
         :param token: token received by tokenLogics get_token
         @conifg-param annullable_time: depends on T_ANNULLABLE_TRANSFERS_M
         """
+
         annullable_time = config['T_ANNULLABLE_TRANSFERS_M']
 
         # warning: summertime/wintertime currently is not respected in the following calculations. This should be
