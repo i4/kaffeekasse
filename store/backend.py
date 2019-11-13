@@ -347,8 +347,9 @@ class PurchaseLogic:
         try:
             with transaction.atomic():
                 user = User.objects.get(id=purchase.user.id)
-                purchase.annullate()
                 user.incrementMoney(purchase.price)
+                purchase.annullated = True
+                purchase.save()
         except OperationalError as exc:
             filterOperationalError(exc)
 
