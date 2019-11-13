@@ -11,7 +11,7 @@ from django.utils.translation import gettext_lazy as _
 class User(AbstractUser):
     username = models.CharField(max_length=128, unique=True)
     password = models.CharField(max_length=128, null=True)
-    email = models.EmailField(null=True, blank=True)
+    email = models.EmailField()
     money = models.DecimalField(max_digits=6, decimal_places=2, default=0.0)
     pk_login_enabled = models.BooleanField(_("Login aus Auswahlliste"), default=True)
 
