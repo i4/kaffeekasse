@@ -49,8 +49,8 @@ def buy(request):
     elif request.method == 'POST':  # Perform a purchase
         user_id = request.user.id
         ident = request.POST.get("ident")
-        ident_type = request.POST.get("ident_type")
-        token = request.POST.get("token")
+        ident_type = int(request.POST.get("ident_type"))
+        token = int(request.POST.get("token"))
 
         try:
             purchase_return_tuple = PurchaseLogic.purchase(user_id, ident, ident_type, token)
@@ -79,8 +79,8 @@ def buy_revert(request):
         :body_param purchase_id: int
     """
 
-    purchase_id = request.POST.get("purchase_id")
-    token = request.POST.get("token")
+    purchase_id = int(request.POST.get("purchase_id"))
+    token = int(request.POST.get("token"))
 
     try:
         PurchaseLogic.annullatePurchase(purchase_id, token)
@@ -108,7 +108,7 @@ def charge(request):
         })
     elif request.method == "POST":
         user_id = request.user.id
-        token = request.POST.get("token")
+        token = int(request.POST.get("token"))
         amount = request.POST.get("amount")
         try:
             amount = Decimal(amount)
@@ -132,8 +132,8 @@ def charge_revert(request):
         :body_param charge_id: int
         :body_param token: int
     """
-    charge_id = request.POST.get("charge_id")
-    token = request.POST.get("token")
+    charge_id = int(request.POST.get("charge_id"))
+    token = int(request.POST.get("token"))
     try:
         ChargeLogic.annullateCharge(charge_id, token)
     except (ChargeNotAnnullable, UserNotEnoughMoney, NegativeMoneyAmount) as exc:
@@ -163,9 +163,9 @@ def transfer(request):
         })
     elif request.method == "POST":
         user_id = request.user.id
-        token = request.POST.get("token")
+        token = int(request.POST.get("token"))
         receiver_id = request.POST.get("receiver_ident")
-        receiver_ident_type = request.POST.get("ident_type")
+        receiver_ident_type = int(request.POST.get("ident_type"))
         try:
             amount = Decimal(request.POST.get("amount"))
         except InvalidOperation as exc:
@@ -189,8 +189,8 @@ def transfer_revert(request):
         :body_param transfer_id: int
         :body_param token: int
     """
-    transfer_id = request.POST.get('transfer_id')
-    token = request.POST.get('token')
+    transfer_id = int(request.POST.get('transfer_id'))
+    token = int(request.POST.get('token'))
     try:
         TransferLogic.annullateTransfer(transfer_id, token)
     except (TransferNotAnnullable, UserNotEnoughMoney, NegativeMoneyAmount) as exc:
@@ -211,7 +211,7 @@ def login(request):
     :body_param ident_type: int
     """
     ident = request.POST.get('ident')
-    ident_type = request.POST.get('ident_type')
+    ident_type = int(request.POST.get('ident_type'))
     try:
         UserLogic.login(request, ident, ident_type)
     except (UserIdentifierNotExists, DisabledIdentifier, SerializationError):
