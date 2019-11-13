@@ -184,7 +184,7 @@ class ProductLogic:
     def getProductByCategory(category):
         """
         Returns a dict with a key for each sublevel category containing all products, where the toplevel category equals to the input category
-        :param category: Toplevel category (Use enum ToplevelProductCategories)
+        :param category: Toplevel category
         """
         # Get sublevels
         sublevels = ProductCategory.objects.filter(toplevel=category).values('sublevel')
@@ -208,11 +208,11 @@ class ProductLogic:
 
     @staticmethod
     def getCandies():
-        return ProductLogic.getProductByCategory(ToplevelProductCategories.SNACK)
+        return ProductLogic.getProductByCategory(ProductCategory.SNACK)
 
     @staticmethod
     def getDrinks():
-        return ProductLogic.getProductByCategory(ToplevelProductCategories.GETRAENK)
+        return ProductLogic.getProductByCategory(ProductCategory.GETRAENK)
 
 
 class TokenLogic:

@@ -61,13 +61,16 @@ class Product(models.Model):
         return True
 
 
-class ToplevelProductCategories(IntEnum):
+class ProductCategory(models.Model):
     SNACK = 0
     GETRAENK = 1
 
+    choices = [
+        (SNACK, 'Snack'),
+        (GETRAENK, 'Drink'),
+    ]
 
-class ProductCategory(models.Model):
-    toplevel = models.IntegerField(_("Toplevel category"), choices=[(tag, tag.value) for tag in ToplevelProductCategories])
+    toplevel = models.IntegerField(_("Toplevel category"), choices=choices)
     sublevel = models.TextField(_("Sublevel category"), unique=True)
 
 
