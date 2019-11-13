@@ -13,6 +13,11 @@ class UserAdmin(admin.ModelAdmin):
     )
     pass
 
+@admin.register(UserIdentifier)
+class UserIdentifierAdmin(admin.ModelAdmin):
+    list_display = ('id', 'identifier', 'identifier_type', 'user')
+    fields = ('identifier', 'identifier_type', 'user')
+
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'price', 'category', 'stock')
@@ -22,11 +27,6 @@ class ProductAdmin(admin.ModelAdmin):
 class ProductCategoryAdmin(admin.ModelAdmin):
     list_display = ('id', 'toplevel', 'sublevel')
     fields = ('toplevel', 'sublevel')
-
-@admin.register(UserIdentifier)
-class UserIdentifierAdmin(admin.ModelAdmin):
-    list_display = ('id', 'identifier', 'identifier_type', 'user')
-    fields = ('identifier', 'identifier_type', 'user')
 
 @admin.register(ProductIdentifier)
 class ProductIdentifierAdmin(admin.ModelAdmin):
