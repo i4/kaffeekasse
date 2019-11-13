@@ -137,7 +137,3 @@ class Login(models.Model):
 
 class Token(models.Model):
     token = models.BigIntegerField(unique=True, default=0)
-
-    def increment(self):
-        self.token += 1
-        self.save()

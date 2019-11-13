@@ -263,7 +263,8 @@ class TokenLogic:
         try:
             with transaction.atomic():
                 token, _ = Token.objects.get_or_create(pk=1)
-                token.increment()
+                token.token += 1
+                token.save()
                 return token.token
         except OperationalError as exc:
             filterOperationalError(exc)
