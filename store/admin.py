@@ -34,3 +34,33 @@ class ProductCategoryAdmin(admin.ModelAdmin):
 @admin.register(models.ProductIdentifier)
 class ProductIdentifierAdmin(admin.ModelAdmin):
     list_display = ('product', 'identifier_type', 'identifier')
+
+
+@admin.register(models.Charge)
+class ChargeAdmin(admin.ModelAdmin):
+    list_display = ('token', 'time_stamp', 'user', 'amount',
+            'annullated')
+    readonly_fields = ('time_stamp',)
+
+
+@admin.register(models.Purchase)
+class PurchaseAdmin(admin.ModelAdmin):
+    list_display = ('token', 'time_stamp', 'user', 'product', 'price',
+            'annullated')
+    readonly_fields = ('time_stamp',)
+
+
+@admin.register(models.Transfer)
+class TransferAdmin(admin.ModelAdmin):
+    list_display = ('token', 'time_stamp', 'sender', 'receiver', 'amount',
+            'annullated')
+    readonly_fields = ('time_stamp',)
+
+
+@admin.register(models.Login)
+class LoginAdmin(admin.ModelAdmin):
+    list_display = ('user', 'time_stamp')
+    readonly_fields = ('time_stamp',)
+
+
+admin.site.register(models.Token)
