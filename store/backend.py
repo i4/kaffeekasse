@@ -272,7 +272,7 @@ class PurchaseLogic:
 
         try:
             with transaction.atomic():
-                user = list(User.objects.filter(id=user_id))[0]
+                user = User.objects.get(id=user_id)
                 product = ProductLogic.getProduct(product_identifier, product_identifier_type)
                 purchase_create_return_tuple = PurchaseLogic.__createPurchaseTuple(user, product, token)
                 PurchaseLogic.__updateUserMoney(user, product.price)
@@ -280,7 +280,7 @@ class PurchaseLogic:
         except (ObjectDoesNotExist, ProductIdentifierNotExists):
             return -1, -1
         except IntegrityError:
-            purchase = list(Purchase.objects.filter(token=token))[0]
+            purchase = Purchase.objects.get(token=token)
             return purchase.id, product.id
         except OperationalError as exc:
             filterOperationalError(exc)
@@ -320,14 +320,15 @@ class PurchaseLogic:
         timezone = pytz.timezone('Europe/Berlin')
         time_limit = timezone.localize(time_limit)
 
-        purchase = list(Purchase.objects.filter(id=purchase_id))[0]
+        purchase = Purchase.objects.get(id=purchase_id)
+
         purchase_time = purchase.time_stamp
         if time_limit >= purchase_time:
             raise PurchaseNotAnnullable()
 
         try:
             with transaction.atomic():
-                user = list(User.objects.filter(id=purchase.user.id))[0]
+                user = User.objects.get(id=purchase.user.id)
                 purchase.annullate()
                 user.incrementMoney(purchase.price)
         except OperationalError as exc:
@@ -389,11 +390,11 @@ class ChargeLogic:
 
         try:
             with transaction.atomic():
-                user = list(User.objects.filter(id=user_id))[0]
+                user = User.objects.get(id=user_id)
                 charge_id = ChargeLogic.__createChargeTuple(user, amount, token)
                 ChargeLogic.__updateUserMoney(user, amount)
         except IntegrityError:
-            charge = list(Charge.objects.filter(token=token).values('id'))[0]
+            charge = Charge.objects.get(token=token).values('id')
             return charge['id']
         except OperationalError as exc:
             filterOperationalError(exc)
@@ -429,14 +430,14 @@ class ChargeLogic:
         timezone = pytz.timezone('Europe/Berlin')
         time_limit = timezone.localize(time_limit)
 
-        charge = list(Charge.objects.filter(id=charge_id))[0]
+        charge = Charge.objects.get(id=charge_id)
 
         if time_limit > charge.time_stamp:
             raise ChargeNotAnnullable()
 
         try:
             with transaction.atomic():
-                user = list(User.objects.filter(id=charge.user.id))[0]
+                user = User.objects.get(id=charge.user.id)
                 charge.annullate()
                 user.decrementMoney(charge.amount)
         except OperationalError as exc:
@@ -539,7 +540,7 @@ class TransferLogic:
         :param token: unique token got by TokenLogic's getToken
         """
 
-        sender = list(User.objects.filter(id=user_id))[0]
+        sender = User.objects.get(id=user_id)
         receiver = UserLogic.getUser(identifier=receiver_identifier, identifier_type=receiver_identifier_type)
         if sender.id == receiver.id:
             raise SenderEqualsReceiverError()
@@ -550,7 +551,7 @@ class TransferLogic:
                 TransferLogic.__updateSenderMoney(sender, amount)
                 TransferLogic.__updateReceiverMoney(receiver, amount)
         except IntegrityError:
-            return list(Transfer.objects.filter(token=token))[0], receiver.id
+            return Transfer.objects.get(token=token), receiver.id
         except OperationalError as exc:
             filterOperationalError(exc)
         return transfer_id, receiver.id
@@ -590,12 +591,12 @@ class TransferLogic:
         timezone = pytz.timezone('Europe/Berlin')
         time_limit = timezone.localize(time_limit)
 
-        transfer = list(Transfer.objects.filter(id=transfer_id))[0]
+        transfer = Transfer.objects.get(id=transfer_id)
         if time_limit > transfer.time_stamp:
             raise TransferNotAnnullable()
 
-        receiver = list(User.objects.filter(id=transfer.receiver_id))[0]
-        sender = list(User.objects.filter(id=transfer.sender_id))[0]
+        receiver = User.objects.get(id=transfer.receiver_id)
+        sender = User.objects.get(id=transfer.sender_id)
 
         try:
             with transaction.atomic():
