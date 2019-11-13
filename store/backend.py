@@ -28,14 +28,12 @@ class UserLogic:
         if ident_type == UserIdentifier.PRIMARYKEY:
             return User.objects.get(id=ident)
 
-        idf = UserIdentifier.objects.filter(ident=ident, ident_type=ident_type)
-        idf = idf.select_related('user')
-        idf = list(idf)
-        if len(idf) == 0:
+        x = UserIdentifier.objects.filter(ident=ident, ident_type=ident_type) \
+                .select_related('user') \
+                .first()
+        if x is None:
             raise UserIdentifierNotExists()
-        idf = idf[0]
-        user = idf.user
-        return user
+        return x.user
 
     @staticmethod
     def login(request, ident, ident_type):
