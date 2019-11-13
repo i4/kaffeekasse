@@ -12,7 +12,6 @@ from django.db import OperationalError
 
 
 class UserLogic:
-
     @staticmethod
     def getUser(identifier, identifier_type):
         """
@@ -22,6 +21,7 @@ class UserLogic:
         :param identifier: on of the user identifiers
         :param identifier_type: type of the identifier
         """
+
         idf = UserIdentifier.objects.filter(identifier=identifier, identifier_type=identifier_type)
         idf = idf.select_related('user')
         idf = list(idf)
@@ -30,7 +30,6 @@ class UserLogic:
         idf = idf[0]
         user = idf.user
         return user
-
 
     @staticmethod
     def login(request, identifier, identifier_type):
@@ -42,6 +41,7 @@ class UserLogic:
         :param request: the request object
         :param user_id: id of the user that should log in
         """
+
         user = UserLogic.getUser(identifier, identifier_type)
         try:
             with transaction.atomic():
@@ -70,6 +70,7 @@ class UserLogic:
         :config-param max_users: depends on N_USERS_LOGIN
         :config-param max_days: depends on T_USERS_LOGIN_D
         """
+
         max_users = config['N_USERS_LOGIN']
         max_days = config['T_USERS_LOGIN_D']
         time_stamp = date.today() - timedelta(days=max_days)
@@ -106,7 +107,6 @@ class UserLogic:
 
 
 class ProductLogic:
-
     @staticmethod
     def getProduct(identifier, identifier_type):
         """
@@ -116,6 +116,7 @@ class ProductLogic:
         :param identifier: on of the user identifiers
         :param identifier_type: type of the identifier
         """
+
         if int(identifier_type) == ProductIdentifier.PRIMARYKEY:
             products = list(Product.objects.filter(id=int(identifier)))
             if len(products) == 0:
@@ -131,7 +132,6 @@ class ProductLogic:
             idf = idf[0]
             product = idf.product
         return product
-
 
     @staticmethod
     def getMostBoughtProductsList():
@@ -149,6 +149,7 @@ class ProductLogic:
 
         max_products = config['N_MOST_BOUGHT_PRODUCTS']
         max_days = config['T_MOST_BOUGHT_PRODUCTS_D']
+
         time_stamp = date.today() - timedelta(days=max_days)
         products = Purchase.objects.filter(time_stamp__gte=time_stamp.strftime("%Y-%m-%d") + " 00:00")
         products = products.select_related('product')
@@ -236,7 +237,6 @@ class ProductLogic:
 
 
 class TokenLogic:
-
     @staticmethod
     def get_token():
         """
@@ -254,7 +254,6 @@ class TokenLogic:
 
 
 class PurchaseLogic:
-
     @staticmethod
     def purchase(user_id, product_identifier, product_identifier_type, token):
         """
@@ -434,6 +433,7 @@ class ChargeLogic:
 
         if time_limit > charge.time_stamp:
             raise ChargeNotAnnullable()
+
         try:
             with transaction.atomic():
                 user = list(User.objects.filter(id=charge.user.id))[0]
@@ -596,6 +596,7 @@ class TransferLogic:
 
         receiver = list(User.objects.filter(id=transfer.receiver_id))[0]
         sender = list(User.objects.filter(id=transfer.sender_id))[0]
+
         try:
             with transaction.atomic():
                 transfer.annullate()
