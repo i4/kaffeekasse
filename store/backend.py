@@ -280,8 +280,8 @@ class PurchaseLogic:
         except (ObjectDoesNotExist, ProductIdentifierNotExists):
             return -1, -1
         except IntegrityError:
-            purchase = list(Purchase.objects.filter(token=token))[0], product.id
-            return purchase.id
+            purchase = list(Purchase.objects.filter(token=token))[0]
+            return purchase.id, product.id
         except OperationalError as exc:
             filterOperationalError(exc)
             return -1, -1
