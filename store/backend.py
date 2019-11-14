@@ -319,7 +319,7 @@ class ChargeLogic:
             else:
                 charge.update({'annullable': True})
 
-        return charges
+        return list(charges)
 
     @staticmethod
     def charge(user_id, amount):
