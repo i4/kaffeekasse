@@ -54,7 +54,8 @@ class UserIdentifier(models.Model):
 
 class Product(models.Model):
     name = models.TextField()
-    category = models.ForeignKey('productcategory', on_delete=models.CASCADE, related_name="products")
+    category = models.ForeignKey('productcategory', on_delete=models.CASCADE,
+            related_name="products")
     stock = models.IntegerField(default=0)
     price = models.DecimalField(max_digits=6, decimal_places=2,
             validators=[validators.MinValueValidator(0)])
