@@ -1,14 +1,16 @@
-from django.shortcuts import render, reverse
-from .models import User, Product
-from django.views.decorators.http import require_http_methods
-from django.views.decorators.csrf import csrf_protect
+from decimal import InvalidOperation
+
+from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.contrib.auth import logout as auth_logout
+from django.shortcuts import render, reverse
+from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.http import require_http_methods
+
 from .backend import *
-from .store_exceptions import ClientMessageException
+from .models import User, Product
 from .store_config import KAFFEEKASSE as config
-from decimal import InvalidOperation
+from .store_exceptions import ClientMessageException
 
 
 @require_http_methods(["GET"])
