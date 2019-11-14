@@ -178,15 +178,12 @@
             showError(error, "Fehler beim Einkaufen");
         }
 
-        // Send request to the server using a new token
-        tokenCall(token => {
             $.ajax({
                 url: "{% url "buy" %}",
                 method: "POST",
                 data: {
                     ident: ident,
                     ident_type: ident_type,
-                    token: token
                 },
                 success: function(data) {
                     clearError();
@@ -195,7 +192,6 @@
                 },
                 error: error,
             });
-        }, error);
     }
 
     function addLastBought(id, purchase_id) {
@@ -219,13 +215,11 @@
         }
 
         return function() {
-            tokenCall(token => {
                 $.ajax({
                     url: "{% url "buy_revert" %}",
                     method: "POST",
                     data: {
                         purchase_id: id,
-                        token: token
                     },
                     success: data => {
                         clearError();
@@ -239,7 +233,6 @@
                     },
                     error: error,
                 });
-            }, error);
         }
     }
 

@@ -201,8 +201,6 @@
             return;
         }
 
-        // Send request to the server using a new token
-        tokenCall(token => {
             $.ajax({
                 url: "{% url "transfer" %}",
                 method: "POST",
@@ -210,7 +208,6 @@
                     amount: amount,
                     receiver_ident: receiver_ident,
                     ident_type: ident_type,
-                    token: token
                 },
                 success: data => {
                     clearError();
@@ -221,7 +218,6 @@
                 },
                 error: error,
             });
-        }, error);
     }
 
     // Add a new transfer to the list and remove the last one
@@ -246,13 +242,11 @@
         }
 
         return function() {
-            tokenCall(token => {
                 $.ajax({
                     url: "{% url "transfer_revert" %}",
                     method: "POST",
                     data: {
                         transfer_id: id,
-                        token: token
                     },
                     success: data => {
                         clearError();
@@ -266,7 +260,6 @@
                     },
                     error: error,
                 })
-            }, error);
         }
     }
 

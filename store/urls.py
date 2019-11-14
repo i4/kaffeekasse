@@ -14,7 +14,4 @@ urlpatterns = [
     # Auth
     path('login', views.login, name='login'),
     path('logout', views.logout, name='logout'),
-
-    # At-most-once token
-    path('token', views.getToken, name='getToken'),
 ]

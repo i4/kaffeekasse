@@ -32,7 +32,6 @@ def buy(request):
     POST: Puchase a product and return the product id and the purchase id as JsonResponse
         :body_param ident:  The identifier of the product
         :body_param ident_type: int The identifier type of the product
-        :body_param token: int
     """
 
     if request.method == 'GET':  # Return the rendered page
@@ -50,10 +49,9 @@ def buy(request):
         user_id = request.user.id
         ident = request.POST.get("ident")
         ident_type = int(request.POST.get("ident_type"))
-        token = int(request.POST.get("token"))
 
         try:
-            purchase_return_tuple = PurchaseLogic.purchase(user_id, ident, ident_type, token)
+            purchase_return_tuple = PurchaseLogic.purchase(user_id, ident, ident_type)
         except (UserNotEnoughMoney, NegativeMoneyAmount, UserIdentifierNotExists) as exc:
             return JsonResponse({'error': str(exc)}, status=400)
         except SerializationError as exc:
@@ -75,15 +73,13 @@ def buy(request):
 def buy_revert(request):
     """
     POST: Revert a purchase.
-        :body_param token: int
         :body_param purchase_id: int
     """
 
     purchase_id = int(request.POST.get("purchase_id"))
-    token = int(request.POST.get("token"))
 
     try:
-        PurchaseLogic.annullatePurchase(purchase_id, token)
+        PurchaseLogic.annullatePurchase(purchase_id)
     except (PurchaseNotAnnullable, UserNotEnoughMoney) as exc:
         return JsonResponse({'error': str(exc)}, status=400)
     except SerializationError as exc:
@@ -98,7 +94,6 @@ def charge(request):
     """
     GET: Show the rendered page to charge money.
     POST: Charge money.
-        :body_param token: int
         :body_param amount: float
     """
     if request.method == "GET":
@@ -108,14 +103,13 @@ def charge(request):
         })
     elif request.method == "POST":
         user_id = request.user.id
-        token = int(request.POST.get("token"))
         amount = request.POST.get("amount")
         try:
             amount = Decimal(amount)
         except InvalidOperation as exc:
             return JsonResponse({'error': str(exc)}, status=400)
         try:
-            charge_id = ChargeLogic.charge(user_id, amount, token)
+            charge_id = ChargeLogic.charge(user_id, amount)
         except NegativeMoneyAmount as exc:
             return JsonResponse({'error': str(exc)}, status=400)
         except SerializationError as exc:
@@ -130,12 +124,10 @@ def charge_revert(request):
     """
     POST: Revert a charge.
         :body_param charge_id: int
-        :body_param token: int
     """
     charge_id = int(request.POST.get("charge_id"))
-    token = int(request.POST.get("token"))
     try:
-        ChargeLogic.annullateCharge(charge_id, token)
+        ChargeLogic.annullateCharge(charge_id)
     except (ChargeNotAnnullable, UserNotEnoughMoney, NegativeMoneyAmount) as exc:
         return JsonResponse({'error': str(exc)}, status=400)
     except SerializationError as exc:
@@ -150,7 +142,6 @@ def transfer(request):
     """
     GET: Return the rendered page to transfer money to another user.
     POST: Transfer money to another user.
-        :body_param token: int
         :body_param receiver: int
         :body_param amount: float
     """
@@ -163,7 +154,6 @@ def transfer(request):
         })
     elif request.method == "POST":
         user_id = request.user.id
-        token = int(request.POST.get("token"))
         receiver_id = request.POST.get("receiver_ident")
         receiver_ident_type = int(request.POST.get("ident_type"))
         try:
@@ -172,7 +162,7 @@ def transfer(request):
             return JsonResponse({'error': str(exc)}, status=400)
         try:
             transfer_tuple = TransferLogic.transfer(
-                user_id, receiver_id, receiver_ident_type, amount, token)
+                user_id, receiver_id, receiver_ident_type, amount)
         except (UserNotEnoughMoney, NegativeMoneyAmount, UserIdentifierNotExists, SenderEqualsReceiverError) as exc:
             return JsonResponse({'error': str(exc)}, status=400)
         except SerializationError as exc:
@@ -187,12 +177,10 @@ def transfer_revert(request):
     """
     POST: Revert a transfer.
         :body_param transfer_id: int
-        :body_param token: int
     """
     transfer_id = int(request.POST.get('transfer_id'))
-    token = int(request.POST.get('token'))
     try:
-        TransferLogic.annullateTransfer(transfer_id, token)
+        TransferLogic.annullateTransfer(transfer_id)
     except (TransferNotAnnullable, UserNotEnoughMoney, NegativeMoneyAmount) as exc:
         return JsonResponse({'error': str(exc)}, status=400)
     except SerializationError as exc:
@@ -228,19 +216,3 @@ def logout(request):
     """
     auth_logout(request)
     return HttpResponseRedirect(reverse("index"))
-
-
-# At-most-once token
-
-@login_required(login_url="index")
-@require_http_methods(["POST"])
-@csrf_protect
-def getToken(request):
-    """
-    Return a new token used for the at-most-once protocol as JsonResponse.
-    """
-    try:
-        token = TokenLogic.get_token()
-    except SerializationError as exc:
-        return JsonResponse({'error': str(exc)}, status=503)
-    return JsonResponse({"token": token})

@@ -124,14 +124,11 @@
             return;
         }
 
-        // Send request to the server using a new token
-        tokenCall(token => {
             $.ajax({
                 url: "{% url "charge" %}",
                 method: "POST",
                 data: {
                     amount: amount,
-                    token: token
                 },
                 success: data => {
                     clearError();
@@ -141,7 +138,6 @@
                 },
                 error: error,
             });
-        }, error);
     }
 
     // Add a new charge to the list and remove the last one
@@ -165,13 +161,11 @@
         };
 
         return function() {
-            tokenCall(token => {
                 $.ajax({
                     url: "{% url "charge_revert" %}",
                     method: "POST",
                     data: {
                         charge_id: id,
-                        token: token
                     },
                     success: data => {
                         clearError();
@@ -185,7 +179,6 @@
                     },
                     error: error,
                 })
-            }, error);
         }
     }
 

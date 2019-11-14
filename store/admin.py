@@ -38,21 +38,21 @@ class ProductIdentifierAdmin(admin.ModelAdmin):
 
 @admin.register(models.Charge)
 class ChargeAdmin(admin.ModelAdmin):
-    list_display = ('token', 'time_stamp', 'user', 'amount',
+    list_display = ('time_stamp', 'user', 'amount',
             'annullated')
     readonly_fields = ('time_stamp',)
 
 
 @admin.register(models.Purchase)
 class PurchaseAdmin(admin.ModelAdmin):
-    list_display = ('token', 'time_stamp', 'user', 'product', 'price',
+    list_display = ('time_stamp', 'user', 'product', 'price',
             'annullated')
     readonly_fields = ('time_stamp',)
 
 
 @admin.register(models.Transfer)
 class TransferAdmin(admin.ModelAdmin):
-    list_display = ('token', 'time_stamp', 'sender', 'receiver', 'amount',
+    list_display = ('time_stamp', 'sender', 'receiver', 'amount',
             'annullated')
     readonly_fields = ('time_stamp',)
 
@@ -61,6 +61,3 @@ class TransferAdmin(admin.ModelAdmin):
 class LoginAdmin(admin.ModelAdmin):
     list_display = ('user', 'time_stamp')
     readonly_fields = ('time_stamp',)
-
-
-admin.site.register(models.Token)

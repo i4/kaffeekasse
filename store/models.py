@@ -99,7 +99,6 @@ class ProductIdentifier(models.Model):
 
 
 class Charge(models.Model):
-    token = models.BigIntegerField(unique=True)
     user = models.ForeignKey('user', on_delete=models.CASCADE)
     time_stamp = models.DateTimeField(auto_now=True)
     amount = models.DecimalField(max_digits=6, decimal_places=2,
@@ -108,7 +107,6 @@ class Charge(models.Model):
 
 
 class Purchase(models.Model):
-    token = models.BigIntegerField(unique=True)
     user = models.ForeignKey('user', on_delete=models.CASCADE)
     product = models.ForeignKey('product', on_delete=models.SET_NULL,
             null=True)
@@ -119,7 +117,6 @@ class Purchase(models.Model):
 
 
 class Transfer(models.Model):
-    token = models.BigIntegerField(unique=True)
     sender = models.ForeignKey('user', on_delete=models.SET_NULL, null=True,
             related_name='sender')
     receiver  = models.ForeignKey('user', on_delete=models.SET_NULL,
@@ -133,7 +130,3 @@ class Transfer(models.Model):
 class Login(models.Model):
     time_stamp = models.DateTimeField(auto_now=True)
     user = models.ForeignKey('user', on_delete=models.CASCADE)
-
-
-class Token(models.Model):
-    token = models.BigIntegerField(unique=True, default=0)

@@ -96,25 +96,6 @@
     </script>
     {% endif %}
 
-    {% comment %} For easier token handling {% endcomment %}
-    {% if user.is_authenticated %}
-    <script>
-        // Fetch an token from the server.
-        // On success call the success callback with the token as parameter.
-        // On error call the error callback with the error object as parameter.
-        function tokenCall(success, error) {
-            $.ajax({
-                url: "{% url "getToken" %}",
-                method: "POST",
-                success: function (data) {
-                    success(data.token);
-                },
-                error: error
-            })
-        }
-    </script>
-    {% endif %}
-
     {% comment %} Prepare ajax to use the crsf token {% endcomment %}
     {% if user.is_authenticated %}
     <script>
