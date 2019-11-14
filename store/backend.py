@@ -234,26 +234,21 @@ class PurchaseLogic:
         *)  Product: update the product stock
         """
 
-        try:
-            with transaction.atomic():
-                product = ProductLogic.getProduct(product_ident, product_ident_type)
-                product.stock -= 1
-                product.save()
+        with transaction.atomic():
+            product = ProductLogic.getProduct(product_ident, product_ident_type)
+            product.stock -= 1
+            product.save()
 
-                user = User.objects.get(id=user_id)
-                user.money -= product.price
-                if user.money < 0:
-                    raise UserNotEnoughMoney()
-                user.save()
+            user = User.objects.get(id=user_id)
+            user.money -= product.price
+            if user.money < 0:
+                raise UserNotEnoughMoney()
+            user.save()
 
-                purchase = Purchase(user=user, product=product, price=product.price, annullated=False)
-                purchase.save()
+            purchase = Purchase(user=user, product=product, price=product.price, annullated=False)
+            purchase.save()
 
-                return purchase.id, product.id
-
-        except (ObjectDoesNotExist, ProductIdentifierNotExists):
-            return -1, -1
-        assert False
+            return purchase.id, product.id
 
     @staticmethod
     @typechecked
