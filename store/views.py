@@ -54,8 +54,6 @@ def buy(request):
             purchase_return_tuple = PurchaseLogic.purchase(user_id, ident, ident_type)
         except (UserNotEnoughMoney, NegativeMoneyAmount, UserIdentifierNotExists) as exc:
             return JsonResponse({'error': str(exc)}, status=400)
-        except SerializationError as exc:
-            return JsonResponse({'error': str(exc)}, status=503)
 
         if purchase_return_tuple[0] >= 0:
             return JsonResponse({
@@ -82,8 +80,6 @@ def buy_revert(request):
         PurchaseLogic.annullatePurchase(purchase_id)
     except (PurchaseNotAnnullable, UserNotEnoughMoney) as exc:
         return JsonResponse({'error': str(exc)}, status=400)
-    except SerializationError as exc:
-        return JsonResponse({'error': str(exc)}, status=503)
     return HttpResponse(status=200)
 
 
@@ -112,8 +108,6 @@ def charge(request):
             charge_id = ChargeLogic.charge(user_id, amount)
         except NegativeMoneyAmount as exc:
             return JsonResponse({'error': str(exc)}, status=400)
-        except SerializationError as exc:
-            return JsonResponse({'error': str(exc)}, status=503)
         return JsonResponse({'charge_id': charge_id})
 
 
@@ -130,8 +124,6 @@ def charge_revert(request):
         ChargeLogic.annullateCharge(charge_id)
     except (ChargeNotAnnullable, UserNotEnoughMoney, NegativeMoneyAmount) as exc:
         return JsonResponse({'error': str(exc)}, status=400)
-    except SerializationError as exc:
-        return JsonResponse({'error': str(exc)}, status=503)
     return HttpResponse(status=200)
 
 
@@ -165,8 +157,6 @@ def transfer(request):
                 user_id, receiver_id, receiver_ident_type, amount)
         except (UserNotEnoughMoney, NegativeMoneyAmount, UserIdentifierNotExists, SenderEqualsReceiverError) as exc:
             return JsonResponse({'error': str(exc)}, status=400)
-        except SerializationError as exc:
-            return JsonResponse({'error': str(exc)}, status=503)
         return JsonResponse({"transfer_id": transfer_tuple[0], "receiver_id": transfer_tuple[1]})
 
 
@@ -183,8 +173,6 @@ def transfer_revert(request):
         TransferLogic.annullateTransfer(transfer_id)
     except (TransferNotAnnullable, UserNotEnoughMoney, NegativeMoneyAmount) as exc:
         return JsonResponse({'error': str(exc)}, status=400)
-    except SerializationError as exc:
-        return JsonResponse({'error': str(exc)}, status=503)
     return HttpResponse(status=200)
 
 
@@ -202,7 +190,7 @@ def login(request):
     ident_type = int(request.POST.get('ident_type'))
     try:
         UserLogic.login(request, ident, ident_type)
-    except (UserIdentifierNotExists, DisabledIdentifier, SerializationError):
+    except (UserIdentifierNotExists, DisabledIdentifier):
         return HttpResponseRedirect(reverse("index"))
 
     return HttpResponseRedirect(reverse("buy"))

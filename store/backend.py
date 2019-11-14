@@ -7,8 +7,6 @@ from datetime import date, timedelta, datetime
 from django.db import transaction
 from .store_config import KAFFEEKASSE as config
 import pytz
-from psycopg2.extensions import TransactionRollbackError
-from django.db import OperationalError
 
 
 class UserLogic:
@@ -54,13 +52,10 @@ class UserLogic:
         if ident_type == UserIdentifier.PRIMARYKEY and not user.pk_login_enabled:
             raise DisabledIdentifier()
 
-        try:
-            with transaction.atomic():
-                x = Login(user=user)
-                x.save()
-                login(request, user)
-        except OperationalError as exc:
-            filterOperationalError(exc)
+        with transaction.atomic():
+            x = Login(user=user)
+            x.save()
+            login(request, user)
 
     @staticmethod
     def getFrequentUsersList():
@@ -291,9 +286,6 @@ class PurchaseLogic:
 
         except (ObjectDoesNotExist, ProductIdentifierNotExists):
             return -1, -1
-        except OperationalError as exc:
-            filterOperationalError(exc)
-            return -1, -1
         assert False
 
     @staticmethod
@@ -322,15 +314,12 @@ class PurchaseLogic:
         if time_limit >= purchase_time:
             raise PurchaseNotAnnullable()
 
-        try:
-            with transaction.atomic():
-                user = User.objects.get(id=purchase.user.id)
-                user.money += purchase.price
-                user.save()
-                purchase.annullated = True
-                purchase.save()
-        except OperationalError as exc:
-            filterOperationalError(exc)
+        with transaction.atomic():
+            user = User.objects.get(id=purchase.user.id)
+            user.money += purchase.price
+            user.save()
+            purchase.annullated = True
+            purchase.save()
 
 
 class ChargeLogic:
@@ -391,17 +380,13 @@ class ChargeLogic:
 
         assert amount > 0
 
-        try:
-            with transaction.atomic():
-                user = User.objects.get(id=user_id)
-                user.money += amount
-                user.save()
-                charge = Charge(amount=amount, annullated=False, user_id=user.id)
-                charge.save()
-                return charge.id
-        except OperationalError as exc:
-            filterOperationalError(exc)
-        assert False
+        with transaction.atomic():
+            user = User.objects.get(id=user_id)
+            user.money += amount
+            user.save()
+            charge = Charge(amount=amount, annullated=False, user_id=user.id)
+            charge.save()
+            return charge.id
 
     @staticmethod
     def annullateCharge(charge_id):
@@ -429,17 +414,14 @@ class ChargeLogic:
         if time_limit > charge.time_stamp:
             raise ChargeNotAnnullable()
 
-        try:
-            with transaction.atomic():
-                user = User.objects.get(id=charge.user.id)
-                user.money -= charge.amount
-                if user.money < 0:
-                    raise UserNotEnoughMoney()
-                user.save()
-                charge.annullated = True
-                charge.save()
-        except OperationalError as exc:
-            filterOperationalError(exc)
+        with transaction.atomic():
+            user = User.objects.get(id=charge.user.id)
+            user.money -= charge.amount
+            if user.money < 0:
+                raise UserNotEnoughMoney()
+            user.save()
+            charge.annullated = True
+            charge.save()
 
 
 class TransferLogic:
@@ -554,24 +536,18 @@ class TransferLogic:
         if sender.id == receiver.id:
             raise SenderEqualsReceiverError()
 
-        try:
-            with transaction.atomic():
-                transfer = Transfer(sender=sender, receiver=receiver, amount=amount, annullated=False)
-                transfer.save()
+        with transaction.atomic():
+            transfer = Transfer(sender=sender, receiver=receiver, amount=amount, annullated=False)
+            transfer.save()
 
-                sender.money -= amount
-                if sender.money < 0:
-                    raise UserNotEnoughMoney()
-                sender.save()
-                receiver.money += amount
-                receiver.save()
+            sender.money -= amount
+            if sender.money < 0:
+                raise UserNotEnoughMoney()
+            sender.save()
+            receiver.money += amount
+            receiver.save()
 
-                return transfer.id, receiver.id
-
-        except OperationalError as exc:
-            filterOperationalError(exc)
-
-        assert False
+            return transfer.id, receiver.id
 
     @staticmethod
     def annullateTransfer(transfer_id):
@@ -602,15 +578,12 @@ class TransferLogic:
         receiver = User.objects.get(id=transfer.receiver_id)
         sender = User.objects.get(id=transfer.sender_id)
 
-        try:
-            with transaction.atomic():
-                transfer.annullated = True
-                transfer.save()
-                receiver.money -= transfer.amount
-                if receiver.money < 0:
-                    raise UserNotEnoughMoney()
-                receiver.save()
-                sender.money += transfer.amount
-                sender.save()
-        except OperationalError as exc:
-            filterOperationalError(exc)
+        with transaction.atomic():
+            transfer.annullated = True
+            transfer.save()
+            receiver.money -= transfer.amount
+            if receiver.money < 0:
+                raise UserNotEnoughMoney()
+            receiver.save()
+            sender.money += transfer.amount
+            sender.save()
