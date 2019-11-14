@@ -89,10 +89,9 @@ class UserLogic:
         recent_logins = recent_logins.filter(user__pk_login_enabled=True)
         recent_logins = recent_logins.values('user__username', 'user__id')
         recent_logins = recent_logins.annotate(total=Count('user__id'))
-        if max_users <= 0:
-            recent_logins = recent_logins.order_by('total').reverse()
-        else:
-            recent_logins = recent_logins.order_by('total').reverse()[:max_users]
+        recent_logins = recent_logins.order_by('total').reverse()
+        if max_users > 0:
+            recent_logins = recent_logins[:max_users]
 
         old_logins = Login.objects.all()
         old_logins = old_logins.select_related('user')
