@@ -84,7 +84,7 @@ class UserLogic:
         max_days = config['T_USERS_LOGIN_D']
         time_stamp = date.today() - timedelta(days=max_days)
 
-        recent_logins = Login.objects.filter(time_stamp__gte=time_stamp.strftime("%Y-%m-%d") + " 00:00") \
+        recent_logins = Login.objects.filter(time_stamp__gte=time_stamp) \
                 .select_related('user') \
                 .filter(user__pk_login_enabled=True) \
                 .values('user__username', 'user__id') \
@@ -160,7 +160,7 @@ class ProductLogic:
         max_days = config['T_MOST_BOUGHT_PRODUCTS_D']
 
         time_stamp = date.today() - timedelta(days=max_days)
-        products = Purchase.objects.filter(time_stamp__gte=time_stamp.strftime("%Y-%m-%d") + " 00:00") \
+        products = Purchase.objects.filter(time_stamp__gte=time_stamp) \
                 .select_related('product') \
                 .values('product__name', 'product_id', 'product__price') \
                 .annotate(total=Count('product_id')) \
