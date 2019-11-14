@@ -156,7 +156,8 @@ class ProductLogic:
         max_products = config['N_LAST_BOUGHT_PRODUCTS']
         annullable_time = config['T_ANNULLABLE_PURCHASE_M']
 
-        products = Purchase.objects.filter(user=user_id) \
+        products = Purchase.objects \
+                .filter(user=user_id, product__isnull=False) \
                 .select_related('product') \
                 .order_by('-time_stamp')[:max_products] \
                 .values('product__name', 'product_id', 'product__price', 'time_stamp', 'id', 'annullated')
