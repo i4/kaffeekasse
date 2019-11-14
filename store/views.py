@@ -1,4 +1,4 @@
-from decimal import InvalidOperation
+from decimal import Decimal, InvalidOperation
 
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
@@ -7,10 +7,10 @@ from django.shortcuts import render, reverse
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_http_methods
 
-from .backend import *
-from .models import User, Product
-from .store_config import KAFFEEKASSE as config
-from .store_exceptions import ClientMessageException
+import store.backend as backend
+import store.models as models
+from store.store_config import KAFFEEKASSE as config
+from store.store_exceptions import ClientMessageException
 
 
 @require_http_methods(["GET"])
@@ -20,8 +20,8 @@ def index(request):
     """
     auth_logout(request)
     return render(request, "index.html", {
-        "users": UserLogic.getFrequentUsersList(),
-        "ident_types": UserIdentifier,
+        "users": backend.UserLogic.getFrequentUsersList(),
+        "ident_types": models.UserIdentifier,
     })
 
 
@@ -36,12 +36,12 @@ def buy(request):
 
     if request.method == 'GET':  # Return the rendered page
         return render(request, "buy.html", {
-            "most_bought": ProductLogic.getMostBoughtProductsList(),
-            "recently_bought": ProductLogic.getLastBoughtProductsList(request.user.id),
-            "drinks": ProductLogic.getDrinks(),
-            "candies": ProductLogic.getCandies(),
-            "products": Product.objects.all(),
-            "ident_types": ProductIdentifier,
+            "most_bought": backend.ProductLogic.getMostBoughtProductsList(),
+            "recently_bought": backend.ProductLogic.getLastBoughtProductsList(request.user.id),
+            "drinks": backend.ProductLogic.getDrinks(),
+            "candies": backend.ProductLogic.getCandies(),
+            "products": models.Product.objects.all(),
+            "ident_types": models.ProductIdentifier,
             "config": config,
         })
 
@@ -51,7 +51,7 @@ def buy(request):
         ident_type = int(request.POST.get("ident_type"))
 
         try:
-            purchase_return_tuple = PurchaseLogic.purchase(user_id, ident, ident_type)
+            purchase_return_tuple = backend.PurchaseLogic.purchase(user_id, ident, ident_type)
         except ClientMessageException as e:
             return JsonResponse({'error': str(e)}, status=400)
 
@@ -76,7 +76,7 @@ def buy_revert(request):
     purchase_id = int(request.POST.get("purchase_id"))
 
     try:
-        PurchaseLogic.annullatePurchase(purchase_id)
+        backend.PurchaseLogic.annullatePurchase(purchase_id)
     except ClientMessageException as e:
         return JsonResponse({'error': str(e)}, status=400)
     return HttpResponse(status=200)
@@ -92,7 +92,7 @@ def charge(request):
     """
     if request.method == "GET":
         return render(request, "charge.html", {
-            "recent_charges": ChargeLogic.getLastChargesList(request.user.id),
+            "recent_charges": backend.ChargeLogic.getLastChargesList(request.user.id),
             "config": config,
         })
     elif request.method == "POST":
@@ -103,7 +103,7 @@ def charge(request):
         except InvalidOperation as e:
             return JsonResponse({'error': str(e)}, status=400)
         try:
-            charge_id = ChargeLogic.charge(user_id, amount)
+            charge_id = backend.ChargeLogic.charge(user_id, amount)
         except ClientMessageException as e:
             return JsonResponse({'error': str(e)}, status=400)
         return JsonResponse({'charge_id': charge_id})
@@ -118,7 +118,7 @@ def charge_revert(request):
     """
     charge_id = int(request.POST.get("charge_id"))
     try:
-        ChargeLogic.annullateCharge(charge_id)
+        backend.ChargeLogic.annullateCharge(charge_id)
     except ClientMessageException as e:
         return JsonResponse({'error': str(e)}, status=400)
     return HttpResponse(status=200)
@@ -134,9 +134,9 @@ def transfer(request):
     """
     if request.method == "GET":
         return render(request, "transfer.html", {
-            "users": TransferLogic.getFreuquentTransferTargets(request.user.id),
-            "recent_transfers": TransferLogic.getLastTransfers(request.user.id),
-            "ident_types": UserIdentifier,
+            "users": backend.TransferLogic.getFreuquentTransferTargets(request.user.id),
+            "recent_transfers": backend.TransferLogic.getLastTransfers(request.user.id),
+            "ident_types": models.UserIdentifier,
             "config": config,
         })
     elif request.method == "POST":
@@ -148,7 +148,7 @@ def transfer(request):
         except InvalidOperation as e:
             return JsonResponse({'error': str(e)}, status=400)
         try:
-            transfer_tuple = TransferLogic.transfer(
+            transfer_tuple = backend.TransferLogic.transfer(
                 user_id, receiver_id, receiver_ident_type, amount)
         except ClientMessageException as e:
             return JsonResponse({'error': str(e)}, status=400)
@@ -164,7 +164,7 @@ def transfer_revert(request):
     """
     transfer_id = int(request.POST.get('transfer_id'))
     try:
-        TransferLogic.annullateTransfer(transfer_id)
+        backend.TransferLogic.annullateTransfer(transfer_id)
     except ClientMessageException as e:
         return JsonResponse({'error': str(e)}, status=400)
     return HttpResponse(status=200)
@@ -181,7 +181,7 @@ def login(request):
     ident = request.POST.get('ident')
     ident_type = int(request.POST.get('ident_type'))
     try:
-        UserLogic.login(request, ident, ident_type)
+        backend.UserLogic.login(request, ident, ident_type)
     # TODO: Show errors on login page
     except ClientMessageException as e:
         print(ident, ident_type, e)
