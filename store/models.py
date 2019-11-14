@@ -4,14 +4,31 @@ from django.utils import timezone
 from decimal import Decimal
 from .store_exceptions import *
 from django.utils.translation import gettext_lazy as _
+import django.core.validators as validators
+from django.db.models.signals import pre_save
+from django.contrib.sessions.models import Session
 
+
+# Per default, Django does not execute validators when saving a model. Enforce
+# this to guarantee the code cannot break these assumptions.
+#
+# Used, among others, to prevent negative money for users!
+def validate_model(sender, instance, raw, **kwargs):
+    if not raw:
+        # TODO: Find a better solution for this workaround
+        # Prevent the following error "django.core.exceptions.ValidationError:
+        # {'session_key': ['Session with this Session key already exists.']}"
+        if not isinstance(instance, Session):
+            instance.full_clean()
+pre_save.connect(validate_model)
 
 
 class User(AbstractUser):
     username = models.CharField(max_length=128, unique=True)
     password = models.CharField(max_length=128, null=True)
     email = models.EmailField()
-    money = models.DecimalField(max_digits=6, decimal_places=2, default=0.0)
+    money = models.DecimalField(max_digits=6, decimal_places=2, default=0.0,
+            validators=[validators.MinValueValidator(0)])
     pk_login_enabled = models.BooleanField(_("Login aus Auswahlliste"), default=True)
 
 
