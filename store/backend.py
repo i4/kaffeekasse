@@ -188,10 +188,11 @@ class ProductLogic:
 
         max_products = config['N_LAST_BOUGHT_PRODUCTS']
         annullable_time = config['T_ANNULLABLE_PURCHASE_M']
-        products = Purchase.objects.filter(user=user_id)
-        products = products.select_related('product')
-        products = products.order_by('-time_stamp')[:max_products]
-        products = products.values('product__name', 'product_id', 'product__price', 'time_stamp', 'id', 'annullated')
+
+        products = Purchase.objects.filter(user=user_id) \
+                .select_related('product') \
+                .order_by('-time_stamp')[:max_products] \
+                .values('product__name', 'product_id', 'product__price', 'time_stamp', 'id', 'annullated')
 
         # warning: summertime/wintertime currently is not respected in the following calculations. This should be
         # implemented to avoid non-annullable transactions in the lost hour between summer- and wintertime
