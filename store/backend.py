@@ -89,7 +89,7 @@ class UserLogic:
         recent_logins = recent_logins.filter(user__pk_login_enabled=True)
         recent_logins = recent_logins.values('user__username', 'user__id')
         recent_logins = recent_logins.annotate(total=Count('user__id'))
-        recent_logins = recent_logins.order_by('total').reverse()
+        recent_logins = recent_logins.order_by('-total')
         if max_users > 0:
             recent_logins = recent_logins[:max_users]
 
@@ -99,7 +99,7 @@ class UserLogic:
         old_logins = old_logins.values('user__username', 'user__id')
         old_logins = old_logins.exclude(user__id__in=[d['user__id'] for d in list(recent_logins)])
         old_logins = old_logins.annotate(total=Count('user__id'))
-        old_logins = old_logins.order_by('total').reverse()
+        old_logins = old_logins.order_by('-total')
 
         no_logins = User.objects.filter(pk_login_enabled=True).exclude(id__in=[d['user__id'] for d in list(recent_logins) + list(old_logins)])
         no_logins = no_logins.order_by('username')
@@ -163,7 +163,7 @@ class ProductLogic:
         products = products.select_related('product')
         products = products.values('product__name', 'product_id', 'product__price')
         products = products.annotate(total=Count('product_id'))
-        products = products.order_by('total').reverse()[:max_products]
+        products = products.order_by('-total')[:max_products]
         return list(products)
 
     @staticmethod
@@ -189,7 +189,7 @@ class ProductLogic:
         annullable_time = config['T_ANNULLABLE_PURCHASE_M']
         products = Purchase.objects.filter(user=user_id)
         products = products.select_related('product')
-        products = products.order_by('time_stamp').reverse()[:max_products]
+        products = products.order_by('-time_stamp')[:max_products]
         products = products.values('product__name', 'product_id', 'product__price', 'time_stamp', 'id', 'annullated')
 
         # warning: summertime/wintertime currently is not respected in the following calculations. This should be
@@ -499,7 +499,7 @@ class TransferLogic:
 
         recent_transfers = recent_transfers.values('receiver', 'receiver__username')
         recent_transfers = recent_transfers.annotate(total=Count('receiver'))
-        recent_transfers = recent_transfers.order_by('receiver__username').order_by('total').reverse()
+        recent_transfers = recent_transfers.order_by('receiver__username').order_by('-total')
 
         for transfer in recent_transfers:
             transfer['id'] = transfer.pop('receiver')
@@ -530,7 +530,7 @@ class TransferLogic:
 
         transfers = Transfer.objects.filter(sender=user_id)
         transfers = transfers.select_related('receiver')
-        transfers = transfers.order_by('time_stamp').reverse()[:max_transfers]
+        transfers = transfers.order_by('-time_stamp')[:max_transfers]
         transfers = transfers.values('id', 'annullated', 'amount', 'receiver__username', 'time_stamp')
 
         # warning: summertime/wintertime currently is not respected in the following calculations. This should be
