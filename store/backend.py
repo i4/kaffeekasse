@@ -84,27 +84,28 @@ class UserLogic:
         max_days = config['T_USERS_LOGIN_D']
         time_stamp = date.today() - timedelta(days=max_days)
 
-        recent_logins = Login.objects.filter(time_stamp__gte=time_stamp.strftime("%Y-%m-%d") + " 00:00")
-        recent_logins = recent_logins.select_related('user')
-        recent_logins = recent_logins.filter(user__pk_login_enabled=True)
-        recent_logins = recent_logins.values('user__username', 'user__id')
-        recent_logins = recent_logins.annotate(total=Count('user__id'))
-        recent_logins = recent_logins.order_by('-total')
+        recent_logins = Login.objects.filter(time_stamp__gte=time_stamp.strftime("%Y-%m-%d") + " 00:00") \
+                .select_related('user') \
+                .filter(user__pk_login_enabled=True) \
+                .values('user__username', 'user__id') \
+                .annotate(total=Count('user__id')) \
+                .order_by('-total')
         if max_users > 0:
             recent_logins = recent_logins[:max_users]
 
-        old_logins = Login.objects.all()
-        old_logins = old_logins.select_related('user')
-        old_logins = old_logins.filter(user__pk_login_enabled=True)
-        old_logins = old_logins.values('user__username', 'user__id')
-        old_logins = old_logins.exclude(user__id__in=[d['user__id'] for d in list(recent_logins)])
-        old_logins = old_logins.annotate(total=Count('user__id'))
-        old_logins = old_logins.order_by('-total')
+        old_logins = Login.objects.all() \
+                .select_related('user') \
+                .filter(user__pk_login_enabled=True) \
+                .values('user__username', 'user__id') \
+                .exclude(user__id__in=[d['user__id'] for d in list(recent_logins)]) \
+                .annotate(total=Count('user__id')) \
+                .order_by('-total')
 
-        no_logins = User.objects.filter(pk_login_enabled=True).exclude(id__in=[d['user__id'] for d in list(recent_logins) + list(old_logins)])
-        no_logins = no_logins.order_by('username')
-        no_logins = no_logins.values('username', 'id')
-        no_logins = no_logins.annotate(total=Count('id'))
+        no_logins = User.objects.filter(pk_login_enabled=True) \
+                .exclude(id__in=[d['user__id'] for d in list(recent_logins) + list(old_logins)]) \
+                .order_by('username') \
+                .values('username', 'id') \
+                .annotate(total=Count('id'))
 
         for login in no_logins:
             login['user__id'] = login.pop('id')
