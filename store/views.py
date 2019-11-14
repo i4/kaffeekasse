@@ -50,8 +50,8 @@ def buy(request):
 
         try:
             purchase_return_tuple = PurchaseLogic.purchase(user_id, ident, ident_type)
-        except ClientMessageException as exc:
-            return JsonResponse({'error': str(exc)}, status=400)
+        except ClientMessageException as e:
+            return JsonResponse({'error': str(e)}, status=400)
 
         if purchase_return_tuple[0] >= 0:
             return JsonResponse({
@@ -75,8 +75,8 @@ def buy_revert(request):
 
     try:
         PurchaseLogic.annullatePurchase(purchase_id)
-    except ClientMessageException as exc:
-        return JsonResponse({'error': str(exc)}, status=400)
+    except ClientMessageException as e:
+        return JsonResponse({'error': str(e)}, status=400)
     return HttpResponse(status=200)
 
 
@@ -98,12 +98,12 @@ def charge(request):
         amount = request.POST.get("amount")
         try:
             amount = Decimal(amount)
-        except InvalidOperation as exc:
-            return JsonResponse({'error': str(exc)}, status=400)
+        except InvalidOperation as e:
+            return JsonResponse({'error': str(e)}, status=400)
         try:
             charge_id = ChargeLogic.charge(user_id, amount)
-        except ClientMessageException as exc:
-            return JsonResponse({'error': str(exc)}, status=400)
+        except ClientMessageException as e:
+            return JsonResponse({'error': str(e)}, status=400)
         return JsonResponse({'charge_id': charge_id})
 
 
@@ -117,8 +117,8 @@ def charge_revert(request):
     charge_id = int(request.POST.get("charge_id"))
     try:
         ChargeLogic.annullateCharge(charge_id)
-    except ClientMessageException as exc:
-        return JsonResponse({'error': str(exc)}, status=400)
+    except ClientMessageException as e:
+        return JsonResponse({'error': str(e)}, status=400)
     return HttpResponse(status=200)
 
 
@@ -143,13 +143,13 @@ def transfer(request):
         receiver_ident_type = int(request.POST.get("ident_type"))
         try:
             amount = Decimal(request.POST.get("amount"))
-        except InvalidOperation as exc:
-            return JsonResponse({'error': str(exc)}, status=400)
+        except InvalidOperation as e:
+            return JsonResponse({'error': str(e)}, status=400)
         try:
             transfer_tuple = TransferLogic.transfer(
                 user_id, receiver_id, receiver_ident_type, amount)
-        except ClientMessageException as exc:
-            return JsonResponse({'error': str(exc)}, status=400)
+        except ClientMessageException as e:
+            return JsonResponse({'error': str(e)}, status=400)
         return JsonResponse({"transfer_id": transfer_tuple[0], "receiver_id": transfer_tuple[1]})
 
 
@@ -163,8 +163,8 @@ def transfer_revert(request):
     transfer_id = int(request.POST.get('transfer_id'))
     try:
         TransferLogic.annullateTransfer(transfer_id)
-    except ClientMessageException as exc:
-        return JsonResponse({'error': str(exc)}, status=400)
+    except ClientMessageException as e:
+        return JsonResponse({'error': str(e)}, status=400)
     return HttpResponse(status=200)
 
 
