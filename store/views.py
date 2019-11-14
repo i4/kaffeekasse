@@ -180,7 +180,9 @@ def login(request):
     ident_type = int(request.POST.get('ident_type'))
     try:
         UserLogic.login(request, ident, ident_type)
-    except ClientMessageException:
+    # TODO: Show errors on login page
+    except ClientMessageException as e:
+        print(ident, ident_type, e)
         return HttpResponseRedirect(reverse("index"))
 
     return HttpResponseRedirect(reverse("buy"))
