@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth import logout as auth_logout
 from .backend import *
-from .store_exceptions import *
+from .store_exceptions import ClientMessageException
 from .store_config import KAFFEEKASSE as config
 from decimal import InvalidOperation
 
@@ -50,7 +50,7 @@ def buy(request):
 
         try:
             purchase_return_tuple = PurchaseLogic.purchase(user_id, ident, ident_type)
-        except (UserNotEnoughMoney, NegativeMoneyAmount, UserIdentifierNotExists) as exc:
+        except ClientMessageException as exc:
             return JsonResponse({'error': str(exc)}, status=400)
 
         if purchase_return_tuple[0] >= 0:
@@ -75,7 +75,7 @@ def buy_revert(request):
 
     try:
         PurchaseLogic.annullatePurchase(purchase_id)
-    except (PurchaseNotAnnullable, UserNotEnoughMoney) as exc:
+    except ClientMessageException as exc:
         return JsonResponse({'error': str(exc)}, status=400)
     return HttpResponse(status=200)
 
@@ -102,7 +102,7 @@ def charge(request):
             return JsonResponse({'error': str(exc)}, status=400)
         try:
             charge_id = ChargeLogic.charge(user_id, amount)
-        except NegativeMoneyAmount as exc:
+        except ClientMessageException as exc:
             return JsonResponse({'error': str(exc)}, status=400)
         return JsonResponse({'charge_id': charge_id})
 
@@ -117,7 +117,7 @@ def charge_revert(request):
     charge_id = int(request.POST.get("charge_id"))
     try:
         ChargeLogic.annullateCharge(charge_id)
-    except (ChargeNotAnnullable, UserNotEnoughMoney, NegativeMoneyAmount) as exc:
+    except ClientMessageException as exc:
         return JsonResponse({'error': str(exc)}, status=400)
     return HttpResponse(status=200)
 
@@ -148,7 +148,7 @@ def transfer(request):
         try:
             transfer_tuple = TransferLogic.transfer(
                 user_id, receiver_id, receiver_ident_type, amount)
-        except (UserNotEnoughMoney, NegativeMoneyAmount, UserIdentifierNotExists, SenderEqualsReceiverError) as exc:
+        except ClientMessageException as exc:
             return JsonResponse({'error': str(exc)}, status=400)
         return JsonResponse({"transfer_id": transfer_tuple[0], "receiver_id": transfer_tuple[1]})
 
@@ -163,7 +163,7 @@ def transfer_revert(request):
     transfer_id = int(request.POST.get('transfer_id'))
     try:
         TransferLogic.annullateTransfer(transfer_id)
-    except (TransferNotAnnullable, UserNotEnoughMoney, NegativeMoneyAmount) as exc:
+    except ClientMessageException as exc:
         return JsonResponse({'error': str(exc)}, status=400)
     return HttpResponse(status=200)
 
@@ -180,7 +180,7 @@ def login(request):
     ident_type = int(request.POST.get('ident_type'))
     try:
         UserLogic.login(request, ident, ident_type)
-    except (UserIdentifierNotExists, DisabledIdentifier):
+    except ClientMessageException:
         return HttpResponseRedirect(reverse("index"))
 
     return HttpResponseRedirect(reverse("buy"))
