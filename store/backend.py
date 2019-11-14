@@ -531,10 +531,10 @@ class TransferLogic:
         max_transfers = config['N_LAST_TRANSFERS']
         annullable_time = config['T_ANNULLABLE_TRANSFERS_M']
 
-        transfers = Transfer.objects.filter(sender=user_id)
-        transfers = transfers.select_related('receiver')
-        transfers = transfers.order_by('-time_stamp')[:max_transfers]
-        transfers = transfers.values('id', 'annullated', 'amount', 'receiver__username', 'time_stamp')
+        transfers = Transfer.objects.filter(sender=user_id) \
+                .select_related('receiver') \
+                .order_by('-time_stamp')[:max_transfers] \
+                .values('id', 'annullated', 'amount', 'receiver__username', 'time_stamp')
 
         # warning: summertime/wintertime currently is not respected in the following calculations. This should be
         # implemented to avoid non-annullable transactions in the lost hour between summer- and wintertime
