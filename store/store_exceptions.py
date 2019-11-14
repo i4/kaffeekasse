@@ -4,7 +4,7 @@ class UserNotEnoughMoney(Exception):
 
 
 class NegativeMoneyAmount(Exception):
-    def __init__(sefl):
+    def __init__(self):
         super().__init__("Positiver Betrag erwartet!")
 
 
