@@ -89,9 +89,10 @@ class ProductIdentifier(models.Model):
     PRIMARYKEY = 2
 
     choices = [
+        # NOTE: Don't list PRIMARYKEY here, it's not stored in
+        # ProductIdentifier.
         (ID, 'Id'),
         (BARCODE, 'Barcode'),
-        (PRIMARYKEY, 'Pk'),
     ]
 
     product = models.ForeignKey('product', on_delete=models.CASCADE)
