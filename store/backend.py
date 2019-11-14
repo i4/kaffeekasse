@@ -1,3 +1,6 @@
+from typeguard import typechecked
+from typing import List, Dict, Tuple
+
 from .models import *
 from .store_exceptions import *
 from django.contrib.auth import login
@@ -6,19 +9,18 @@ from django.db.models.functions import Lower
 from datetime import date, timedelta, datetime
 from django.db import transaction
 from .store_config import KAFFEEKASSE as config
+from django.http import HttpRequest
 import pytz
 
 
 class UserLogic:
     @staticmethod
-    def getUser(ident, ident_type):
+    @typechecked
+    def getUser(ident: str, ident_type: int) -> User:
         """
         Returns user that can be definitely identified by the unique
         combination ident and ident_type.
         """
-
-        assert type(ident) is str
-        assert type(ident_type) is int
 
         if ident_type == UserIdentifier.PRIMARYKEY:
             return User.objects.get(id=ident)
@@ -31,15 +33,13 @@ class UserLogic:
         return x.user
 
     @staticmethod
-    def login(request, ident, ident_type):
+    @typechecked
+    def login(request: HttpRequest, ident: str, ident_type: int) -> None:
         """
         Basic login function. On success the user is logged in and True is
         returned and a login-tuple is created. On Failure nothing happens and
         False is returned.
         """
-
-        assert type(ident) is str
-        assert type(ident_type) is int
 
         user = UserLogic.getUser(ident, ident_type)
 
@@ -52,7 +52,8 @@ class UserLogic:
             login(request, user)
 
     @staticmethod
-    def getFrequentUsersList():
+    @typechecked
+    def getFrequentUsersList() -> List[dict]:
         """
         Concatenates the results of three db-queries:
 
@@ -101,14 +102,12 @@ class UserLogic:
 
 class ProductLogic:
     @staticmethod
-    def getProduct(ident, ident_type):
+    @typechecked
+    def getProduct(ident: str, ident_type: int) -> Product:
         """
         Returns product that can be definitely identified by the unique
         combination ident and ident_type.
         """
-
-        assert type(ident) is str
-        assert type(ident_type) is int
 
         if ident_type == ProductIdentifier.PRIMARYKEY:
             try:
@@ -124,7 +123,8 @@ class ProductLogic:
         return x.product
 
     @staticmethod
-    def getMostBoughtProductsList():
+    @typechecked
+    def getMostBoughtProductsList() -> List[dict]:
         """
         Result of a db query asking for a number of products specified in
         max_products that were most bought within the last max_days number of
@@ -143,15 +143,14 @@ class ProductLogic:
         return list(products)
 
     @staticmethod
-    def getLastBoughtProductsList(user_id):
+    @typechecked
+    def getLastBoughtProductsList(user_id: int) -> List[dict]:
         """
         Result of a db query asking for a number of products specified in
         max_products that were recently bought by a specified user. The result
         also contains information on the state of a possible annulation of the
         products purchase.
         """
-
-        assert type(user_id) is int
 
         max_products = config['N_LAST_BOUGHT_PRODUCTS']
         annullable_time = config['T_ANNULLABLE_PURCHASE_M']
@@ -178,13 +177,12 @@ class ProductLogic:
         return list(products)
 
     @staticmethod
-    def getProductByCategory(category):
+    @typechecked
+    def getProductByCategory(category: int) -> Dict[str, List[dict]]:
         """
         Returns a dict with a key for each sublevel category containing all
         products, where the toplevel category equals to the input category
         """
-
-        assert type(category) is int
 
         # Get sublevels
         sublevels = ProductCategory.objects.filter(toplevel=category).values('sublevel')
@@ -210,17 +208,21 @@ class ProductLogic:
         return products
 
     @staticmethod
-    def getCandies():
+    @typechecked
+    def getCandies() -> Dict[str, List[dict]]:
         return ProductLogic.getProductByCategory(ProductCategory.SNACK)
 
     @staticmethod
-    def getDrinks():
+    @typechecked
+    def getDrinks() -> Dict[str, List[dict]]:
         return ProductLogic.getProductByCategory(ProductCategory.GETRAENK)
 
 
 class PurchaseLogic:
     @staticmethod
-    def purchase(user_id, product_ident, product_ident_type):
+    @typechecked
+    def purchase(user_id: int, product_ident: str, product_ident_type: int) \
+            -> Tuple[int, int]:
         """
         Execute the purchase logic. Three db relations are included:
 
@@ -229,10 +231,6 @@ class PurchaseLogic:
         *)  User: update the users money
         *)  Product: update the product stock
         """
-
-        assert type(user_id) is int
-        assert type(product_ident) is str
-        assert type(product_ident_type) is int
 
         try:
             with transaction.atomic():
@@ -256,13 +254,12 @@ class PurchaseLogic:
         assert False
 
     @staticmethod
-    def annullatePurchase(purchase_id):
+    @typechecked
+    def annullatePurchase(purchase_id: int) -> None:
         """
         Try to annullate a purchase performed by a specified user. This will
         only fail if the purchase was performed too long ago.
         """
-
-        assert type(purchase_id) is int
 
         annullable_time = config['T_ANNULLABLE_PURCHASE_M']
 
@@ -287,17 +284,15 @@ class PurchaseLogic:
 
 
 class ChargeLogic:
-
     @staticmethod
-    def getLastChargesList(user_id):
+    @typechecked
+    def getLastChargesList(user_id: int) -> List[dict]:
         """
         Result of a db query asking for a number of charges specified in
         max_charges that were recently performed by a specified user. The
         result also contains information on the state of a possible
         annullation of the charge.
         """
-
-        assert type(user_id) is int
 
         max_charges = config['N_LAST_CHARGES']
         annullable_time = config['T_ANNULLABLE_CHARGE_M']
@@ -322,15 +317,13 @@ class ChargeLogic:
         return list(charges)
 
     @staticmethod
-    def charge(user_id, amount):
+    @typechecked
+    def charge(user_id: int, amount: Decimal) -> int:
         """
         Executes the charge logic. Two db relations are included:
         *)  User, where the new money is add to the user money
         *)  Charge, where the new charge is saved to
         """
-
-        assert type(user_id) is int
-        assert type(amount) is Decimal
 
         assert amount > 0
 
@@ -343,14 +336,13 @@ class ChargeLogic:
             return charge.id
 
     @staticmethod
-    def annullateCharge(charge_id):
+    @typechecked
+    def annullateCharge(charge_id: int) -> None:
         """
         Try to annullate a charge performed by a specified user. This will
         fail if either the charge was performed too long ago or the user has
         less money on it's account than the amount of money charged.
         """
-
-        assert type(charge_id) is int
 
         annullable_time = config['T_ANNULLABLE_CHARGE_M']
 
@@ -377,7 +369,8 @@ class ChargeLogic:
 
 class TransferLogic:
     @staticmethod
-    def getFreuquentTransferTargets(user_id):
+    @typechecked
+    def getFreuquentTransferTargets(user_id: int) -> List[dict]:
         """
         Result of a db query asking for a number of receivers specified in
         max_receivers that are often addresed by a specified user Concatinates
@@ -389,8 +382,6 @@ class TransferLogic:
         Second part of the list: all users excluded the users form the first
         part and the user itself
         """
-
-        assert type(user_id) is int
 
         max_receivers = config['N_TRANSFERS_RECEIVERS']
         recent_transfers = Transfer.objects.filter(sender=user_id) \
@@ -416,14 +407,13 @@ class TransferLogic:
         return list(recent_transfers) + list(other_transfers)
 
     @staticmethod
-    def getLastTransfers(user_id):
+    @typechecked
+    def getLastTransfers(user_id: int) -> List[dict]:
         """
         Result of a db query asking for a number of transfers that have been
         recently performed by a specified user. Also returns information on
         the state of possible annullation of the transfer.
         """
-
-        assert type(user_id) is int
 
         max_transfers = config['N_LAST_TRANSFERS']
         annullable_time = config['T_ANNULLABLE_TRANSFERS_M']
@@ -449,7 +439,9 @@ class TransferLogic:
         return list(transfers)
 
     @staticmethod
-    def transfer(user_id, receiver_ident, receiver_ident_type, amount):
+    @typechecked
+    def transfer(user_id: int, receiver_ident: str, receiver_ident_type: int,
+            amount: Decimal) -> Tuple[int, int]:
         """
         Performs the transfer routine where a sender sends money to a
         receiver. Two db relations are included:
@@ -457,11 +449,6 @@ class TransferLogic:
         *)  User, where the sender aswell as the receiver are from
         *)  Transfer, where the newly created transfer is saved to
         """
-
-        assert type(user_id) is int
-        assert type(receiver_ident) is str
-        assert type(receiver_ident_type) is int
-        assert type(amount) is Decimal
 
         assert amount > 0
 
@@ -484,15 +471,14 @@ class TransferLogic:
             return transfer.id, receiver.id
 
     @staticmethod
-    def annullateTransfer(transfer_id):
+    @typechecked
+    def annullateTransfer(transfer_id: int) -> None:
         """
         Try to annullate a transfer performed by a specified user. This will
         fail if either the transfer was performed too long ago or the receiver
         of the money has less money on it's account than the amount of money
         transfered.
         """
-
-        assert type(transfer_id) is int
 
         annullable_time = config['T_ANNULLABLE_TRANSFERS_M']
 
