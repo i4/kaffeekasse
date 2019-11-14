@@ -45,7 +45,7 @@ def buy(request):
             "config": config,
         })
 
-    elif request.method == 'POST':  # Perform a purchase
+    if request.method == 'POST':  # Perform a purchase
         user_id = request.user.id
         ident = request.POST.get("ident")
         ident_type = int(request.POST.get("ident_type"))
@@ -60,9 +60,11 @@ def buy(request):
                 "purchase_id": purchase_return_tuple[0],
                 "product_id": purchase_return_tuple[1],
             })
-            # TODO: Also return product id
-        else:
-            return HttpResponse(status=400)
+
+        # TODO: Also return product id
+        return HttpResponse(status=400)
+
+    assert False
 
 
 @login_required(login_url="index")
@@ -90,12 +92,14 @@ def charge(request):
     GET: Show the rendered page to charge money.
     POST: Charge money.
     """
+
     if request.method == "GET":
         return render(request, "charge.html", {
             "recent_charges": backend.ChargeLogic.getLastChargesList(request.user.id),
             "config": config,
         })
-    elif request.method == "POST":
+
+    if request.method == "POST":
         user_id = request.user.id
         amount = request.POST.get("amount")
         try:
@@ -107,6 +111,8 @@ def charge(request):
         except ClientMessageException as e:
             return JsonResponse({'error': str(e)}, status=400)
         return JsonResponse({'charge_id': charge_id})
+
+    assert False
 
 
 @login_required(login_url="index")
@@ -132,6 +138,7 @@ def transfer(request):
     GET: Return the rendered page to transfer money to another user.
     POST: Transfer money to another user.
     """
+
     if request.method == "GET":
         return render(request, "transfer.html", {
             "users": backend.TransferLogic.getFreuquentTransferTargets(request.user.id),
@@ -139,7 +146,8 @@ def transfer(request):
             "ident_types": models.UserIdentifier,
             "config": config,
         })
-    elif request.method == "POST":
+
+    if request.method == "POST":
         user_id = request.user.id
         receiver_id = request.POST.get("receiver_ident")
         receiver_ident_type = int(request.POST.get("ident_type"))
@@ -153,6 +161,8 @@ def transfer(request):
         except ClientMessageException as e:
             return JsonResponse({'error': str(e)}, status=400)
         return JsonResponse({"transfer_id": transfer_tuple[0], "receiver_id": transfer_tuple[1]})
+
+    assert False
 
 
 @login_required(login_url="index")
