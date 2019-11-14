@@ -160,11 +160,11 @@ class ProductLogic:
         max_days = config['T_MOST_BOUGHT_PRODUCTS_D']
 
         time_stamp = date.today() - timedelta(days=max_days)
-        products = Purchase.objects.filter(time_stamp__gte=time_stamp.strftime("%Y-%m-%d") + " 00:00")
-        products = products.select_related('product')
-        products = products.values('product__name', 'product_id', 'product__price')
-        products = products.annotate(total=Count('product_id'))
-        products = products.order_by('-total')[:max_products]
+        products = Purchase.objects.filter(time_stamp__gte=time_stamp.strftime("%Y-%m-%d") + " 00:00") \
+                .select_related('product') \
+                .values('product__name', 'product_id', 'product__price') \
+                .annotate(total=Count('product_id')) \
+                .order_by('-total')[:max_products]
         return list(products)
 
     @staticmethod
