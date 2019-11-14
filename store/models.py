@@ -33,10 +33,11 @@ class User(AbstractUser):
 
 
 class UserIdentifier(models.Model):
-    PRIMARYKEY = 0
-    ID = 1
-    BARCODE = 2
-    RFID = 3
+    # Random numbers for easy grepping
+    PRIMARYKEY = 136940
+    ID = 136941
+    BARCODE = 136942
+    RFID = 136943
 
     choices = [
         # NOTE: Don't list PRIMARYKEY here, it's not stored in UserIdentifier
@@ -65,8 +66,8 @@ class Product(models.Model):
 
 
 class ProductCategory(models.Model):
-    SNACK = 0
-    GETRAENK = 1
+    SNACK = 231740
+    GETRAENK = 231741
 
     choices = [
         (SNACK, 'Snack'),
@@ -84,9 +85,9 @@ class ProductCategory(models.Model):
 
 
 class ProductIdentifier(models.Model):
-    ID = 0
-    BARCODE = 1
-    PRIMARYKEY = 2
+    ID = 329310
+    BARCODE = 329311
+    PRIMARYKEY = 329312
 
     choices = [
         # NOTE: Don't list PRIMARYKEY here, it's not stored in
