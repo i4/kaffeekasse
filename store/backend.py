@@ -135,7 +135,8 @@ class ProductLogic:
         max_days = config['T_MOST_BOUGHT_PRODUCTS_D']
 
         time_stamp = date.today() - timedelta(days=max_days)
-        products = Purchase.objects.filter(time_stamp__gte=time_stamp) \
+        products = Purchase.objects \
+                .filter(time_stamp__gte=time_stamp, product__isnull=False) \
                 .select_related('product') \
                 .values('product__name', 'product_id', 'product__price') \
                 .annotate(total=Count('product_id')) \
