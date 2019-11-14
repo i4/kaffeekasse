@@ -15,9 +15,6 @@ class UserLogic:
         """
         Returns user that can be definitely identified by the unique
         combination ident and ident_type.
-
-        :param ident: on of the user identifiers
-        :param ident_type: type of the identifier
         """
 
         assert type(ident) is str
@@ -39,9 +36,6 @@ class UserLogic:
         Basic login function. On success the user is logged in and True is
         returned and a login-tuple is created. On Failure nothing happens and
         False is returned.
-
-        :param request: the request object
-        :param user_id: id of the user that should log in
         """
 
         assert type(ident) is str
@@ -68,11 +62,6 @@ class UserLogic:
           first part of the list and have at least one login
         - Third part of the list: all users that are not included in the first
           both parts
-
-        Returned list: [{'user': ..., 'user_username': ..., 'total': ...}]
-
-        :config-param max_users: depends on N_USERS_LOGIN
-        :config-param max_days: depends on T_USERS_LOGIN_D
         """
 
         max_users = config['N_USERS_LOGIN']
@@ -116,9 +105,6 @@ class ProductLogic:
         """
         Returns product that can be definitely identified by the unique
         combination ident and ident_type.
-
-        :param ident: on of the user identifiers
-        :param ident_type: type of the identifier
         """
 
         assert type(ident) is str
@@ -143,12 +129,6 @@ class ProductLogic:
         Result of a db query asking for a number of products specified in
         max_products that were most bought within the last max_days number of
         days.
-
-        Returned list: [{'product__name': ..., 'product_id': ...,
-                         'product__price': ...,'total': ...}]
-
-        :config-param max_products: depends on N_MOST_BOUGHT_PRODUCTS
-        :config-param max_days: depends on T_MOST_BOUGHT_PRODUCTS_D
         """
 
         max_products = config['N_MOST_BOUGHT_PRODUCTS']
@@ -169,14 +149,6 @@ class ProductLogic:
         max_products that were recently bought by a specified user. The result
         also contains information on the state of a possible annulation of the
         products purchase.
-
-        Returned list: [{'product__name': ..., 'product_id': ...,
-                         'product__price': ..., 'time_stamp': ..., 'id': ...,
-                         'annullated': ..., 'annullable': ...}]
-
-        :param user_id: id of the specified user
-        :config-param max_products: depends on N_ANNULLABLE_PURCHASE
-        :config-param annullable_time: depends on T_ANNULLABLE_PURCHASE_M
         """
 
         assert type(user_id) is int
@@ -210,8 +182,6 @@ class ProductLogic:
         """
         Returns a dict with a key for each sublevel category containing all
         products, where the toplevel category equals to the input category
-
-        :param category: Toplevel category
         """
 
         assert type(category) is int
@@ -258,9 +228,6 @@ class PurchaseLogic:
             product_id, the current time, the current products price
         *)  User: update the users money
         *)  Product: update the product stock
-
-        :param user_id: the id of the user
-        :param product_id: the id of the product
         """
 
         assert type(user_id) is int
@@ -293,9 +260,6 @@ class PurchaseLogic:
         """
         Try to annullate a purchase performed by a specified user. This will
         only fail if the purchase was performed too long ago.
-
-        :param purchase_id: id of the purchase to be annullated
-        @conifg-param annullable_time: depends on T_ANNULLABLE_PURCHASE_M
         """
 
         assert type(purchase_id) is int
@@ -331,13 +295,6 @@ class ChargeLogic:
         max_charges that were recently performed by a specified user. The
         result also contains information on the state of a possible
         annullation of the charge.
-
-        Returned list: [{'id': ..., 'amount': ..., 'annullated': ...,
-                         'time_stamp': ..., 'annullable': ...}]
-
-        :param user_id: id of the specified user
-        :config-param max_charges: depends on N_ANNULLABLE_CHARGES
-        :config-param annullable_time: depends on T_ANNULLABLE_CHARGE_M
         """
 
         assert type(user_id) is int
@@ -370,9 +327,6 @@ class ChargeLogic:
         Executes the charge logic. Two db relations are included:
         *)  User, where the new money is add to the user money
         *)  Charge, where the new charge is saved to
-
-        :param user_id: id of the user that charges
-        :param amount: the amount of money to be charged
         """
 
         assert type(user_id) is int
@@ -394,9 +348,6 @@ class ChargeLogic:
         Try to annullate a charge performed by a specified user. This will
         fail if either the charge was performed too long ago or the user has
         less money on it's account than the amount of money charged.
-
-        :param charge_id: id of the charge to be annullated
-        @conifg-param annullable_time: depends on T_ANNULLABLE_CHARGE_M
         """
 
         assert type(charge_id) is int
@@ -437,11 +388,6 @@ class TransferLogic:
 
         Second part of the list: all users excluded the users form the first
         part and the user itself
-
-        Returned list: [{'receiver': ..., 'username': ...}]
-
-        :param user_id: id of the specified user
-        :config-param max_receivers: depends on N_TRANSFER_RECEIVERS
         """
 
         assert type(user_id) is int
@@ -475,14 +421,6 @@ class TransferLogic:
         Result of a db query asking for a number of transfers that have been
         recently performed by a specified user. Also returns information on
         the state of possible annullation of the transfer.
-
-        Returned list: [{'id': ..., 'annullated': ..., 'amount': ...,
-                         'receiver_username': ..., 'time_stamp': ...,
-                         'annullable': ...}]
-
-        :param user_id: id of the specified user
-        :config-param max_transfers: depends on N_LAST_TRANSFERS
-        :config-param annullable_time: depends on T_ANNULLABLE_TRANSFERS_M
         """
 
         assert type(user_id) is int
@@ -518,10 +456,6 @@ class TransferLogic:
 
         *)  User, where the sender aswell as the receiver are from
         *)  Transfer, where the newly created transfer is saved to
-
-        :param user_id: id of the user that wants to send money
-        :param receiver_id: id of the user that should get the money
-        :param amount: amount of money to be sent
         """
 
         assert type(user_id) is int
@@ -556,9 +490,6 @@ class TransferLogic:
         fail if either the transfer was performed too long ago or the receiver
         of the money has less money on it's account than the amount of money
         transfered.
-
-        :param transfer_id: id of the transfer to be annullated
-        @conifg-param annullable_time: depends on T_ANNULLABLE_TRANSFERS_M
         """
 
         assert type(transfer_id) is int

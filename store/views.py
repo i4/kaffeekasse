@@ -30,8 +30,6 @@ def buy(request):
     """
     GET: Return the rendered page to buy products
     POST: Puchase a product and return the product id and the purchase id as JsonResponse
-        :body_param ident:  The identifier of the product
-        :body_param ident_type: int The identifier type of the product
     """
 
     if request.method == 'GET':  # Return the rendered page
@@ -71,7 +69,6 @@ def buy(request):
 def buy_revert(request):
     """
     POST: Revert a purchase.
-        :body_param purchase_id: int
     """
 
     purchase_id = int(request.POST.get("purchase_id"))
@@ -90,7 +87,6 @@ def charge(request):
     """
     GET: Show the rendered page to charge money.
     POST: Charge money.
-        :body_param amount: float
     """
     if request.method == "GET":
         return render(request, "charge.html", {
@@ -117,7 +113,6 @@ def charge(request):
 def charge_revert(request):
     """
     POST: Revert a charge.
-        :body_param charge_id: int
     """
     charge_id = int(request.POST.get("charge_id"))
     try:
@@ -134,8 +129,6 @@ def transfer(request):
     """
     GET: Return the rendered page to transfer money to another user.
     POST: Transfer money to another user.
-        :body_param receiver: int
-        :body_param amount: float
     """
     if request.method == "GET":
         return render(request, "transfer.html", {
@@ -166,7 +159,6 @@ def transfer(request):
 def transfer_revert(request):
     """
     POST: Revert a transfer.
-        :body_param transfer_id: int
     """
     transfer_id = int(request.POST.get('transfer_id'))
     try:
@@ -183,8 +175,6 @@ def transfer_revert(request):
 def login(request):
     """
     Login an user.
-    :body_param ident: string/int
-    :body_param ident_type: int
     """
     ident = request.POST.get('ident')
     ident_type = int(request.POST.get('ident_type'))
