@@ -378,8 +378,7 @@ class ChargeLogic:
         annullable_time = config['T_ANNULLABLE_CHARGE_M']
         charges = Charge.objects.filter(user=user_id) \
                 .values('id', 'amount', 'annullated', 'time_stamp') \
-                .order_by('time_stamp') \
-                .reverse()
+                .order_by('-time_stamp')
         if max_charges >= 0:
             charges = charges[:max_charges]
 
