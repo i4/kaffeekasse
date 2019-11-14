@@ -488,20 +488,21 @@ class TransferLogic:
         assert type(user_id) is int
 
         max_receivers = config['N_TRANSFERS_RECEIVERS']
-        recent_transfers = Transfer.objects.filter(sender=user_id).exclude(receiver=None)
-        recent_transfers = recent_transfers.select_related('receiver')
+        recent_transfers = Transfer.objects.filter(sender=user_id) \
+                .exclude(receiver=None) \
+                .select_related('receiver')
 
         if max_receivers >= 0:
             recent_transfers = recent_transfers[:max_receivers]
 
-        other_transfers = User.objects.exclude(id__in=[d.receiver.id for d in list(recent_transfers)])
-        other_transfers = other_transfers.exclude(id=user_id)
-        other_transfers = other_transfers.values('id', 'username')
-        other_transfers = other_transfers.order_by('username')
+        other_transfers = User.objects.exclude(id__in=[d.receiver.id for d in list(recent_transfers)]) \
+                .exclude(id=user_id) \
+                .values('id', 'username') \
+                .order_by('username')
 
-        recent_transfers = recent_transfers.values('receiver', 'receiver__username')
-        recent_transfers = recent_transfers.annotate(total=Count('receiver'))
-        recent_transfers = recent_transfers.order_by('receiver__username').order_by('-total')
+        recent_transfers = recent_transfers.values('receiver', 'receiver__username') \
+                .annotate(total=Count('receiver')) \
+                .order_by('receiver__username').order_by('-total')
 
         for transfer in recent_transfers:
             transfer['id'] = transfer.pop('receiver')
