@@ -300,7 +300,10 @@ class PurchaseLogic:
                 product.save()
 
                 user = User.objects.get(id=user_id)
-                user.decrementMoney(product.price)
+                user.money -= product.price
+                if user.money < 0:
+                    raise UserNotEnoughMoney()
+                user.save()
 
                 purchase = Purchase(user=user, product=product, price=product.price, token=token, annullated=False)
                 purchase.save()
@@ -348,7 +351,8 @@ class PurchaseLogic:
         try:
             with transaction.atomic():
                 user = User.objects.get(id=purchase.user.id)
-                user.incrementMoney(purchase.price)
+                user.money += purchase.price
+                user.save()
                 purchase.annullated = True
                 purchase.save()
         except OperationalError as exc:
@@ -413,10 +417,13 @@ class ChargeLogic:
         assert type(amount) is Decimal
         assert type(token) is int
 
+        assert amount > 0
+
         try:
             with transaction.atomic():
                 user = User.objects.get(id=user_id)
-                user.incrementMoney(amount)
+                user.money += amount
+                user.save()
                 charge = Charge(token=token, amount=amount, annullated=False, user_id=user.id)
                 charge.save()
                 return charge.id
@@ -452,13 +459,18 @@ class ChargeLogic:
 
         charge = Charge.objects.get(id=charge_id)
 
+        assert charge.amount > 0
+
         if time_limit > charge.time_stamp:
             raise ChargeNotAnnullable()
 
         try:
             with transaction.atomic():
                 user = User.objects.get(id=charge.user.id)
-                user.decrementMoney(charge.amount)
+                user.money -= charge.amount
+                if user.money < 0:
+                    raise UserNotEnoughMoney()
+                user.save()
                 charge.annullated = True
                 charge.save()
         except OperationalError as exc:
@@ -572,6 +584,8 @@ class TransferLogic:
         assert type(amount) is Decimal
         assert type(token) is int
 
+        assert amount > 0
+
         sender = User.objects.get(id=user_id)
         receiver = UserLogic.getUser(ident=receiver_ident, ident_type=receiver_ident_type)
         if sender.id == receiver.id:
@@ -582,8 +596,12 @@ class TransferLogic:
                 transfer = Transfer(sender=sender, receiver=receiver, amount=amount, token=token, annullated=False)
                 transfer.save()
 
-                sender.decrementMoney(amount)
-                receiver.incrementMoney(amount)
+                sender.money -= amount
+                if sender.money < 0:
+                    raise UserNotEnoughMoney()
+                sender.save()
+                receiver.money += amount
+                receiver.save()
 
                 return transfer.id, receiver.id
 
@@ -623,6 +641,8 @@ class TransferLogic:
         if time_limit > transfer.time_stamp:
             raise TransferNotAnnullable()
 
+        assert transfer.amount > 0
+
         receiver = User.objects.get(id=transfer.receiver_id)
         sender = User.objects.get(id=transfer.sender_id)
 
@@ -630,7 +650,11 @@ class TransferLogic:
             with transaction.atomic():
                 transfer.annullated = True
                 transfer.save()
-                receiver.decrementMoney(transfer.amount)
-                sender.incrementMoney(transfer.amount)
+                receiver.money -= transfer.amount
+                if receiver.money < 0:
+                    raise UserNotEnoughMoney()
+                receiver.save()
+                sender.money += transfer.amount
+                sender.save()
         except OperationalError as exc:
             filterOperationalError(exc)

@@ -14,20 +14,6 @@ class User(AbstractUser):
     money = models.DecimalField(max_digits=6, decimal_places=2, default=0.0)
     pk_login_enabled = models.BooleanField(_("Login aus Auswahlliste"), default=True)
 
-    def incrementMoney(self, amount):
-        if amount < 0:
-            raise NegativeMoneyAmount()
-        self.money += Decimal(amount)
-        self.save()
-
-    def decrementMoney(self, amount):
-        if amount < 0:
-            raise NegativeMoneyAmount()
-        if self.money - amount < 0:
-            raise UserNotEnoughMoney()
-        self.money -= Decimal(amount)
-        self.save()
-
 
 class UserIdentifier(models.Model):
     PRIMARYKEY = 0
