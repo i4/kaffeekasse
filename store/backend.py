@@ -295,15 +295,15 @@ class PurchaseLogic:
 
         try:
             with transaction.atomic():
-                user = User.objects.get(id=user_id)
                 product = ProductLogic.getProduct(product_ident, product_ident_type)
+                product.stock -= 1
+                product.save()
+
+                user = User.objects.get(id=user_id)
+                user.decrementMoney(product.price)
 
                 purchase = Purchase(user=user, product=product, price=product.price, token=token, annullated=False)
                 purchase.save()
-
-                user.decrementMoney(product.price)
-                product.stock -= 1
-                product.save()
 
                 return purchase.id, product.id
 
