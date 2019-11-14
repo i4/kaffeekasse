@@ -56,7 +56,8 @@ class Product(models.Model):
     name = models.TextField()
     category = models.ForeignKey('productcategory', on_delete=models.CASCADE, related_name="products")
     stock = models.IntegerField(default=0)
-    price = models.DecimalField(max_digits=6, decimal_places=2)
+    price = models.DecimalField(max_digits=6, decimal_places=2,
+            validators=[validators.MinValueValidator(0)])
 
     def __str__(self):
         return self.name
@@ -101,7 +102,8 @@ class Charge(models.Model):
     token = models.BigIntegerField(unique=True)
     user = models.ForeignKey('user', on_delete=models.CASCADE)
     time_stamp = models.DateTimeField(auto_now=True)
-    amount = models.DecimalField(max_digits=6, decimal_places=2)
+    amount = models.DecimalField(max_digits=6, decimal_places=2,
+            validators=[validators.MinValueValidator(0)])
     annullated = models.BooleanField()
 
 
@@ -111,7 +113,8 @@ class Purchase(models.Model):
     product = models.ForeignKey('product', on_delete=models.SET_NULL,
             null=True)
     time_stamp = models.DateTimeField(auto_now=True)
-    price = models.DecimalField(max_digits=6, decimal_places=2)
+    price = models.DecimalField(max_digits=6, decimal_places=2,
+            validators=[validators.MinValueValidator(0)])
     annullated = models.BooleanField()
 
 
@@ -122,7 +125,8 @@ class Transfer(models.Model):
     receiver  = models.ForeignKey('user', on_delete=models.SET_NULL,
             null=True, related_name='receiver')
     time_stamp = models.DateTimeField(auto_now=True)
-    amount = models.DecimalField(max_digits=6, decimal_places=2)
+    amount = models.DecimalField(max_digits=6, decimal_places=2,
+            validators=[validators.MinValueValidator(0)])
     annullated = models.BooleanField()
 
 

@@ -459,8 +459,6 @@ class ChargeLogic:
 
         charge = Charge.objects.get(id=charge_id)
 
-        assert charge.amount > 0
-
         if time_limit > charge.time_stamp:
             raise ChargeNotAnnullable()
 
@@ -640,8 +638,6 @@ class TransferLogic:
         transfer = Transfer.objects.get(id=transfer_id)
         if time_limit > transfer.time_stamp:
             raise TransferNotAnnullable()
-
-        assert transfer.amount > 0
 
         receiver = User.objects.get(id=transfer.receiver_id)
         sender = User.objects.get(id=transfer.sender_id)
