@@ -201,23 +201,23 @@
             return;
         }
 
-            $.ajax({
-                url: "{% url "transfer" %}",
-                method: "POST",
-                data: {
-                    amount: amount,
-                    receiver_ident: receiver_ident,
-                    ident_type: ident_type,
-                },
-                success: data => {
-                    clearError();
-                    reduceMoney(amount);
-                    $("#amount").val("");
-                    $("#user_id").val("");
-                    addNewTransfer(data.transfer_id, data.receiver_id, amount);
-                },
-                error: error,
-            });
+        $.ajax({
+            url: "{% url "transfer" %}",
+            method: "POST",
+            data: {
+                amount: amount,
+                receiver_ident: receiver_ident,
+                ident_type: ident_type,
+            },
+            success: data => {
+                clearError();
+                reduceMoney(amount);
+                $("#amount").val("");
+                $("#user_id").val("");
+                addNewTransfer(data.transfer_id, data.receiver_id, amount);
+            },
+            error: error,
+        });
     }
 
     // Add a new transfer to the list and remove the last one
@@ -242,24 +242,24 @@
         }
 
         return function() {
-                $.ajax({
-                    url: "{% url "transfer_revert" %}",
-                    method: "POST",
-                    data: {
-                        transfer_id: id,
-                    },
-                    success: data => {
-                        clearError();
-                        recent_transfers.forEach(item => {
-                            if (item.id == id) {
-                                item.annullated = true;
-                                increaseMoney(item.amount);
-                            }
-                        });
-                        updateRecentTransfers();
-                    },
-                    error: error,
-                })
+            $.ajax({
+                url: "{% url "transfer_revert" %}",
+                method: "POST",
+                data: {
+                    transfer_id: id,
+                },
+                success: data => {
+                    clearError();
+                    recent_transfers.forEach(item => {
+                        if (item.id == id) {
+                            item.annullated = true;
+                            increaseMoney(item.amount);
+                        }
+                    });
+                    updateRecentTransfers();
+                },
+                error: error,
+            })
         }
     }
 

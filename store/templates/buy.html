@@ -178,20 +178,20 @@
             showError(error, "Fehler beim Einkaufen");
         }
 
-            $.ajax({
-                url: "{% url "buy" %}",
-                method: "POST",
-                data: {
-                    ident: ident,
-                    ident_type: ident_type,
-                },
-                success: function(data) {
-                    clearError();
-                    reduceMoney(products[data.product_id].price);
-                    addLastBought(data.product_id, data.purchase_id);
-                },
-                error: error,
-            });
+        $.ajax({
+            url: "{% url "buy" %}",
+            method: "POST",
+            data: {
+                ident: ident,
+                ident_type: ident_type,
+            },
+            success: function(data) {
+                clearError();
+                reduceMoney(products[data.product_id].price);
+                addLastBought(data.product_id, data.purchase_id);
+            },
+            error: error,
+        });
     }
 
     function addLastBought(id, purchase_id) {
@@ -215,24 +215,24 @@
         }
 
         return function() {
-                $.ajax({
-                    url: "{% url "buy_revert" %}",
-                    method: "POST",
-                    data: {
-                        purchase_id: id,
-                    },
-                    success: data => {
-                        clearError();
-                        recently_bought.forEach(item => {
-                            if (item.purchase_id == id) {
-                                item.annullated = true;
-                                increaseMoney(item.price);
-                            }
-                        });
-                        updateRecentlyBoughtList();
-                    },
-                    error: error,
-                });
+            $.ajax({
+                url: "{% url "buy_revert" %}",
+                method: "POST",
+                data: {
+                    purchase_id: id,
+                },
+                success: data => {
+                    clearError();
+                    recently_bought.forEach(item => {
+                        if (item.purchase_id == id) {
+                            item.annullated = true;
+                            increaseMoney(item.price);
+                        }
+                    });
+                    updateRecentlyBoughtList();
+                },
+                error: error,
+            });
         }
     }
 

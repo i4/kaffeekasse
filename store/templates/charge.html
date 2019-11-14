@@ -124,20 +124,20 @@
             return;
         }
 
-            $.ajax({
-                url: "{% url "charge" %}",
-                method: "POST",
-                data: {
-                    amount: amount,
-                },
-                success: data => {
-                    clearError();
-                    increaseMoney(amount);
-                    $("#amount").val("");
-                    addNewCharge(data.charge_id, amount);
-                },
-                error: error,
-            });
+        $.ajax({
+            url: "{% url "charge" %}",
+            method: "POST",
+            data: {
+                amount: amount,
+            },
+            success: data => {
+                clearError();
+                increaseMoney(amount);
+                $("#amount").val("");
+                addNewCharge(data.charge_id, amount);
+            },
+            error: error,
+        });
     }
 
     // Add a new charge to the list and remove the last one
@@ -161,24 +161,24 @@
         };
 
         return function() {
-                $.ajax({
-                    url: "{% url "charge_revert" %}",
-                    method: "POST",
-                    data: {
-                        charge_id: id,
-                    },
-                    success: data => {
-                        clearError();
-                        recent_charges.forEach(item => {
-                            if (item.id == id) {
-                                item.annullated = true;
-                                reduceMoney(item.amount);
-                            }
-                        });
-                        updateRecentCharges();
-                    },
-                    error: error,
-                })
+            $.ajax({
+                url: "{% url "charge_revert" %}",
+                method: "POST",
+                data: {
+                    charge_id: id,
+                },
+                success: data => {
+                    clearError();
+                    recent_charges.forEach(item => {
+                        if (item.id == id) {
+                            item.annullated = true;
+                            reduceMoney(item.amount);
+                        }
+                    });
+                    updateRecentCharges();
+                },
+                error: error,
+            })
         }
     }
 
