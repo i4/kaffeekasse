@@ -345,7 +345,7 @@ class ChargeLogic:
 class TransferLogic:
     @staticmethod
     @typechecked
-    def getFreuquentTransferTargets(user_id: int) -> List[dict]:
+    def getFrequentTransferTargets(user_id: int) -> List[dict]:
         """
         Return list of frequent transfer recipients of this user. First often
         used recipients of the user (count capped via configuration) followed

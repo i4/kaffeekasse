@@ -141,7 +141,7 @@ def transfer(request):
 
     if request.method == "GET":
         return render(request, "transfer.html", {
-            "users": backend.TransferLogic.getFreuquentTransferTargets(request.user.id),
+            "users": backend.TransferLogic.getFrequentTransferTargets(request.user.id),
             "recent_transfers": backend.TransferLogic.getLastTransfers(request.user.id),
             "ident_types": models.UserIdentifier,
             "config": config,
