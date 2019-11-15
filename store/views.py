@@ -1,6 +1,6 @@
 from decimal import Decimal, InvalidOperation
 
-from django.contrib.auth import logout as auth_logout
+import django.contrib.auth
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, reverse
@@ -18,7 +18,7 @@ def index(request):
     """
     GET: Return the rendered index page. Users can login here.
     """
-    auth_logout(request)
+    django.contrib.auth.logout(request)
     return render(request, "index.html", {
         "users": backend.UserLogic.getFrequentUsersList(),
         "ident_types": models.UserIdentifier,
@@ -206,5 +206,5 @@ def logout(request):
     """
     Logout the current user.
     """
-    auth_logout(request)
+    django.contrib.auth.logout(request)
     return HttpResponseRedirect(reverse("index"))
