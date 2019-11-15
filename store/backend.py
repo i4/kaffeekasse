@@ -2,7 +2,7 @@ from datetime import date, timedelta, datetime
 from typing import List, Dict, Tuple
 from decimal import Decimal
 
-from django.contrib.auth import login
+import django.contrib.auth
 from django.db import transaction
 from django.db.models import Count
 from django.http import HttpRequest
@@ -49,7 +49,7 @@ class UserLogic:
         with transaction.atomic():
             x = models.Login(user=user)
             x.save()
-            login(request, user)
+            django.contrib.auth.login(request, user)
 
     @staticmethod
     @typechecked
