@@ -230,7 +230,7 @@ class PurchaseLogic:
                 raise exceptions.UserNotEnoughMoney()
             user.save()
 
-            purchase = models.Purchase(user=user, product=product, price=product.price, annulled=False)
+            purchase = models.Purchase(user=user, product=product, price=product.price)
             purchase.save()
 
             return purchase.id, product.id
@@ -308,7 +308,7 @@ class ChargeLogic:
             user = models.User.objects.get(id=user_id)
             user.money += amount
             user.save()
-            charge = models.Charge(amount=amount, annulled=False, user_id=user.id)
+            charge = models.Charge(amount=amount, user_id=user.id)
             charge.save()
             return charge.id
 
@@ -422,7 +422,7 @@ class TransferLogic:
             raise exceptions.SenderEqualsReceiverError()
 
         with transaction.atomic():
-            transfer = models.Transfer(sender=sender, receiver=receiver, amount=amount, annulled=False)
+            transfer = models.Transfer(sender=sender, receiver=receiver, amount=amount)
             transfer.save()
 
             sender.money -= amount
