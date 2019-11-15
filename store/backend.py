@@ -1,37 +1,37 @@
 from datetime import date, timedelta, datetime
 from typing import List, Dict, Tuple
+from decimal import Decimal
 
 from django.contrib.auth import login
 from django.db import transaction
-from django.db.models import Count, ObjectDoesNotExist
-from django.db.models.functions import Lower
+from django.db.models import Count
 from django.http import HttpRequest
 
 import pytz
 from typeguard import typechecked
 
-from .models import *
-from .store_config import KAFFEEKASSE as config
-from .store_exceptions import *
+import store.models as models
+import store.store_exceptions as exceptions
+from store.store_config import KAFFEEKASSE as config
 
 
 class UserLogic:
     @staticmethod
     @typechecked
-    def getUser(ident: str, ident_type: int) -> User:
+    def getUser(ident: str, ident_type: int) -> models.User:
         """
         Returns user that can be definitely identified by the unique
         combination ident and ident_type.
         """
 
-        if ident_type == UserIdentifier.PRIMARYKEY:
-            return User.objects.get(id=ident)
+        if ident_type == models.UserIdentifier.PRIMARYKEY:
+            return models.User.objects.get(id=ident)
 
-        x = UserIdentifier.objects.filter(ident=ident, ident_type=ident_type) \
+        x = models.UserIdentifier.objects.filter(ident=ident, ident_type=ident_type) \
                 .select_related('user') \
                 .first()
         if x is None:
-            raise UserIdentifierNotExists()
+            raise exceptions.UserIdentifierNotExists()
         return x.user
 
     @staticmethod
@@ -45,11 +45,11 @@ class UserLogic:
 
         user = UserLogic.getUser(ident, ident_type)
 
-        if ident_type == UserIdentifier.PRIMARYKEY and not user.pk_login_enabled:
-            raise DisabledIdentifier()
+        if ident_type == models.UserIdentifier.PRIMARYKEY and not user.pk_login_enabled:
+            raise exceptions.DisabledIdentifier()
 
         with transaction.atomic():
-            x = Login(user=user)
+            x = models.Login(user=user)
             x.save()
             login(request, user)
 
@@ -71,7 +71,7 @@ class UserLogic:
         max_days = config['T_USERS_LOGIN_D']
         time_stamp = date.today() - timedelta(days=max_days)
 
-        recent_logins = Login.objects.filter(time_stamp__gte=time_stamp) \
+        recent_logins = models.Login.objects.filter(time_stamp__gte=time_stamp) \
                 .select_related('user') \
                 .filter(user__pk_login_enabled=True) \
                 .values('user__username', 'user__id') \
@@ -80,7 +80,7 @@ class UserLogic:
         if max_users > 0:
             recent_logins = recent_logins[:max_users]
 
-        old_logins = Login.objects.all() \
+        old_logins = models.Login.objects.all() \
                 .select_related('user') \
                 .filter(user__pk_login_enabled=True) \
                 .values('user__username', 'user__id') \
@@ -88,7 +88,7 @@ class UserLogic:
                 .annotate(total=Count('user__id')) \
                 .order_by('-total')
 
-        no_logins = User.objects.filter(pk_login_enabled=True) \
+        no_logins = models.User.objects.filter(pk_login_enabled=True) \
                 .exclude(id__in=[d['user__id'] for d in list(recent_logins) + list(old_logins)]) \
                 .order_by('username') \
                 .values('username', 'id') \
@@ -105,23 +105,23 @@ class UserLogic:
 class ProductLogic:
     @staticmethod
     @typechecked
-    def getProduct(ident: str, ident_type: int) -> Product:
+    def getProduct(ident: str, ident_type: int) -> models.Product:
         """
         Returns product that can be definitely identified by the unique
         combination ident and ident_type.
         """
 
-        if ident_type == ProductIdentifier.PRIMARYKEY:
+        if ident_type == models.ProductIdentifier.PRIMARYKEY:
             try:
-                return Product.objects.get(id=ident)
-            except Product.DoesNotExist:
-                raise ProductIdentifierNotExists()
+                return models.Product.objects.get(id=ident)
+            except models.Product.DoesNotExist:
+                raise exceptions.ProductIdentifierNotExists()
 
-        x = ProductIdentifier.objects.filter(ident_type=ident_type).filter(ident=ident) \
+        x = models.ProductIdentifier.objects.filter(ident_type=ident_type).filter(ident=ident) \
                 .select_related('product') \
                 .first()
         if x is None:
-            raise ProductIdentifierNotExists()
+            raise exceptions.ProductIdentifierNotExists()
         return x.product
 
     @staticmethod
@@ -137,7 +137,7 @@ class ProductLogic:
         max_days = config['T_MOST_BOUGHT_PRODUCTS_D']
 
         time_stamp = date.today() - timedelta(days=max_days)
-        products = Purchase.objects \
+        products = models.Purchase.objects \
                 .filter(time_stamp__gte=time_stamp, product__isnull=False) \
                 .select_related('product') \
                 .values('product__name', 'product_id', 'product__price') \
@@ -158,7 +158,7 @@ class ProductLogic:
         max_products = config['N_LAST_BOUGHT_PRODUCTS']
         annullable_time = config['T_ANNULLABLE_PURCHASE_M']
 
-        products = Purchase.objects \
+        products = models.Purchase.objects \
                 .filter(user=user_id, product__isnull=False) \
                 .select_related('product') \
                 .order_by('-time_stamp')[:max_products] \
@@ -189,14 +189,14 @@ class ProductLogic:
         """
 
         # Get sublevels
-        sublevels = ProductCategory.objects.filter(toplevel=category).values('sublevel')
+        sublevels = models.ProductCategory.objects.filter(toplevel=category).values('sublevel')
 
         # Get product
         products = {}
         for sublevel in sublevels:
             # Get product for sublevel
             sublevel = sublevel["sublevel"]
-            ps = ProductCategory.objects.filter(toplevel=category, sublevel=sublevel) \
+            ps = models.ProductCategory.objects.filter(toplevel=category, sublevel=sublevel) \
                     .prefetch_related('products') \
                     .values('products__id', 'products__name', 'products__price') \
                     .all()
@@ -214,12 +214,12 @@ class ProductLogic:
     @staticmethod
     @typechecked
     def getCandies() -> Dict[str, List[dict]]:
-        return ProductLogic.getProductByCategory(ProductCategory.SNACK)
+        return ProductLogic.getProductByCategory(models.ProductCategory.SNACK)
 
     @staticmethod
     @typechecked
     def getDrinks() -> Dict[str, List[dict]]:
-        return ProductLogic.getProductByCategory(ProductCategory.GETRAENK)
+        return ProductLogic.getProductByCategory(models.ProductCategory.GETRAENK)
 
 
 class PurchaseLogic:
@@ -241,13 +241,13 @@ class PurchaseLogic:
             product.stock -= 1
             product.save()
 
-            user = User.objects.get(id=user_id)
+            user = models.User.objects.get(id=user_id)
             user.money -= product.price
             if user.money < 0:
-                raise UserNotEnoughMoney()
+                raise exceptions.UserNotEnoughMoney()
             user.save()
 
-            purchase = Purchase(user=user, product=product, price=product.price, annullated=False)
+            purchase = models.Purchase(user=user, product=product, price=product.price, annullated=False)
             purchase.save()
 
             return purchase.id, product.id
@@ -268,14 +268,14 @@ class PurchaseLogic:
         timezone = pytz.timezone('Europe/Berlin')
         time_limit = timezone.localize(time_limit)
 
-        purchase = Purchase.objects.get(id=purchase_id)
+        purchase = models.Purchase.objects.get(id=purchase_id)
 
         purchase_time = purchase.time_stamp
         if time_limit >= purchase_time:
-            raise PurchaseNotAnnullable()
+            raise exceptions.PurchaseNotAnnullable()
 
         with transaction.atomic():
-            user = User.objects.get(id=purchase.user.id)
+            user = models.User.objects.get(id=purchase.user.id)
             user.money += purchase.price
             user.save()
             purchase.annullated = True
@@ -295,7 +295,7 @@ class ChargeLogic:
 
         max_charges = config['N_LAST_CHARGES']
         annullable_time = config['T_ANNULLABLE_CHARGE_M']
-        charges = Charge.objects.filter(user=user_id) \
+        charges = models.Charge.objects.filter(user=user_id) \
                 .values('id', 'amount', 'annullated', 'time_stamp') \
                 .order_by('-time_stamp')
         if max_charges >= 0:
@@ -327,10 +327,10 @@ class ChargeLogic:
         assert amount > 0
 
         with transaction.atomic():
-            user = User.objects.get(id=user_id)
+            user = models.User.objects.get(id=user_id)
             user.money += amount
             user.save()
-            charge = Charge(amount=amount, annullated=False, user_id=user.id)
+            charge = models.Charge(amount=amount, annullated=False, user_id=user.id)
             charge.save()
             return charge.id
 
@@ -351,16 +351,16 @@ class ChargeLogic:
         timezone = pytz.timezone('Europe/Berlin')
         time_limit = timezone.localize(time_limit)
 
-        charge = Charge.objects.get(id=charge_id)
+        charge = models.Charge.objects.get(id=charge_id)
 
         if time_limit > charge.time_stamp:
-            raise ChargeNotAnnullable()
+            raise exceptions.ChargeNotAnnullable()
 
         with transaction.atomic():
-            user = User.objects.get(id=charge.user.id)
+            user = models.User.objects.get(id=charge.user.id)
             user.money -= charge.amount
             if user.money < 0:
-                raise UserNotEnoughMoney()
+                raise exceptions.UserNotEnoughMoney()
             user.save()
             charge.annullated = True
             charge.save()
@@ -383,14 +383,14 @@ class TransferLogic:
         """
 
         max_receivers = config['N_TRANSFERS_RECEIVERS']
-        recent_transfers = Transfer.objects.filter(sender=user_id) \
+        recent_transfers = models.Transfer.objects.filter(sender=user_id) \
                 .exclude(receiver=None) \
                 .select_related('receiver')
 
         if max_receivers >= 0:
             recent_transfers = recent_transfers[:max_receivers]
 
-        other_transfers = User.objects.exclude(id__in=[d.receiver.id for d in list(recent_transfers)]) \
+        other_transfers = models.User.objects.exclude(id__in=[d.receiver.id for d in list(recent_transfers)]) \
                 .exclude(id=user_id) \
                 .values('id', 'username') \
                 .order_by('username')
@@ -417,7 +417,7 @@ class TransferLogic:
         max_transfers = config['N_LAST_TRANSFERS']
         annullable_time = config['T_ANNULLABLE_TRANSFERS_M']
 
-        transfers = Transfer.objects.filter(sender=user_id) \
+        transfers = models.Transfer.objects.filter(sender=user_id) \
                 .select_related('receiver') \
                 .order_by('-time_stamp')[:max_transfers] \
                 .values('id', 'annullated', 'amount', 'receiver__username', 'time_stamp')
@@ -451,18 +451,18 @@ class TransferLogic:
 
         assert amount > 0
 
-        sender = User.objects.get(id=user_id)
+        sender = models.User.objects.get(id=user_id)
         receiver = UserLogic.getUser(ident=receiver_ident, ident_type=receiver_ident_type)
         if sender.id == receiver.id:
-            raise SenderEqualsReceiverError()
+            raise exceptions.SenderEqualsReceiverError()
 
         with transaction.atomic():
-            transfer = Transfer(sender=sender, receiver=receiver, amount=amount, annullated=False)
+            transfer = models.Transfer(sender=sender, receiver=receiver, amount=amount, annullated=False)
             transfer.save()
 
             sender.money -= amount
             if sender.money < 0:
-                raise UserNotEnoughMoney()
+                raise exceptions.UserNotEnoughMoney()
             sender.save()
             receiver.money += amount
             receiver.save()
@@ -487,19 +487,19 @@ class TransferLogic:
         timezone = pytz.timezone('Europe/Berlin')
         time_limit = timezone.localize(time_limit)
 
-        transfer = Transfer.objects.get(id=transfer_id)
+        transfer = models.Transfer.objects.get(id=transfer_id)
         if time_limit > transfer.time_stamp:
-            raise TransferNotAnnullable()
+            raise exceptions.TransferNotAnnullable()
 
-        receiver = User.objects.get(id=transfer.receiver_id)
-        sender = User.objects.get(id=transfer.sender_id)
+        receiver = models.User.objects.get(id=transfer.receiver_id)
+        sender = models.User.objects.get(id=transfer.sender_id)
 
         with transaction.atomic():
             transfer.annullated = True
             transfer.save()
             receiver.money -= transfer.amount
             if receiver.money < 0:
-                raise UserNotEnoughMoney()
+                raise exceptions.UserNotEnoughMoney()
             receiver.save()
             sender.money += transfer.amount
             sender.save()
