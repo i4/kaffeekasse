@@ -20,8 +20,7 @@ class UserLogic:
     @typechecked
     def getUser(ident: str, ident_type: int) -> models.User:
         """
-        Returns user that can be definitely identified by the unique
-        combination ident and ident_type.
+        Return user as given by identifier and its type.
         """
 
         if ident_type == models.UserIdentifier.PRIMARYKEY:
@@ -38,9 +37,8 @@ class UserLogic:
     @typechecked
     def login(request: HttpRequest, ident: str, ident_type: int) -> None:
         """
-        Basic login function. On success the user is logged in and True is
-        returned and a login-tuple is created. On Failure nothing happens and
-        False is returned.
+        Login user via Django's session management and store login date in
+        database.
         """
 
         user = UserLogic.getUser(ident, ident_type)
@@ -57,14 +55,9 @@ class UserLogic:
     @typechecked
     def getFrequentUsersList() -> List[dict]:
         """
-        Concatenates the results of three db-queries:
-
-        - First part of the list: a number of users specified in max_users,
-          that have most logins within a number of days specified in max_days.
-        - Second part of the list: all users that are not included in the
-          first part of the list and have at least one login
-        - Third part of the list: all users that are not included in the first
-          both parts
+        Return list of users with frequent logins. First recent logins (count
+        capped via configuration), then, users with at least one login,
+        followed by the remaining users.
         """
 
         max_users = config['N_USERS_LOGIN']
@@ -107,8 +100,7 @@ class ProductLogic:
     @typechecked
     def getProduct(ident: str, ident_type: int) -> models.Product:
         """
-        Returns product that can be definitely identified by the unique
-        combination ident and ident_type.
+        Return product as given by identifier and its type.
         """
 
         if ident_type == models.ProductIdentifier.PRIMARYKEY:
@@ -128,9 +120,8 @@ class ProductLogic:
     @typechecked
     def getMostBoughtProductsList() -> List[dict]:
         """
-        Result of a db query asking for a number of products specified in
-        max_products that were most bought within the last max_days number of
-        days.
+        Return list of products most often bought (time and count
+        as configured).
         """
 
         max_products = config['N_MOST_BOUGHT_PRODUCTS']
@@ -149,10 +140,7 @@ class ProductLogic:
     @typechecked
     def getLastBoughtProductsList(user_id: int) -> List[dict]:
         """
-        Result of a db query asking for a number of products specified in
-        max_products that were recently bought by a specified user. The result
-        also contains information on the state of a possible annulation of the
-        products purchase.
+        Return list of products last bought by this user.
         """
 
         max_products = config['N_LAST_BOUGHT_PRODUCTS']
@@ -184,8 +172,7 @@ class ProductLogic:
     @typechecked
     def getProductByCategory(category: int) -> Dict[str, List[dict]]:
         """
-        Returns a dict with a key for each sublevel category containing all
-        products, where the toplevel category equals to the input category
+        Return all products as dict in the given category.
         """
 
         # Get sublevels
@@ -228,12 +215,8 @@ class PurchaseLogic:
     def purchase(user_id: int, product_ident: str, product_ident_type: int) \
             -> Tuple[int, int]:
         """
-        Execute the purchase logic. Three db relations are included:
-
-        *)  Purchase: include a new purchase-tuple with the user_id,
-            product_id, the current time, the current products price
-        *)  User: update the users money
-        *)  Product: update the product stock
+        Purchase the product for the given user and return id's of purchase
+        and product.
         """
 
         with transaction.atomic():
@@ -256,8 +239,7 @@ class PurchaseLogic:
     @typechecked
     def annullatePurchase(purchase_id: int) -> None:
         """
-        Try to annullate a purchase performed by a specified user. This will
-        only fail if the purchase was performed too long ago.
+        Annul the given purchase if possible (maximum time is configured).
         """
 
         annullable_time = config['T_ANNULLABLE_PURCHASE_M']
@@ -287,10 +269,8 @@ class ChargeLogic:
     @typechecked
     def getLastChargesList(user_id: int) -> List[dict]:
         """
-        Result of a db query asking for a number of charges specified in
-        max_charges that were recently performed by a specified user. The
-        result also contains information on the state of a possible
-        annullation of the charge.
+        Return list of recent charges of this user (count capped via
+        configuration).
         """
 
         max_charges = config['N_LAST_CHARGES']
@@ -319,9 +299,7 @@ class ChargeLogic:
     @typechecked
     def charge(user_id: int, amount: Decimal) -> int:
         """
-        Executes the charge logic. Two db relations are included:
-        *)  User, where the new money is add to the user money
-        *)  Charge, where the new charge is saved to
+        Charge the given amount to the given user.
         """
 
         assert amount > 0
@@ -338,9 +316,7 @@ class ChargeLogic:
     @typechecked
     def annullateCharge(charge_id: int) -> None:
         """
-        Try to annullate a charge performed by a specified user. This will
-        fail if either the charge was performed too long ago or the user has
-        less money on it's account than the amount of money charged.
+        Annul the given charge if possible (maximum time is configured).
         """
 
         annullable_time = config['T_ANNULLABLE_CHARGE_M']
@@ -371,15 +347,9 @@ class TransferLogic:
     @typechecked
     def getFreuquentTransferTargets(user_id: int) -> List[dict]:
         """
-        Result of a db query asking for a number of receivers specified in
-        max_receivers that are often addresed by a specified user Concatinates
-        the result of two db queries:
-
-        First part of the list: a number of receivers specified in
-        max_receivers that are often addressed by a specific user
-
-        Second part of the list: all users excluded the users form the first
-        part and the user itself
+        Return list of frequent transfer recipients of this user. First often
+        used recipients of the user (count capped via configuration) followed
+        by the remaining users.
         """
 
         max_receivers = config['N_TRANSFERS_RECEIVERS']
@@ -409,9 +379,8 @@ class TransferLogic:
     @typechecked
     def getLastTransfers(user_id: int) -> List[dict]:
         """
-        Result of a db query asking for a number of transfers that have been
-        recently performed by a specified user. Also returns information on
-        the state of possible annullation of the transfer.
+        Return list of recent transfers of this user (count capped via
+        configuration).
         """
 
         max_transfers = config['N_LAST_TRANSFERS']
@@ -442,11 +411,7 @@ class TransferLogic:
     def transfer(user_id: int, receiver_ident: str, receiver_ident_type: int,
             amount: Decimal) -> Tuple[int, int]:
         """
-        Performs the transfer routine where a sender sends money to a
-        receiver. Two db relations are included:
-
-        *)  User, where the sender aswell as the receiver are from
-        *)  Transfer, where the newly created transfer is saved to
+        Transfer money from the given user to the given recipient.
         """
 
         assert amount > 0
@@ -473,10 +438,7 @@ class TransferLogic:
     @typechecked
     def annullateTransfer(transfer_id: int) -> None:
         """
-        Try to annullate a transfer performed by a specified user. This will
-        fail if either the transfer was performed too long ago or the receiver
-        of the money has less money on it's account than the amount of money
-        transfered.
+        Annul the given transfer if possible (maximum time is configured).
         """
 
         annullable_time = config['T_ANNULLABLE_TRANSFERS_M']
