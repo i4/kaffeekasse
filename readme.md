@@ -13,6 +13,16 @@ Additionally to django you need to install the psycopg2 python package:
 pip install psycopg2
 ```
 
+
+## Installation
+
+```
+./manage.py makemigratations
+./manage.py migrate
+./manage.py createsuperuser
+```
+
+
 ## Docs
 The project consists of 3 parts. The client, the server and the database.
 The client is a simple website.
