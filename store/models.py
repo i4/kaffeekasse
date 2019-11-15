@@ -1,12 +1,14 @@
-from django.db import models, IntegrityError
-from django.contrib.auth.models import AbstractUser
-from django.utils import timezone
 from decimal import Decimal
-from .store_exceptions import *
-from django.utils.translation import gettext_lazy as _
+
 import django.core.validators as validators
-from django.db.models.signals import pre_save
+from django.contrib.auth.models import AbstractUser
 from django.contrib.sessions.models import Session
+from django.db import models, IntegrityError
+from django.db.models.signals import pre_save
+from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
+
+from .store_exceptions import *
 
 
 # Per default, Django does not execute validators when saving a model. Enforce
