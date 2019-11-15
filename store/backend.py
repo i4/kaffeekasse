@@ -150,7 +150,7 @@ class ProductLogic:
                 .filter(user=user_id, product__isnull=False) \
                 .select_related('product') \
                 .order_by('-time_stamp')[:max_products] \
-                .values('product__name', 'product_id', 'product__price', 'time_stamp', 'id', 'annullated')
+                .values('product__name', 'product_id', 'product__price', 'time_stamp', 'id', 'annulled')
 
         # warning: summertime/wintertime currently is not respected in the following calculations. This should be
         # implemented to avoid non-annullable transactions in the lost hour between summer- and wintertime
@@ -161,7 +161,7 @@ class ProductLogic:
         for product in products:
             product['purchase__id'] = product.pop('id')
             purchase_time = product['time_stamp']
-            if time_limit >= purchase_time or product['annullated']:
+            if time_limit >= purchase_time or product['annulled']:
                 product.update({'annullable': False})
             else:
                 product.update({'annullable': True})
@@ -230,14 +230,14 @@ class PurchaseLogic:
                 raise exceptions.UserNotEnoughMoney()
             user.save()
 
-            purchase = models.Purchase(user=user, product=product, price=product.price, annullated=False)
+            purchase = models.Purchase(user=user, product=product, price=product.price, annulled=False)
             purchase.save()
 
             return purchase.id, product.id
 
     @staticmethod
     @typechecked
-    def annullatePurchase(purchase_id: int) -> None:
+    def annulPurchase(purchase_id: int) -> None:
         """
         Annul the given purchase if possible (maximum time is configured).
         """
@@ -260,7 +260,7 @@ class PurchaseLogic:
             user = models.User.objects.get(id=purchase.user.id)
             user.money += purchase.price
             user.save()
-            purchase.annullated = True
+            purchase.annulled = True
             purchase.save()
 
 
@@ -276,7 +276,7 @@ class ChargeLogic:
         max_charges = config['N_LAST_CHARGES']
         annullable_time = config['T_ANNULLABLE_CHARGE_M']
         charges = models.Charge.objects.filter(user=user_id) \
-                .values('id', 'amount', 'annullated', 'time_stamp') \
+                .values('id', 'amount', 'annulled', 'time_stamp') \
                 .order_by('-time_stamp')
         if max_charges >= 0:
             charges = charges[:max_charges]
@@ -308,13 +308,13 @@ class ChargeLogic:
             user = models.User.objects.get(id=user_id)
             user.money += amount
             user.save()
-            charge = models.Charge(amount=amount, annullated=False, user_id=user.id)
+            charge = models.Charge(amount=amount, annulled=False, user_id=user.id)
             charge.save()
             return charge.id
 
     @staticmethod
     @typechecked
-    def annullateCharge(charge_id: int) -> None:
+    def annulCharge(charge_id: int) -> None:
         """
         Annul the given charge if possible (maximum time is configured).
         """
@@ -338,7 +338,7 @@ class ChargeLogic:
             if user.money < 0:
                 raise exceptions.UserNotEnoughMoney()
             user.save()
-            charge.annullated = True
+            charge.annulled = True
             charge.save()
 
 
@@ -389,7 +389,7 @@ class TransferLogic:
         transfers = models.Transfer.objects.filter(sender=user_id) \
                 .select_related('receiver') \
                 .order_by('-time_stamp')[:max_transfers] \
-                .values('id', 'annullated', 'amount', 'receiver__username', 'time_stamp')
+                .values('id', 'annulled', 'amount', 'receiver__username', 'time_stamp')
 
         # warning: summertime/wintertime currently is not respected in the following calculations. This should be
         # implemented to avoid non-annullable transactions in the lost hour between summer- and wintertime
@@ -422,7 +422,7 @@ class TransferLogic:
             raise exceptions.SenderEqualsReceiverError()
 
         with transaction.atomic():
-            transfer = models.Transfer(sender=sender, receiver=receiver, amount=amount, annullated=False)
+            transfer = models.Transfer(sender=sender, receiver=receiver, amount=amount, annulled=False)
             transfer.save()
 
             sender.money -= amount
@@ -436,7 +436,7 @@ class TransferLogic:
 
     @staticmethod
     @typechecked
-    def annullateTransfer(transfer_id: int) -> None:
+    def annulTransfer(transfer_id: int) -> None:
         """
         Annul the given transfer if possible (maximum time is configured).
         """
@@ -457,7 +457,7 @@ class TransferLogic:
         sender = models.User.objects.get(id=transfer.sender_id)
 
         with transaction.atomic():
-            transfer.annullated = True
+            transfer.annulled = True
             transfer.save()
             receiver.money -= transfer.amount
             if receiver.money < 0:

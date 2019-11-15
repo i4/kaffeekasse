@@ -103,7 +103,7 @@ class Charge(models.Model):
     time_stamp = models.DateTimeField(auto_now=True)
     amount = models.DecimalField(max_digits=6, decimal_places=2,
             validators=[validators.MinValueValidator(0)])
-    annullated = models.BooleanField()
+    annulled = models.BooleanField()
 
 
 class Purchase(models.Model):
@@ -113,7 +113,7 @@ class Purchase(models.Model):
     time_stamp = models.DateTimeField(auto_now=True)
     price = models.DecimalField(max_digits=6, decimal_places=2,
             validators=[validators.MinValueValidator(0)])
-    annullated = models.BooleanField()
+    annulled = models.BooleanField()
 
 
 class Transfer(models.Model):
@@ -124,7 +124,7 @@ class Transfer(models.Model):
     time_stamp = models.DateTimeField(auto_now=True)
     amount = models.DecimalField(max_digits=6, decimal_places=2,
             validators=[validators.MinValueValidator(0)])
-    annullated = models.BooleanField()
+    annulled = models.BooleanField()
 
 
 class Login(models.Model):

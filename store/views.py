@@ -78,7 +78,7 @@ def buy_revert(request):
     purchase_id = int(request.POST.get("purchase_id"))
 
     try:
-        backend.PurchaseLogic.annullatePurchase(purchase_id)
+        backend.PurchaseLogic.annulPurchase(purchase_id)
     except ClientMessageException as e:
         return JsonResponse({'error': str(e)}, status=400)
     return HttpResponse(status=200)
@@ -124,7 +124,7 @@ def charge_revert(request):
     """
     charge_id = int(request.POST.get("charge_id"))
     try:
-        backend.ChargeLogic.annullateCharge(charge_id)
+        backend.ChargeLogic.annulCharge(charge_id)
     except ClientMessageException as e:
         return JsonResponse({'error': str(e)}, status=400)
     return HttpResponse(status=200)
@@ -174,7 +174,7 @@ def transfer_revert(request):
     """
     transfer_id = int(request.POST.get('transfer_id'))
     try:
-        backend.TransferLogic.annullateTransfer(transfer_id)
+        backend.TransferLogic.annulTransfer(transfer_id)
     except ClientMessageException as e:
         return JsonResponse({'error': str(e)}, status=400)
     return HttpResponse(status=200)

@@ -58,7 +58,7 @@
                     </div>
                 </label>
             </template>
-            <template id="recently_bought_annullated_template">
+            <template id="recently_bought_annulled_template">
                 <label class="list-group-item">
                     <div class="d-flex w-100 justify-content-between">
                         <s><div class="mb-1 text-muted" id="recent_product_name"></div></s>
@@ -146,7 +146,7 @@
             price: {{ product.product__price }},
             name: "{{ product.product__name }}",
             annullable: {% if product.annullable %} true {% else %} false {% endif %},
-            annullated: {% if product.annullated %} true {% else %} false {% endif %},
+            annulled: {% if product.annulled %} true {% else %} false {% endif %},
             purchase_id: {{ product.purchase__id }},
         },
         {% endfor %}
@@ -203,7 +203,7 @@
             name: products[id].name,
             price: products[id].price,
             annullable: true,
-            annullated: false,
+            annulled: false,
             purchase_id: purchase_id,
         });
         updateRecentlyBoughtList();
@@ -225,7 +225,7 @@
                     clearError();
                     recently_bought.forEach(item => {
                         if (item.purchase_id == id) {
-                            item.annullated = true;
+                            item.annulled = true;
                             increaseMoney(item.price);
                         }
                     });
@@ -242,8 +242,8 @@
 
         for (var product of recently_bought) {
             // Get and clone correct template
-            var template = product.annullated ?
-                $("#recently_bought_annullated_template") :
+            var template = product.annulled ?
+                $("#recently_bought_annulled_template") :
                 (product.annullable ?
                     $("#recently_bought_annullable_template") :
                     $("#recently_bought_template"));

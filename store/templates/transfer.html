@@ -133,7 +133,7 @@
                 </div>
             </label>
         </template>
-        <template id="recent_transfer_annullated_template">
+        <template id="recent_transfer_annulled_template">
             <label class="list-group-item">
                 <div class="d-flex w-100 justify-content-between">
                     <s><div class="mb-1 text-muted" id="recent_transfer_recipient"></div></s>
@@ -161,7 +161,7 @@
             receiver_username: "{{ transfer.receiver_username }}",
             amount: {{ transfer.amount }},
             annullable: {% if transfer.annullable %} true {% else %} false {% endif %},
-            annullated: {% if transfer.annullated %} true {% else %} false {% endif %},
+            annulled: {% if transfer.annulled %} true {% else %} false {% endif %},
         },
         {% endfor %}
     ];
@@ -230,7 +230,7 @@
             amount: amount,
             receiver_username: users[receiver_id].username,
             annullable: true,
-            annullated: false,
+            annulled: false,
         });
         updateRecentTransfers();
     }
@@ -252,7 +252,7 @@
                     clearError();
                     recent_transfers.forEach(item => {
                         if (item.id == id) {
-                            item.annullated = true;
+                            item.annulled = true;
                             increaseMoney(item.amount);
                         }
                     });
@@ -269,8 +269,8 @@
         $("#recent_transfers").empty();
         for (var transfer of recent_transfers) {
             // Get and clone correct template
-            var template = transfer.annullated ?
-                $("#recent_transfer_annullated_template") :
+            var template = transfer.annulled ?
+                $("#recent_transfer_annulled_template") :
                 (transfer.annullable ?
                     $("#recent_transfer_annullable_template") :
                     $("#recent_transfer_template"));

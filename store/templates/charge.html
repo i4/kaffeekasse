@@ -83,7 +83,7 @@
                 </div>
             </label>
         </template>
-        <template id="recent_charge_annullated_template">
+        <template id="recent_charge_annulled_template">
             <label class="list-group-item">
                 <div class="d-flex w-100 justify-content-between">
                     <s><div class="text-muted" id="recent_charge_amount"></div></s>
@@ -101,7 +101,7 @@
             id: {{ charge.id }},
             amount: {{ charge.amount }},
             annullable: {% if charge.annullable %} true {% else %} false {% endif %},
-            annullated: {% if charge.annullated %} true {% else %} false {% endif %},
+            annulled: {% if charge.annulled %} true {% else %} false {% endif %},
         },
         {% endfor %}
     ];
@@ -149,7 +149,7 @@
             id: charge_id,
             amount: amount,
             annullable: true,
-            annullated: false,
+            annulled: false,
         });
         updateRecentCharges();
     }
@@ -171,7 +171,7 @@
                     clearError();
                     recent_charges.forEach(item => {
                         if (item.id == id) {
-                            item.annullated = true;
+                            item.annulled = true;
                             reduceMoney(item.amount);
                         }
                     });
@@ -188,8 +188,8 @@
         $("#recent_charges").empty();
         for (var charge of recent_charges) {
             // Clone template
-            var template = charge.annullated ?
-                $("#recent_charge_annullated_template") :
+            var template = charge.annulled ?
+                $("#recent_charge_annulled_template") :
                 (charge.annullable ?
                     $("#recent_charge_annullable_template") :
                     $("#recent_charge_template"));
