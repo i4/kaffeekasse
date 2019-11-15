@@ -8,12 +8,6 @@ class UserAdmin(admin.ModelAdmin):
     list_display = ('username', 'first_name', 'last_name', 'email', 'money',
             'pk_login_enabled', 'is_active', 'is_staff', 'is_superuser')
 
-    fieldsets = (
-        (None, {
-            'fields': ('username', 'first_name', 'last_name', 'pk_login_enabled', 'money')
-        }),
-    )
-
 
 @admin.register(models.UserIdentifier)
 class UserIdentifierAdmin(admin.ModelAdmin):
