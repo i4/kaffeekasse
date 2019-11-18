@@ -1,24 +1,14 @@
 import django.contrib.auth.admin
 import django.contrib.auth.models
-import django.forms.models
 from django.contrib import admin
 
 import store.models as models
 
 
-class AlwaysChangedModelForm(django.forms.models.ModelForm):
-    def has_changed(self):
-        return True
-
 class UserDataInline(admin.StackedInline):
     model = models.UserData
     can_delete = False
     verbose_name_plural = 'Data'
-    # When creating a new user with default values Django won't write a
-    # UserData to the database. Force creating a new object by telling Django
-    # the value has changed. Thanks to Daniel for the idea
-    # https://stackoverflow.com/questions/3657709/how-to-force-save-an-empty-unchanged-django-admin-inline/3734700#3734700
-    form = AlwaysChangedModelForm
 
 class UserAdmin(django.contrib.auth.admin.UserAdmin):
     list_display = ('username', 'money', 'first_name', 'last_name', 'email', 'is_staff')

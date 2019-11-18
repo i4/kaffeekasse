@@ -1,8 +1,9 @@
 import django.core.validators as validators
 import django.contrib.auth.models
+import django.dispatch
 from django.contrib.sessions.models import Session
 from django.db import models
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save, post_save
 from django.utils.translation import gettext_lazy as _
 
 
@@ -31,6 +32,17 @@ class UserData(models.Model):
 
     def __str__(self):
         return self.auth.username
+
+# Automatically create a corresponding UserData object when creating a new
+# User; inspired by the following post
+# https://simpleisbetterthancomplex.com/tutorial/2016/07/22/how-to-extend-django-user-model.html#onetoone
+@django.dispatch.receiver(post_save, sender=django.contrib.auth.models.User)
+def post_create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        try:
+            instance.userdata
+        except django.contrib.auth.models.User.userdata.RelatedObjectDoesNotExist:
+            UserData.objects.create(auth=instance)
 
 
 class UserIdentifier(models.Model):

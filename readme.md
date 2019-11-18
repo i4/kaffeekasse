@@ -32,8 +32,8 @@ apt install python3-django python3-psycopg2
 ./manage.py runserver
 ```
 
-Login at http://localhost:8000/admin/ with the super user and create a regular
-user (the initial user cannot immediately use the store).
+Login at http://localhost:8000/admin/ with the super user and start creating
+products, categories, users, etc.
 
 
 ### Config
