@@ -21,11 +21,19 @@ apt install python3-django python3-psycopg2
 
 ## Setup
 
+* Create a PostgreSQL database for the current user
+* Configure database access via `DATABASES` in `kaffeekasse/settings.py`
+* Setup Django with:
 ```
 ./manage.py makemigratations
 ./manage.py migrate
 ./manage.py createsuperuser
+
+./manage.py runserver
 ```
+
+Login at http://localhost:8000/admin/ with the super user and create a regular
+user (the initial user cannot immediately use the store).
 
 
 ### Config
