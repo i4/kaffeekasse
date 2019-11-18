@@ -333,7 +333,7 @@ class ChargeLogic:
             raise exceptions.ChargeNotAnnullable()
 
         with transaction.atomic():
-            user = models.User.objects.get(id=charge.user.id)
+            user = charge.user
             user.money -= charge.amount
             if user.money < 0:
                 raise exceptions.UserNotEnoughMoney()
