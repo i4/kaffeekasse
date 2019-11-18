@@ -308,7 +308,7 @@ class ChargeLogic:
             user = models.User.objects.get(id=user_id)
             user.money += amount
             user.save()
-            charge = models.Charge(amount=amount, user_id=user.id)
+            charge = models.Charge(amount=amount, user=user)
             charge.save()
             return charge.id
 
