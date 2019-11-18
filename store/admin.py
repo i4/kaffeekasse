@@ -21,6 +21,10 @@ class UserDataInline(admin.StackedInline):
     form = AlwaysChangedModelForm
 
 class UserAdmin(django.contrib.auth.admin.UserAdmin):
+    list_display = ('username', 'money', 'first_name', 'last_name', 'email', 'is_staff')
+    def money(self, obj):
+        return obj.userdata.money
+
     inlines = (UserDataInline,)
 
     class Media:
