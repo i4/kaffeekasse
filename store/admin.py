@@ -23,6 +23,9 @@ class UserDataInline(admin.StackedInline):
 class UserAdmin(django.contrib.auth.admin.UserAdmin):
     inlines = (UserDataInline,)
 
+    class Media:
+        js = ('admin/js/misc.js',)
+
 admin.site.unregister(django.contrib.auth.models.User)
 admin.site.register(django.contrib.auth.models.User, UserAdmin)
 
