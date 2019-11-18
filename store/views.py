@@ -34,10 +34,12 @@ def buy(request):
     POST: Puchase a product and return the product id and the purchase id as JsonResponse
     """
 
+    user_id = request.user.id
+
     if request.method == 'GET':  # Return the rendered page
         return render(request, "buy.html", {
             "most_bought": backend.ProductLogic.getMostBoughtProductsList(),
-            "recently_bought": backend.ProductLogic.getLastBoughtProductsList(request.user.id),
+            "recently_bought": backend.ProductLogic.getLastBoughtProductsList(user_id),
             "drinks": backend.ProductLogic.getDrinks(),
             "candies": backend.ProductLogic.getCandies(),
             "products": models.Product.objects.all(),
@@ -46,7 +48,6 @@ def buy(request):
         })
 
     if request.method == 'POST':  # Perform a purchase
-        user_id = request.user.id
         ident = request.POST.get("ident")
         ident_type = int(request.POST.get("ident_type"))
 
@@ -93,14 +94,15 @@ def charge(request):
     POST: Charge money.
     """
 
+    user_id = request.user.id
+
     if request.method == "GET":
         return render(request, "charge.html", {
-            "recent_charges": backend.ChargeLogic.getLastChargesList(request.user.id),
+            "recent_charges": backend.ChargeLogic.getLastChargesList(user_id),
             "config": config,
         })
 
     if request.method == "POST":
-        user_id = request.user.id
         amount = request.POST.get("amount")
         try:
             amount = Decimal(amount)
@@ -139,16 +141,17 @@ def transfer(request):
     POST: Transfer money to another user.
     """
 
+    user_id = request.user.id
+
     if request.method == "GET":
         return render(request, "transfer.html", {
-            "users": backend.TransferLogic.getFrequentTransferTargets(request.user.id),
-            "recent_transfers": backend.TransferLogic.getLastTransfers(request.user.id),
+            "users": backend.TransferLogic.getFrequentTransferTargets(user_id),
+            "recent_transfers": backend.TransferLogic.getLastTransfers(user_id),
             "ident_types": models.UserIdentifier,
             "config": config,
         })
 
     if request.method == "POST":
-        user_id = request.user.id
         receiver_id = request.POST.get("receiver_ident")
         receiver_ident_type = int(request.POST.get("ident_type"))
         try:
