@@ -37,6 +37,7 @@ All configurable parameters are stored in `store/store_config.py`.
 
 * Fabian Krueger
 * Lukas Schneider
+* Simon Ruderich (ruderich@cs.fau.de)
 
 
 ## License
@@ -44,6 +45,7 @@ All configurable parameters are stored in `store/store_config.py`.
 This license covers the project and the logo.<br>
 Copyright (C) 2019  Fabian Krueger<br>
 Copyright (C) 2019  Lukas Schneider<br>
+Copyright (C) 2019  Simon Ruderich<br>
 
 Kaffeekasse 2000XT is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
