@@ -43,7 +43,7 @@ All configurable parameters are stored in `store/store_config.py`.
 
 ## Authors
 
-* Fabian Krueger
+* Fabian Krüger
 * Lukas Schneider
 * Simon Ruderich (ruderich@cs.fau.de)
 
@@ -51,7 +51,7 @@ All configurable parameters are stored in `store/store_config.py`.
 ## License
 
 This license covers the project and the logo.<br>
-Copyright (C) 2019  Fabian Krueger<br>
+Copyright (C) 2019  Fabian Krüger<br>
 Copyright (C) 2019  Lukas Schneider<br>
 Copyright (C) 2019  Simon Ruderich<br>
 
