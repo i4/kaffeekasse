@@ -257,7 +257,7 @@ class PurchaseLogic:
             raise exceptions.PurchaseNotAnnullable()
 
         with transaction.atomic():
-            user = models.User.objects.get(id=purchase.user.id)
+            user = purchase.user
             user.money += purchase.price
             user.save()
             purchase.annulled = True
