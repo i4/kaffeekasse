@@ -29,6 +29,9 @@ class UserData(models.Model):
             validators=[validators.MinValueValidator(0)])
     pk_login_enabled = models.BooleanField(_("Login aus Auswahlliste"), default=True)
 
+    def __str__(self):
+        return self.auth.username
+
 
 class UserIdentifier(models.Model):
     # Random numbers for easy grepping
