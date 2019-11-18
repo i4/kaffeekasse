@@ -453,8 +453,8 @@ class TransferLogic:
         if time_limit > transfer.time_stamp:
             raise exceptions.TransferNotAnnullable()
 
-        receiver = models.User.objects.get(id=transfer.receiver_id)
-        sender = models.User.objects.get(id=transfer.sender_id)
+        receiver = transfer.receiver
+        sender = transfer.sender
 
         with transaction.atomic():
             transfer.annulled = True
