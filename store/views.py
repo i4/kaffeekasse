@@ -34,7 +34,7 @@ def buy(request):
     POST: Puchase a product and return the product id and the purchase id as JsonResponse
     """
 
-    user_id = request.user.id
+    user_id = request.user.userdata.id
 
     if request.method == 'GET':  # Return the rendered page
         return render(request, "buy.html", {
@@ -94,7 +94,7 @@ def charge(request):
     POST: Charge money.
     """
 
-    user_id = request.user.id
+    user_id = request.user.userdata.id
 
     if request.method == "GET":
         return render(request, "charge.html", {
@@ -141,7 +141,7 @@ def transfer(request):
     POST: Transfer money to another user.
     """
 
-    user_id = request.user.id
+    user_id = request.user.userdata.id
 
     if request.method == "GET":
         return render(request, "transfer.html", {

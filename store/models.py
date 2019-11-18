@@ -1,5 +1,5 @@
 import django.core.validators as validators
-from django.contrib.auth.models import AbstractUser
+import django.contrib.auth.models
 from django.contrib.sessions.models import Session
 from django.db import models
 from django.db.models.signals import pre_save
@@ -20,10 +20,11 @@ def validate_model(sender, instance, raw, **kwargs):
 pre_save.connect(validate_model)
 
 
-class User(AbstractUser):
-    username = models.CharField(max_length=128, unique=True)
-    password = models.CharField(max_length=128, null=True)
-    email = models.EmailField()
+class UserData(models.Model):
+    # "user" is confusing because it creates queries like "user__user__id" and
+    # so one, instead use "auth" because that's its main use
+    auth = models.OneToOneField(django.contrib.auth.models.User,
+            on_delete=models.CASCADE)
     money = models.DecimalField(max_digits=6, decimal_places=2, default=0.0,
             validators=[validators.MinValueValidator(0)])
     pk_login_enabled = models.BooleanField(_("Login aus Auswahlliste"), default=True)
@@ -45,7 +46,7 @@ class UserIdentifier(models.Model):
         (RFID, 'RFID'),
     ]
 
-    user = models.ForeignKey('user', on_delete=models.CASCADE)
+    user = models.ForeignKey(UserData, on_delete=models.CASCADE)
     ident_type = models.IntegerField(choices=choices)
     ident = models.TextField()
 
@@ -99,7 +100,7 @@ class ProductIdentifier(models.Model):
 
 
 class Charge(models.Model):
-    user = models.ForeignKey('user', on_delete=models.CASCADE)
+    user = models.ForeignKey(UserData, on_delete=models.CASCADE)
     time_stamp = models.DateTimeField(auto_now=True)
     amount = models.DecimalField(max_digits=6, decimal_places=2,
             validators=[validators.MinValueValidator(0)])
@@ -107,7 +108,7 @@ class Charge(models.Model):
 
 
 class Purchase(models.Model):
-    user = models.ForeignKey('user', on_delete=models.CASCADE)
+    user = models.ForeignKey(UserData, on_delete=models.CASCADE)
     product = models.ForeignKey('product', on_delete=models.SET_NULL,
             null=True)
     time_stamp = models.DateTimeField(auto_now=True)
@@ -117,9 +118,9 @@ class Purchase(models.Model):
 
 
 class Transfer(models.Model):
-    sender = models.ForeignKey('user', on_delete=models.SET_NULL, null=True,
+    sender = models.ForeignKey(UserData, on_delete=models.SET_NULL, null=True,
             related_name='sender')
-    receiver  = models.ForeignKey('user', on_delete=models.SET_NULL,
+    receiver  = models.ForeignKey(UserData, on_delete=models.SET_NULL,
             null=True, related_name='receiver')
     time_stamp = models.DateTimeField(auto_now=True)
     amount = models.DecimalField(max_digits=6, decimal_places=2,
@@ -129,4 +130,4 @@ class Transfer(models.Model):
 
 class Login(models.Model):
     time_stamp = models.DateTimeField(auto_now=True)
-    user = models.ForeignKey('user', on_delete=models.CASCADE)
+    user = models.ForeignKey(UserData, on_delete=models.CASCADE)

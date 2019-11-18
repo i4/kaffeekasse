@@ -4,7 +4,7 @@ from decimal import Decimal
 
 import django.contrib.auth
 from django.db import transaction
-from django.db.models import Count
+from django.db.models import F, Count
 from django.http import HttpRequest
 
 import pytz
@@ -18,13 +18,13 @@ from store.store_config import KAFFEEKASSE as config
 class UserLogic:
     @staticmethod
     @typechecked
-    def getUser(ident: str, ident_type: int) -> models.User:
+    def getUser(ident: str, ident_type: int) -> models.UserData:
         """
         Return user as given by identifier and its type.
         """
 
         if ident_type == models.UserIdentifier.PRIMARYKEY:
-            return models.User.objects.get(id=ident)
+            return models.UserData.objects.get(id=ident)
 
         x = models.UserIdentifier.objects.filter(ident=ident, ident_type=ident_type) \
                 .select_related('user') \
@@ -49,7 +49,7 @@ class UserLogic:
         with transaction.atomic():
             x = models.Login(user=user)
             x.save()
-            django.contrib.auth.login(request, user)
+            django.contrib.auth.login(request, user.auth)
 
     @staticmethod
     @typechecked
@@ -67,7 +67,7 @@ class UserLogic:
         recent_logins = models.Login.objects.filter(time_stamp__gte=time_stamp) \
                 .select_related('user') \
                 .filter(user__pk_login_enabled=True) \
-                .values('user__username', 'user__id') \
+                .values(user__username=F('user__auth__username'), user__id=F('user__id')) \
                 .annotate(total=Count('user__id')) \
                 .order_by('-total')
         if max_users > 0:
@@ -76,15 +76,15 @@ class UserLogic:
         old_logins = models.Login.objects.all() \
                 .select_related('user') \
                 .filter(user__pk_login_enabled=True) \
-                .values('user__username', 'user__id') \
-                .exclude(user__id__in=[d['user__id'] for d in list(recent_logins)]) \
+                .values(user__username=F('user__auth__username'), user__id=F('user__id')) \
+                .exclude(user_id__in=[d['user__id'] for d in list(recent_logins)]) \
                 .annotate(total=Count('user__id')) \
                 .order_by('-total')
 
-        no_logins = models.User.objects.filter(pk_login_enabled=True) \
+        no_logins = models.UserData.objects.filter(pk_login_enabled=True) \
                 .exclude(id__in=[d['user__id'] for d in list(recent_logins) + list(old_logins)]) \
-                .order_by('username') \
-                .values('username', 'id') \
+                .order_by('auth__username') \
+                .values('id', username=F('auth__username')) \
                 .annotate(total=Count('id'))
 
         for login in no_logins:
@@ -224,7 +224,7 @@ class PurchaseLogic:
             product.stock -= 1
             product.save()
 
-            user = models.User.objects.get(id=user_id)
+            user = models.UserData.objects.get(id=user_id)
             user.money -= product.price
             if user.money < 0:
                 raise exceptions.UserNotEnoughMoney()
@@ -305,7 +305,7 @@ class ChargeLogic:
         assert amount > 0
 
         with transaction.atomic():
-            user = models.User.objects.get(id=user_id)
+            user = models.UserData.objects.get(id=user_id)
             user.money += amount
             user.save()
             charge = models.Charge(amount=amount, user=user)
@@ -360,12 +360,12 @@ class TransferLogic:
         if max_receivers >= 0:
             recent_transfers = recent_transfers[:max_receivers]
 
-        other_transfers = models.User.objects.exclude(id__in=[d.receiver.id for d in list(recent_transfers)]) \
+        other_transfers = models.UserData.objects.exclude(id__in=[d.receiver.id for d in list(recent_transfers)]) \
                 .exclude(id=user_id) \
-                .values('id', 'username') \
+                .values('id', username=F('auth__username')) \
                 .order_by('username')
 
-        recent_transfers = recent_transfers.values('receiver', 'receiver__username') \
+        recent_transfers = recent_transfers.values('receiver', receiver__username=F('receiver__auth__username')) \
                 .annotate(total=Count('receiver')) \
                 .order_by('receiver__username').order_by('-total')
 
@@ -389,7 +389,7 @@ class TransferLogic:
         transfers = models.Transfer.objects.filter(sender=user_id) \
                 .select_related('receiver') \
                 .order_by('-time_stamp')[:max_transfers] \
-                .values('id', 'annulled', 'amount', 'receiver__username', 'time_stamp')
+                .values('id', 'annulled', 'amount', 'receiver__auth__username', 'time_stamp')
 
         # warning: summertime/wintertime currently is not respected in the following calculations. This should be
         # implemented to avoid non-annullable transactions in the lost hour between summer- and wintertime
@@ -402,7 +402,7 @@ class TransferLogic:
                 transfer.update({'annullable': False})
             else:
                 transfer.update({'annullable': True})
-            transfer['receiver_username'] = transfer.pop('receiver__username')
+            transfer['receiver_username'] = transfer.pop('receiver__auth__username')
 
         return list(transfers)
 
@@ -416,7 +416,7 @@ class TransferLogic:
 
         assert amount > 0
 
-        sender = models.User.objects.get(id=user_id)
+        sender = models.UserData.objects.get(id=user_id)
         receiver = UserLogic.getUser(ident=receiver_ident, ident_type=receiver_ident_type)
         if sender.id == receiver.id:
             raise exceptions.SenderEqualsReceiverError()

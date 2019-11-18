@@ -44,7 +44,7 @@
     {% comment %} Money {% endcomment %}
     {% if user.is_authenticated %}
     <script>
-        var money = {{ user.money }};
+        var money = {{ user.userdata.money }};
 
         // Initial call
         updateMoney();

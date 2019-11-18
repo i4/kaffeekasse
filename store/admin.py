@@ -1,12 +1,20 @@
+import django.contrib.auth.admin
+import django.contrib.auth.models
 from django.contrib import admin
 
 import store.models as models
 
 
-@admin.register(models.User)
-class UserAdmin(admin.ModelAdmin):
-    list_display = ('username', 'first_name', 'last_name', 'email', 'money',
-            'pk_login_enabled', 'is_active', 'is_staff', 'is_superuser')
+class UserDataInline(admin.StackedInline):
+    model = models.UserData
+    can_delete = False
+    verbose_name_plural = 'Data'
+
+class UserAdmin(django.contrib.auth.admin.UserAdmin):
+    inlines = (UserDataInline,)
+
+admin.site.unregister(django.contrib.auth.models.User)
+admin.site.register(django.contrib.auth.models.User, UserAdmin)
 
 
 @admin.register(models.UserIdentifier)
