@@ -1,20 +1,25 @@
 # Kaffeekasse 2000<sup>XT</sup>
 
-A system for purchasing products and transferring money based on trust.
+A system for purchasing products and transferring money via a publicly
+available terminal. The users are trusted to register all purchases with the
+terminal.
 
-## Built with
-
-* [Django](https://www.djangoproject.com/) - The web framework used
-* [Bootstrap](https://rometools.github.io/rome/) - The CSS framework used
 
 ## Requirements
-Additionally to django you need to install the psycopg2 python package:
+
+* [Django](https://www.djangoproject.com/)
+* [PostgreSQL](https://www.postgresql.org/)
+* psycopg (PostgrSQL bindings)
+
+* [Bootstrap](https://getbootstrap.com/) for the interface (included)
+
+On a Debian-like system you can install the required packages with
 ```
-pip install psycopg2
+apt install python3-django python3-psycopg2
 ```
 
 
-## Installation
+## Setup
 
 ```
 ./manage.py makemigratations
@@ -23,34 +28,24 @@ pip install psycopg2
 ```
 
 
-## Docs
-The project consists of 3 parts. The client, the server and the database.
-The client is a simple website.
-The server is a web server build with Django for python3.
-The server only supports PostgreSQL as database.
-For reasons of data integrity, the isolation level serializable is selected.
-
-The models with some simple helper methods can be found in the file store/models.py.
-The logic for the backend can be found in store/backend.py.
-The http request handlers are located in store/views.py. All exceptions that are passed to the client as error messages are caught here.
-
 ### Config
-All configurable parameters are stored in store/store_config.py. See this file for more information.
 
+All configurable parameters are stored in `store/store_config.py`.
 
 
 ## Authors
 
-* **Fabian Krueger**
-* **Lukas Schneider**
+* Fabian Krueger
+* Lukas Schneider
+
 
 ## License
 
 This license covers the project and the logo.<br>
-Copyright (C) \<2019\>  \<Fabian Krueger\><br>
-Copyright (C) \<2019\>  \<Lukas Schneider\><br>
+Copyright (C) 2019  Fabian Krueger<br>
+Copyright (C) 2019  Lukas Schneider<br>
 
-Kaffeekasse 2000<sup>XT</sup> is free software: you can redistribute it and/or modify
+Kaffeekasse 2000XT is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
