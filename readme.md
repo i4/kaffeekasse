@@ -9,7 +9,7 @@ terminal.
 
 * [Django](https://www.djangoproject.com/)
 * [PostgreSQL](https://www.postgresql.org/)
-* psycopg (PostgrSQL bindings)
+* psycopg (PostgreSQL bindings)
 
 * [Bootstrap](https://getbootstrap.com/) for the interface (included)
 
