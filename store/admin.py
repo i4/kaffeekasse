@@ -27,6 +27,12 @@ class ReadOnlyModelAdmin(AppendOnlyModelAdmin):
         return False
 
 
+@admin.register(models.UserData)
+class UserDataAdmin(admin.ModelAdmin):
+    # For autocomplete_fields
+    ordering = ('auth__username',)
+    search_fields = ('auth__username',)
+
 class UserDataInline(admin.StackedInline):
     model = models.UserData
     can_delete = False
@@ -73,6 +79,8 @@ class ChargeAdmin(AppendOnlyModelAdmin):
     # "annulled" to prevent enabling it when adding new objects
     readonly_fields = ('time_stamp', 'annulled')
 
+    autocomplete_fields = ('user',)
+
     def save_model(self, request, obj, form, change):
         assert not change
         assert not obj.annulled
@@ -94,6 +102,8 @@ class TransferAdmin(AppendOnlyModelAdmin):
     list_display = ('time_stamp', 'sender', 'receiver', 'amount', 'annulled')
     # "annulled" to prevent enabling it when adding new objects
     readonly_fields = ('time_stamp', 'annulled')
+
+    autocomplete_fields = ('sender', 'receiver')
 
     def save_model(self, request, obj, form, change):
         assert not change
