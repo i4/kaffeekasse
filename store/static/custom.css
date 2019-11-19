@@ -16,26 +16,20 @@
 .scroll-lg {
     max-height: 650px;
     margin-bottom: 10px;
-    overflow: scroll;
+    overflow: auto;
     -webkit-overflow-scrolling: touch;
-    overflow-y: auto;
-    overflow-x: hidden;
 }
 .scroll-custom {
     max-height: 630px;
     margin-bottom: 10px;
-    overflow: scroll;
+    overflow: auto;
     -webkit-overflow-scrolling: touch;
-    overflow-y: auto;
-    overflow-x: hidden;
 }
 .scroll-sm {
     max-height: 283px;
     margin-bottom: 10px;
-    overflow: scroll;
+    overflow: auto;
     -webkit-overflow-scrolling: touch;
-    overflow-y: auto;
-    overflow-x: hidden;
 }
 .font-xl {
     font-size: x-large;
