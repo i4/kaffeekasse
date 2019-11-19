@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 from datetime import date, timedelta, datetime
 from typing import List, Dict, Tuple
 from decimal import Decimal

@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
+
 /*
  * Simple workaround to auto-fill the password with a random string. Most of
  * our users don't require a password, only admins do.

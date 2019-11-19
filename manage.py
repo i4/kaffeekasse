@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 """Django's command-line utility for administrative tasks."""
 import os
 import sys

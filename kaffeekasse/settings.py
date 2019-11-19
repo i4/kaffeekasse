@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 import os, getpass, psycopg2.extensions
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)

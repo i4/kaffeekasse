@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 import django.contrib.auth.admin
 import django.contrib.auth.models
 from django.contrib import admin

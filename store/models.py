@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 import django.core.validators as validators
 import django.contrib.auth.models
 import django.dispatch

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 from django.contrib import admin
 from django.urls import include, path
 

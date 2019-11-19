@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 """
 N_LAST_BOUGHT_PRODUCTS: number of products to be shown in 'Letzte Einkäufe'
 T_LAST_BOUGHT_PRODUCTS_D: number of days in the past that are used as time intervall limit to search for 'Letzte Einkäufe'

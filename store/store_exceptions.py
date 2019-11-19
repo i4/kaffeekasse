@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 class ClientMessageException(Exception):
     """An exception which informs the client about an error."""
 
