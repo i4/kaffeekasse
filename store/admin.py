@@ -32,6 +32,7 @@ class UserDataAdmin(admin.ModelAdmin):
     list_display = ('username', 'money', 'pk_login_enabled')
     def username(self, obj):
         return obj.auth.username
+    username.admin_order_field = 'auth__username'
 
     # For autocomplete_fields
     ordering = ('auth__username',)
@@ -46,6 +47,7 @@ class UserAdmin(django.contrib.auth.admin.UserAdmin):
     list_display = ('username', 'money', 'first_name', 'last_name', 'email', 'is_staff')
     def money(self, obj):
         return obj.userdata.money
+    money.admin_order_field = 'userdata__money'
 
     inlines = (UserDataInline,)
 
