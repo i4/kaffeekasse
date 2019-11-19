@@ -70,7 +70,17 @@ class ProductIdentifierAdmin(admin.ModelAdmin):
 @admin.register(models.Charge)
 class ChargeAdmin(AppendOnlyModelAdmin):
     list_display = ('time_stamp', 'user', 'amount', 'annulled')
-    readonly_fields = ('time_stamp',)
+    # "annulled" to prevent enabling it when adding new objects
+    readonly_fields = ('time_stamp', 'annulled')
+
+    def save_model(self, request, obj, form, change):
+        assert not change
+        assert not obj.annulled
+        # TODO: this is hacky and duplicates code from backend.py
+        # Update user's money value
+        obj.user.money += obj.amount
+        obj.user.save()
+        super().save_model(request, obj, form, change)
 
 
 @admin.register(models.Purchase)
@@ -82,7 +92,19 @@ class PurchaseAdmin(ReadOnlyModelAdmin):
 @admin.register(models.Transfer)
 class TransferAdmin(AppendOnlyModelAdmin):
     list_display = ('time_stamp', 'sender', 'receiver', 'amount', 'annulled')
-    readonly_fields = ('time_stamp',)
+    # "annulled" to prevent enabling it when adding new objects
+    readonly_fields = ('time_stamp', 'annulled')
+
+    def save_model(self, request, obj, form, change):
+        assert not change
+        assert not obj.annulled
+        # TODO: this is hacky and duplicates code from backend.py
+        # Update users' money value
+        obj.sender.money -= obj.amount
+        obj.sender.save()
+        obj.receiver.money += obj.amount
+        obj.receiver.save()
+        super().save_model(request, obj, form, change)
 
 
 @admin.register(models.Login)
