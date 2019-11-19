@@ -29,6 +29,10 @@ class ReadOnlyModelAdmin(AppendOnlyModelAdmin):
 
 @admin.register(models.UserData)
 class UserDataAdmin(admin.ModelAdmin):
+    list_display = ('username', 'money', 'pk_login_enabled')
+    def username(self, obj):
+        return obj.auth.username
+
     # For autocomplete_fields
     ordering = ('auth__username',)
     search_fields = ('auth__username',)
