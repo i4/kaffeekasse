@@ -5,6 +5,18 @@ from django.contrib import admin
 import store.models as models
 
 
+class AppendOnlyModelAdmin(admin.ModelAdmin):
+    """
+    Disallow changing or deleting the model. Adding new instances is
+    permitted.
+    """
+
+    def has_change_permission(self, request, obj=None):
+        return False
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
 class UserDataInline(admin.StackedInline):
     model = models.UserData
     can_delete = False
@@ -46,24 +58,24 @@ class ProductIdentifierAdmin(admin.ModelAdmin):
 
 
 @admin.register(models.Charge)
-class ChargeAdmin(admin.ModelAdmin):
+class ChargeAdmin(AppendOnlyModelAdmin):
     list_display = ('time_stamp', 'user', 'amount', 'annulled')
     readonly_fields = ('time_stamp',)
 
 
 @admin.register(models.Purchase)
-class PurchaseAdmin(admin.ModelAdmin):
+class PurchaseAdmin(AppendOnlyModelAdmin):
     list_display = ('time_stamp', 'user', 'product', 'price', 'annulled')
     readonly_fields = ('time_stamp',)
 
 
 @admin.register(models.Transfer)
-class TransferAdmin(admin.ModelAdmin):
+class TransferAdmin(AppendOnlyModelAdmin):
     list_display = ('time_stamp', 'sender', 'receiver', 'amount', 'annulled')
     readonly_fields = ('time_stamp',)
 
 
 @admin.register(models.Login)
-class LoginAdmin(admin.ModelAdmin):
+class LoginAdmin(AppendOnlyModelAdmin):
     list_display = ('user', 'time_stamp')
     readonly_fields = ('time_stamp',)
