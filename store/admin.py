@@ -18,6 +18,14 @@ class AppendOnlyModelAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return False
 
+class ReadOnlyModelAdmin(AppendOnlyModelAdmin):
+    """
+    Disallow changing, deleting or adding objects of this model.
+    """
+
+    def has_add_permission(self, request):
+        return False
+
 
 class UserDataInline(admin.StackedInline):
     model = models.UserData
@@ -66,7 +74,7 @@ class ChargeAdmin(AppendOnlyModelAdmin):
 
 
 @admin.register(models.Purchase)
-class PurchaseAdmin(AppendOnlyModelAdmin):
+class PurchaseAdmin(ReadOnlyModelAdmin):
     list_display = ('time_stamp', 'user', 'product', 'price', 'annulled')
     readonly_fields = ('time_stamp',)
 
@@ -78,6 +86,6 @@ class TransferAdmin(AppendOnlyModelAdmin):
 
 
 @admin.register(models.Login)
-class LoginAdmin(AppendOnlyModelAdmin):
+class LoginAdmin(ReadOnlyModelAdmin):
     list_display = ('user', 'time_stamp')
     readonly_fields = ('time_stamp',)
