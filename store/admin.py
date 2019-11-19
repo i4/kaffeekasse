@@ -47,22 +47,19 @@ class ProductIdentifierAdmin(admin.ModelAdmin):
 
 @admin.register(models.Charge)
 class ChargeAdmin(admin.ModelAdmin):
-    list_display = ('time_stamp', 'user', 'amount',
-            'annulled')
+    list_display = ('time_stamp', 'user', 'amount', 'annulled')
     readonly_fields = ('time_stamp',)
 
 
 @admin.register(models.Purchase)
 class PurchaseAdmin(admin.ModelAdmin):
-    list_display = ('time_stamp', 'user', 'product', 'price',
-            'annulled')
+    list_display = ('time_stamp', 'user', 'product', 'price', 'annulled')
     readonly_fields = ('time_stamp',)
 
 
 @admin.register(models.Transfer)
 class TransferAdmin(admin.ModelAdmin):
-    list_display = ('time_stamp', 'sender', 'receiver', 'amount',
-            'annulled')
+    list_display = ('time_stamp', 'sender', 'receiver', 'amount', 'annulled')
     readonly_fields = ('time_stamp',)
 
 
