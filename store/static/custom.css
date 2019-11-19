@@ -13,6 +13,7 @@
 .navbar-i4 {
     background-color: #003865 !important;
 }
+
 .scroll-lg {
     max-height: 650px;
     margin-bottom: 10px;
@@ -31,6 +32,7 @@
     overflow: auto;
     -webkit-overflow-scrolling: touch;
 }
+
 .font-xl {
     font-size: x-large;
 }
