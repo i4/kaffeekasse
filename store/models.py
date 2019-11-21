@@ -33,7 +33,8 @@ class UserData(models.Model):
     pk_login_enabled = models.BooleanField(_("Login aus Auswahlliste"), default=True)
 
     def __str__(self):
-        return self.auth.username
+        return '{} ({} {})'.format(self.auth.username,
+                self.auth.first_name, self.auth.last_name)
 
 # Automatically create a corresponding UserData object when creating a new
 # User; inspired by the following post
