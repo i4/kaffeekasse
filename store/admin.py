@@ -36,7 +36,7 @@ class UserDataAdmin(admin.ModelAdmin):
 
     # For autocomplete_fields
     ordering = ('auth__username',)
-    search_fields = ('auth__username',)
+    search_fields = ('auth__username', 'auth__first_name', 'auth__last_name')
 
 class UserDataInline(admin.StackedInline):
     model = models.UserData
