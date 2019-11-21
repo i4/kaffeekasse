@@ -62,6 +62,8 @@ admin.site.register(django.contrib.auth.models.User, UserAdmin)
 class UserIdentifierAdmin(admin.ModelAdmin):
     list_display = ('user', 'ident_type', 'ident')
 
+    autocomplete_fields = ('user',)
+
 
 @admin.register(models.Product)
 class ProductAdmin(admin.ModelAdmin):
