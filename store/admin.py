@@ -34,6 +34,12 @@ class UserDataAdmin(admin.ModelAdmin):
         return obj.auth.username
     username.admin_order_field = 'auth__username'
 
+    # UserData without a User is useless, prevent it
+    def has_add_permission(self, request):
+        return False
+    def has_delete_permission(self, request, obj=None):
+        return False
+
     readonly_fields = ('auth',)
 
     # For autocomplete_fields
