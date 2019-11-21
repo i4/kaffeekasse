@@ -34,6 +34,8 @@ class UserDataAdmin(admin.ModelAdmin):
         return obj.auth.username
     username.admin_order_field = 'auth__username'
 
+    readonly_fields = ('auth',)
+
     # For autocomplete_fields
     ordering = ('auth__username',)
     search_fields = ('auth__username', 'auth__first_name', 'auth__last_name')
