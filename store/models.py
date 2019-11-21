@@ -30,7 +30,7 @@ class UserData(models.Model):
             on_delete=models.CASCADE)
     money = models.DecimalField(max_digits=6, decimal_places=2, default=0.0,
             validators=[validators.MinValueValidator(0)])
-    pk_login_enabled = models.BooleanField(_("Login aus Auswahlliste"), default=True)
+    shown_on_login_screen = models.BooleanField(default=True)
 
     def __str__(self):
         return '{} ({} {})'.format(self.auth.username,

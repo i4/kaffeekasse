@@ -29,7 +29,7 @@ class ReadOnlyModelAdmin(AppendOnlyModelAdmin):
 
 @admin.register(models.UserData)
 class UserDataAdmin(admin.ModelAdmin):
-    list_display = ('username', 'money', 'pk_login_enabled')
+    list_display = ('username', 'money', 'shown_on_login_screen')
     def username(self, obj):
         return obj.auth.username
     username.admin_order_field = 'auth__username'

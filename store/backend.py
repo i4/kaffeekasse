@@ -45,7 +45,7 @@ class UserLogic:
 
         user = UserLogic.getUser(ident, ident_type)
 
-        if ident_type == models.UserIdentifier.PRIMARYKEY and not user.pk_login_enabled:
+        if ident_type == models.UserIdentifier.PRIMARYKEY and not user.shown_on_login_screen:
             raise exceptions.DisabledIdentifier()
 
         with transaction.atomic():
@@ -68,7 +68,7 @@ class UserLogic:
 
         recent_logins = models.Login.objects.filter(time_stamp__gte=time_stamp) \
                 .select_related('user') \
-                .filter(user__pk_login_enabled=True) \
+                .filter(user__shown_on_login_screen=True) \
                 .values(user__username=F('user__auth__username'), user__id=F('user__id')) \
                 .annotate(total=Count('user__id')) \
                 .order_by('-total')
@@ -77,13 +77,13 @@ class UserLogic:
 
         old_logins = models.Login.objects.all() \
                 .select_related('user') \
-                .filter(user__pk_login_enabled=True) \
+                .filter(user__shown_on_login_screen=True) \
                 .values(user__username=F('user__auth__username'), user__id=F('user__id')) \
                 .exclude(user_id__in=[d['user__id'] for d in list(recent_logins)]) \
                 .annotate(total=Count('user__id')) \
                 .order_by('-total')
 
-        no_logins = models.UserData.objects.filter(pk_login_enabled=True) \
+        no_logins = models.UserData.objects.filter(shown_on_login_screen=True) \
                 .exclude(id__in=[d['user__id'] for d in list(recent_logins) + list(old_logins)]) \
                 .order_by('auth__username') \
                 .values('id', username=F('auth__username')) \
