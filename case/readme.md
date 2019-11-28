@@ -45,12 +45,13 @@ Since the display does not support a software solution to disable the backround 
 	boot_delay=0
 	dtoverlay=pi3-disable-bt
 	```
-* Install the [Chromium Browser](https://www.chromium.org/) and [LightDM](https://github.com/canonical/lightdm)
+* Install the [Chromium Browser](https://www.chromium.org/), [LightDM](https://github.com/canonical/lightdm) and [libinput](https://www.freedesktop.org/wiki/Software/libinput/) with
 	```
-	sudo apt install chromium-browser lightdm
+	sudo apt install chromium-browser lightdm xserver-xorg-input-libinput
 	```
 * Enable autostart of the browser in kiosk mode by copying the provided file [Xsession](Xsession) to `/home/pi/.Xsession` (mind the dot). Adjust the URL and monitor timeouts (30s) to your needs.
-* To rotate touch input, copy the file [40-libinput.conf](40-libinput.conf) (originated from `/usr/share/X11/xorg.conf.d/40-libinput.conf`) to `/etc/X11/xorg.conf.d/40-libinput.conf`
+* Start `raspi-config`, change in *3 Boot Options* / *B1 Desktop / CLI* to *B4 Desktop Autologin* and perform updates (*8 Updates*)
+* To rotate touch input, copy the file [40-libinput.conf](40-libinput.conf) (originated from `/usr/share/X11/xorg.conf.d/40-libinput.conf`) to `/etc/X11/xorg.conf.d/40-libinput.conf` (create the `xorg.conf.d` directory first)
 * Setup booting directly into X via `sudo raspi-config` and establish your network connection
 * Copy the provided files [backlight.sh](backlight.sh) to `/opt/backlight.sh` and [backlight.service](backlight.serivce) to `/etc/systemd/system/backlight.serivce`, reload *systemd* and enable the service to support LED backlight disabling during power saving
 	```
