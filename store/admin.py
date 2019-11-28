@@ -175,3 +175,7 @@ class TransferAdmin(AppendOnlyModelAdmin):
 class LoginAdmin(ReadOnlyModelAdmin):
     list_display = ('user', 'time_stamp')
     readonly_fields = ('time_stamp',)
+
+
+# We don't use groups, hide it
+admin.site.unregister(django.contrib.auth.models.Group)
