@@ -4,6 +4,7 @@ import django.contrib.auth.admin
 import django.contrib.auth.models
 import django.urls
 from django.contrib import admin
+from django.utils.translation import gettext_lazy as _
 
 import store.models as models
 
@@ -86,6 +87,13 @@ class UserAdmin(django.contrib.auth.admin.UserAdmin):
     def money(self, obj):
         return obj.userdata.money
     money.admin_order_field = 'userdata__money'
+
+    # Hide unimportant fields; copied from django.contrib.auth.admin.UserAdmin
+    # and modified
+    fieldsets = (
+        (None, {'fields': ('username', 'password', 'last_login', 'is_staff')}),
+        (_('Personal info'), {'fields': ('first_name', 'last_name', 'email')}),
+    )
 
     inlines = (UserDataInline,)
 
