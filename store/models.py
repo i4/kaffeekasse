@@ -144,8 +144,3 @@ class Transfer(models.Model):
     amount = models.DecimalField(max_digits=6, decimal_places=2,
             validators=[validators.MinValueValidator(0)])
     annulled = models.BooleanField(default=False)
-
-
-class Login(models.Model):
-    time_stamp = models.DateTimeField(auto_now=True)
-    user = models.ForeignKey(UserData, on_delete=models.CASCADE)

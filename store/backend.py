@@ -50,8 +50,6 @@ class UserLogic:
             raise exceptions.DisabledIdentifier()
 
         with transaction.atomic():
-            x = models.Login(user=user)
-            x.save()
             django.contrib.auth.login(request, user.auth)
 
     @staticmethod
