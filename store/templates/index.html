@@ -62,7 +62,7 @@
                 <input type="hidden" id="pk_field" name="ident"/>
                 <input type="hidden" name="ident_type" value="{{ ident_types.PRIMARYKEY }}">
                 {% for user in users %}
-                    <button onclick="loginPK({{ user.user__id }})" type="button" class="list-group-item list-group-item-action">{{ user.user__username }}</button>
+                    <button onclick="loginPK({{ user.userdata__id }})" type="button" class="list-group-item list-group-item-action">{{ user.username }}</button>
                 {% endfor %}
             </form>
         </ul>

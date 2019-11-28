@@ -64,7 +64,7 @@ class UserLogic:
         User = django.contrib.auth.models.User
 
         x = User.objects.filter(userdata__shown_on_login_screen=True) \
-                .values(user__username=F('username'), user__id=F('userdata__id')) \
+                .values('username', 'userdata__id') \
                 .order_by(F('last_login').desc(nulls_last=True))
         return list(x)
 
