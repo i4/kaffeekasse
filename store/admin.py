@@ -95,6 +95,8 @@ class UserAdmin(django.contrib.auth.admin.UserAdmin):
         (_('Personal info'), {'fields': ('first_name', 'last_name', 'email')}),
     )
 
+    readonly_fields = ('last_login',)
+
     inlines = (UserDataInline,)
 
     class Media:
