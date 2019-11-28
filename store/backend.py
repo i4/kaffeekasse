@@ -5,6 +5,7 @@ from typing import List, Dict, Tuple
 from decimal import Decimal
 
 import django.contrib.auth
+import django.contrib.auth.models
 from django.db import transaction
 from django.db.models import F, Count
 from django.http import HttpRequest
@@ -57,44 +58,15 @@ class UserLogic:
     @typechecked
     def getFrequentUsersList() -> List[dict]:
         """
-        Return list of users with frequent logins. First recent logins (count
-        capped via configuration), then, users with at least one login,
-        followed by the remaining users.
+        Return list of users sorted after last login.
         """
 
-        max_users = config['N_USERS_LOGIN']
-        max_days = config['T_USERS_LOGIN_D']
-        time_stamp = date.today() - timedelta(days=max_days)
+        User = django.contrib.auth.models.User
 
-        recent_logins = models.Login.objects.filter(time_stamp__gte=time_stamp) \
-                .select_related('user') \
-                .filter(user__shown_on_login_screen=True) \
-                .values(user__username=F('user__auth__username'), user__id=F('user__id')) \
-                .annotate(total=Count('user__id')) \
-                .order_by('-total')
-        if max_users > 0:
-            recent_logins = recent_logins[:max_users]
-
-        old_logins = models.Login.objects.all() \
-                .select_related('user') \
-                .filter(user__shown_on_login_screen=True) \
-                .values(user__username=F('user__auth__username'), user__id=F('user__id')) \
-                .exclude(user_id__in=[d['user__id'] for d in list(recent_logins)]) \
-                .annotate(total=Count('user__id')) \
-                .order_by('-total')
-
-        no_logins = models.UserData.objects.filter(shown_on_login_screen=True) \
-                .exclude(id__in=[d['user__id'] for d in list(recent_logins) + list(old_logins)]) \
-                .order_by('auth__username') \
-                .values('id', username=F('auth__username')) \
-                .annotate(total=Count('id'))
-
-        for login in no_logins:
-            login['user__id'] = login.pop('id')
-            login['user__username'] = login.pop('username')
-            login['total'] = 0
-
-        return list(recent_logins) + list(old_logins) + list(no_logins)
+        x = User.objects.filter(userdata__shown_on_login_screen=True) \
+                .values(user__username=F('username'), user__id=F('userdata__id')) \
+                .order_by(F('last_login').desc(nulls_last=True))
+        return list(x)
 
 
 class ProductLogic:
