@@ -2,9 +2,33 @@
 
 import django.contrib.auth.admin
 import django.contrib.auth.models
+import django.urls
 from django.contrib import admin
 
 import store.models as models
+
+
+def is_delete_for_different_object(admin, request):
+    """
+    Django manages (delete) permissions for the admin interface globally. We
+    want to disallow deleting an object (e.g. UserData) but permit deleting it
+    when part of a larger operation (e.g. when deleting a User).
+    """
+
+    if request.method != 'POST':
+        return False
+    if 'action' not in request.POST:
+        return False
+    if request.POST['action'] != 'delete_selected':
+        return False
+
+    # Permit the operation if the request tries to delete a different object
+    admin_url = django.urls.reverse('admin:{0}_{1}_changelist'.format(
+        admin.model._meta.app_label, admin.model._meta.model_name))
+    if request.path.startswith(admin_url):
+        return False
+
+    return True
 
 
 class AppendOnlyModelAdmin(admin.ModelAdmin):
@@ -16,6 +40,8 @@ class AppendOnlyModelAdmin(admin.ModelAdmin):
     def has_change_permission(self, request, obj=None):
         return False
     def has_delete_permission(self, request, obj=None):
+        if is_delete_for_different_object(self, request):
+            return True
         return False
 
 class ReadOnlyModelAdmin(AppendOnlyModelAdmin):
@@ -38,6 +64,8 @@ class UserDataAdmin(admin.ModelAdmin):
     def has_add_permission(self, request):
         return False
     def has_delete_permission(self, request, obj=None):
+        if is_delete_for_different_object(self, request):
+            return True
         return False
 
     readonly_fields = ('auth', 'money')
