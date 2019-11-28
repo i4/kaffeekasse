@@ -40,7 +40,7 @@ class UserDataAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return False
 
-    readonly_fields = ('auth',)
+    readonly_fields = ('auth', 'money')
 
     # For autocomplete_fields
     ordering = ('auth__username',)
@@ -50,6 +50,8 @@ class UserDataInline(admin.StackedInline):
     model = models.UserData
     can_delete = False
     verbose_name_plural = 'Data'
+
+    readonly_fields = ('money',)
 
 class UserAdmin(django.contrib.auth.admin.UserAdmin):
     list_display = ('username', 'money', 'first_name', 'last_name', 'email', 'is_staff')
