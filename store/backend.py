@@ -14,8 +14,8 @@ import pytz
 from typeguard import typechecked
 
 import store.models as models
+import store.store_config as config
 import store.store_exceptions as exceptions
-from store.store_config import KAFFEEKASSE as config
 
 
 class UserLogic:
@@ -96,8 +96,8 @@ class ProductLogic:
         as configured).
         """
 
-        max_products = config['N_MOST_BOUGHT_PRODUCTS']
-        max_days = config['T_MOST_BOUGHT_PRODUCTS_D']
+        max_products = config.N_MOST_BOUGHT_PRODUCTS
+        max_days = config.T_MOST_BOUGHT_PRODUCTS_D
 
         time_stamp = date.today() - timedelta(days=max_days)
         products = models.Purchase.objects \
@@ -115,8 +115,8 @@ class ProductLogic:
         Return list of products last bought by this user.
         """
 
-        max_products = config['N_LAST_BOUGHT_PRODUCTS']
-        annullable_time = config['T_ANNULLABLE_PURCHASE_M']
+        max_products = config.N_LAST_BOUGHT_PRODUCTS
+        annullable_time = config.T_ANNULLABLE_PURCHASE_M
 
         products = models.Purchase.objects \
                 .filter(user=user_id, product__isnull=False) \
@@ -214,7 +214,7 @@ class PurchaseLogic:
         Annul the given purchase if possible (maximum time is configured).
         """
 
-        annullable_time = config['T_ANNULLABLE_PURCHASE_M']
+        annullable_time = config.T_ANNULLABLE_PURCHASE_M
 
         # warning: summertime/wintertime currently is not respected in the following calculations. This should be
         # implemented to avoid non-annullable transactions in the lost hour between summer- and wintertime
@@ -245,8 +245,8 @@ class ChargeLogic:
         configuration).
         """
 
-        max_charges = config['N_LAST_CHARGES']
-        annullable_time = config['T_ANNULLABLE_CHARGE_M']
+        max_charges = config.N_LAST_CHARGES
+        annullable_time = config.T_ANNULLABLE_CHARGE_M
         charges = models.Charge.objects.filter(user=user_id) \
                 .values('id', 'amount', 'annulled', 'time_stamp') \
                 .order_by('-time_stamp')
@@ -291,7 +291,7 @@ class ChargeLogic:
         Annul the given charge if possible (maximum time is configured).
         """
 
-        annullable_time = config['T_ANNULLABLE_CHARGE_M']
+        annullable_time = config.T_ANNULLABLE_CHARGE_M
 
         # warning: summertime/wintertime currently is not respected in the following calculations. This should be
         # implemented to avoid non-annullable transactions in the lost hour between summer- and wintertime
@@ -324,7 +324,7 @@ class TransferLogic:
         by the remaining users.
         """
 
-        max_receivers = config['N_TRANSFERS_RECEIVERS']
+        max_receivers = config.N_TRANSFERS_RECEIVERS
         recent_transfers = models.Transfer.objects.filter(sender=user_id) \
                 .exclude(receiver=None) \
                 .select_related('receiver')
@@ -355,8 +355,8 @@ class TransferLogic:
         configuration).
         """
 
-        max_transfers = config['N_LAST_TRANSFERS']
-        annullable_time = config['T_ANNULLABLE_TRANSFERS_M']
+        max_transfers = config.N_LAST_TRANSFERS
+        annullable_time = config.T_ANNULLABLE_TRANSFERS_M
 
         transfers = models.Transfer.objects.filter(sender=user_id) \
                 .select_related('receiver') \
@@ -413,7 +413,7 @@ class TransferLogic:
         Annul the given transfer if possible (maximum time is configured).
         """
 
-        annullable_time = config['T_ANNULLABLE_TRANSFERS_M']
+        annullable_time = config.T_ANNULLABLE_TRANSFERS_M
 
         # warning: summertime/wintertime currently is not respected in the following calculations. This should be
         # implemented to avoid non-annullable transactions in the lost hour between summer- and wintertime
