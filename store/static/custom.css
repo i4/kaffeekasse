@@ -10,8 +10,12 @@
     border: 2px solid black;
     border-color: #003865;
 }
+
 .navbar-i4 {
     background-color: #003865 !important;
+}
+.navbar-i4-negative-money {
+    background-color: #e92626 !important;
 }
 
 .scroll-lg {

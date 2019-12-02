@@ -9,7 +9,7 @@
 </head>
 <body>
     {% comment %} Navbar {% endcomment %}
-    <nav class="navbar navbar-expand-md navbar-dark navbar-i4">
+    <nav id="navbar" class="navbar navbar-expand-md navbar-dark navbar-i4">
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -65,6 +65,11 @@
         // Update the displayed money information
         function updateMoney() {
             $("#money").html(parseFloat(money).toFixed(2) + " €");
+            if (money < 0) {
+                $("#navbar").addClass("navbar-i4-negative-money");
+            } else {
+                $("#navbar").removeClass("navbar-i4-negative-money");
+            }
         }
     </script>
     {% endif %}
