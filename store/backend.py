@@ -14,8 +14,8 @@ import pytz
 from typeguard import typechecked
 
 import store.config as config
+import store.exceptions as exceptions
 import store.models as models
-import store.store_exceptions as exceptions
 
 
 class UserLogic:

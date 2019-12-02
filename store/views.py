@@ -12,7 +12,7 @@ from django.views.decorators.http import require_http_methods
 import store.backend as backend
 import store.config as config
 import store.models as models
-from store.store_exceptions import ClientMessageException
+from store.exceptions import ClientMessageException
 
 
 @require_http_methods(["GET"])
