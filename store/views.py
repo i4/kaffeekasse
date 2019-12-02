@@ -10,8 +10,8 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_http_methods
 
 import store.backend as backend
+import store.config as config
 import store.models as models
-import store.store_config as config
 from store.store_exceptions import ClientMessageException
 
 

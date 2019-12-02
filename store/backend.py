@@ -13,8 +13,8 @@ from django.http import HttpRequest
 import pytz
 from typeguard import typechecked
 
+import store.config as config
 import store.models as models
-import store.store_config as config
 import store.store_exceptions as exceptions
 
 
