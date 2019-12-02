@@ -1,4 +1,4 @@
-# Kaffeekasse 2000<sup>XT</sup>
+# Kaffeekasse 2020<sup>NT</sup>
 
 A system for purchasing products and transferring money via a publicly
 available terminal. The users are trusted to register all purchases with the
@@ -55,7 +55,7 @@ Copyright (C) 2019  Fabian Krüger<br>
 Copyright (C) 2019  Lukas Schneider<br>
 Copyright (C) 2019  Simon Ruderich<br>
 
-Kaffeekasse 2000XT is free software: you can redistribute it and/or modify
+Kaffeekasse 2020NT is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
