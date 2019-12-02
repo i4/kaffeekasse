@@ -24,3 +24,7 @@ T_ANNULLABLE_TRANSFERS_M = 60
 N_TRANSFERS_RECEIVERS = -1
 # Number of transfers that should be shown in 'Letzte Überweisungen'
 N_LAST_TRANSFERS = 10
+
+# Users cannot purchase products or transfer money if their money gets below
+# this amount
+MONEY_MIN_LIMIT = 0

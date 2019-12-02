@@ -8,6 +8,8 @@ from django.db import models
 from django.db.models.signals import pre_save, post_save
 from django.utils.translation import gettext_lazy as _
 
+import store.config as config
+
 
 # Per default, Django does not execute validators when saving a model. Enforce
 # this to guarantee the code cannot break these assumptions.
@@ -29,7 +31,7 @@ class UserData(models.Model):
     auth = models.OneToOneField(django.contrib.auth.models.User,
             on_delete=models.CASCADE)
     money = models.DecimalField(max_digits=6, decimal_places=2, default=0.0,
-            validators=[validators.MinValueValidator(0)])
+            validators=[validators.MinValueValidator(config.MONEY_MIN_LIMIT)])
     shown_on_login_screen = models.BooleanField(default=True)
 
     def __str__(self):

@@ -198,7 +198,7 @@ class PurchaseLogic:
 
             user = models.UserData.objects.get(id=user_id)
             user.money -= product.price
-            if user.money < 0:
+            if user.money < config.MONEY_MIN_LIMIT:
                 raise exceptions.UserNotEnoughMoney()
             user.save()
 
@@ -307,7 +307,7 @@ class ChargeLogic:
         with transaction.atomic():
             user = charge.user
             user.money -= charge.amount
-            if user.money < 0:
+            if user.money < config.MONEY_MIN_LIMIT:
                 raise exceptions.UserNotEnoughMoney()
             user.save()
             charge.annulled = True
@@ -398,7 +398,7 @@ class TransferLogic:
             transfer.save()
 
             sender.money -= amount
-            if sender.money < 0:
+            if sender.money < config.MONEY_MIN_LIMIT:
                 raise exceptions.UserNotEnoughMoney()
             sender.save()
             receiver.money += amount
@@ -432,7 +432,7 @@ class TransferLogic:
             transfer.annulled = True
             transfer.save()
             receiver.money -= transfer.amount
-            if receiver.money < 0:
+            if receiver.money < config.MONEY_MIN_LIMIT:
                 raise exceptions.UserNotEnoughMoney()
             receiver.save()
             sender.money += transfer.amount
