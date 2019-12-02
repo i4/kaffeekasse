@@ -40,8 +40,7 @@ class UserLogic:
     @typechecked
     def login(request: HttpRequest, ident: str, ident_type: int) -> None:
         """
-        Login user via Django's session management and store login date in
-        database.
+        Login user via Django's session management.
         """
 
         user = UserLogic.getUser(ident, ident_type)
