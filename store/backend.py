@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from datetime import date, timedelta, datetime
+from datetime import timedelta
 from typing import List, Dict, Tuple
 from decimal import Decimal
 
@@ -9,8 +9,8 @@ import django.contrib.auth.models
 from django.db import transaction
 from django.db.models import F, Count
 from django.http import HttpRequest
+from django.utils import timezone
 
-import pytz
 from typeguard import typechecked
 
 import store.config as config
@@ -98,7 +98,7 @@ class ProductLogic:
         max_products = config.N_MOST_BOUGHT_PRODUCTS
         max_days = config.T_MOST_BOUGHT_PRODUCTS_D
 
-        time_stamp = date.today() - timedelta(days=max_days)
+        time_stamp = timezone.now() - timedelta(days=max_days)
         products = models.Purchase.objects \
                 .filter(time_stamp__gte=time_stamp, product__isnull=False) \
                 .select_related('product') \
@@ -123,12 +123,7 @@ class ProductLogic:
                 .order_by('-time_stamp')[:max_products] \
                 .values('product__name', 'product_id', 'product__price', 'time_stamp', 'id', 'annulled')
 
-        # warning: summertime/wintertime currently is not respected in the following calculations. This should be
-        # implemented to avoid non-annullable transactions in the lost hour between summer- and wintertime
-        time_limit = datetime.now() - timedelta(minutes=annullable_time)
-        timezone = pytz.timezone('Europe/Berlin')
-        time_limit = timezone.localize(time_limit)
-
+        time_limit = timezone.now() - timedelta(minutes=annullable_time)
         for product in products:
             product['purchase__id'] = product.pop('id')
             purchase_time = product['time_stamp']
@@ -215,14 +210,9 @@ class PurchaseLogic:
 
         annullable_time = config.T_ANNULLABLE_PURCHASE_M
 
-        # warning: summertime/wintertime currently is not respected in the following calculations. This should be
-        # implemented to avoid non-annullable transactions in the lost hour between summer- and wintertime
-        time_limit = datetime.now() - timedelta(minutes=annullable_time)
-        timezone = pytz.timezone('Europe/Berlin')
-        time_limit = timezone.localize(time_limit)
-
         purchase = models.Purchase.objects.get(id=purchase_id)
 
+        time_limit = timezone.now() - timedelta(minutes=annullable_time)
         if time_limit >= purchase.time_stamp:
             raise exceptions.PurchaseNotAnnullable()
 
@@ -251,12 +241,7 @@ class ChargeLogic:
         if max_charges >= 0:
             charges = charges[:max_charges]
 
-        # warning: summertime/wintertime currently is not respected in the following calculations. This should be
-        # implemented to avoid non-annullable transactions in the lost hour between summer- and wintertime
-        time_limit = datetime.now() - timedelta(minutes=annullable_time)
-        timezone = pytz.timezone('Europe/Berlin')
-        time_limit = timezone.localize(time_limit)
-
+        time_limit = timezone.now() - timedelta(minutes=annullable_time)
         for charge in charges:
             if time_limit > charge['time_stamp']:
                 charge.update({'annullable': False})
@@ -291,14 +276,9 @@ class ChargeLogic:
 
         annullable_time = config.T_ANNULLABLE_CHARGE_M
 
-        # warning: summertime/wintertime currently is not respected in the following calculations. This should be
-        # implemented to avoid non-annullable transactions in the lost hour between summer- and wintertime
-        time_limit = datetime.now() - timedelta(minutes=annullable_time)
-        timezone = pytz.timezone('Europe/Berlin')
-        time_limit = timezone.localize(time_limit)
-
         charge = models.Charge.objects.get(id=charge_id)
 
+        time_limit = timezone.now() - timedelta(minutes=annullable_time)
         if time_limit > charge.time_stamp:
             raise exceptions.ChargeNotAnnullable()
 
@@ -361,12 +341,7 @@ class TransferLogic:
                 .order_by('-time_stamp')[:max_transfers] \
                 .values('id', 'annulled', 'amount', 'receiver__auth__username', 'time_stamp')
 
-        # warning: summertime/wintertime currently is not respected in the following calculations. This should be
-        # implemented to avoid non-annullable transactions in the lost hour between summer- and wintertime
-        time_limit = datetime.now() - timedelta(minutes=annullable_time)
-        timezone = pytz.timezone('Europe/Berlin')
-        time_limit = timezone.localize(time_limit)
-
+        time_limit = timezone.now() - timedelta(minutes=annullable_time)
         for transfer in transfers:
             if time_limit > transfer['time_stamp']:
                 transfer.update({'annullable': False})
@@ -413,13 +388,9 @@ class TransferLogic:
 
         annullable_time = config.T_ANNULLABLE_TRANSFERS_M
 
-        # warning: summertime/wintertime currently is not respected in the following calculations. This should be
-        # implemented to avoid non-annullable transactions in the lost hour between summer- and wintertime
-        time_limit = datetime.now() - timedelta(minutes=annullable_time)
-        timezone = pytz.timezone('Europe/Berlin')
-        time_limit = timezone.localize(time_limit)
-
         transfer = models.Transfer.objects.get(id=transfer_id)
+
+        time_limit = timezone.now() - timedelta(minutes=annullable_time)
         if time_limit > transfer.time_stamp:
             raise exceptions.TransferNotAnnullable()
 
