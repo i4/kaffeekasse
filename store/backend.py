@@ -223,8 +223,7 @@ class PurchaseLogic:
 
         purchase = models.Purchase.objects.get(id=purchase_id)
 
-        purchase_time = purchase.time_stamp
-        if time_limit >= purchase_time:
+        if time_limit >= purchase.time_stamp:
             raise exceptions.PurchaseNotAnnullable()
 
         with transaction.atomic():
