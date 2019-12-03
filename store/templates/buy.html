@@ -6,9 +6,11 @@
 <li class="nav-item active">
     <a class="nav-link font-xl" href="#">Kaufen</a>
 </li>
+{% if config.CHARGE_PERMIT_MANUAL %}
 <li class="nav-item">
     <a class="nav-link font-xl" href="{% url "charge" %}">Aufladen</a>
 </li>
+{% endif %}
 <li class="nav-item">
     <a class="nav-link font-xl" href="{% url "transfer" %}">Überweisen</a>
 </li>

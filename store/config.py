@@ -8,6 +8,8 @@ N_MOST_BOUGHT_PRODUCTS = 10
 # for 'Häufig gekauft'
 T_MOST_BOUGHT_PRODUCTS_D = 30
 
+# Show charge link and permit users making their own charges
+CHARGE_PERMIT_MANUAL = True
 # Number of charges that should be shown in 'Letzte Aufladungen'. A negative
 # number means 'all users are selected'
 N_LAST_CHARGES = 10

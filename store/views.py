@@ -96,6 +96,9 @@ def charge(request):
     POST: Charge money.
     """
 
+    if not config.CHARGE_PERMIT_MANUAL:
+        return HttpResponse(status=400)
+
     user_id = request.user.userdata.id
 
     if request.method == "GET":
