@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+import django.contrib.auth.views
 from django.urls import path
 
 from . import views
@@ -16,4 +17,8 @@ urlpatterns = [
     # Auth
     path('login', views.login, name='login'),
     path('logout', views.logout, name='logout'),
+
+    path('password_login',
+        django.contrib.auth.views.LoginView.as_view(template_name='admin/login.html'),
+        name='password_login'),
 ]

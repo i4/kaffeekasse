@@ -4,6 +4,7 @@ from decimal import Decimal, InvalidOperation
 
 import django.contrib.auth
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import redirect_to_login
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, reverse
 from django.views.decorators.csrf import csrf_protect
@@ -15,11 +16,28 @@ import store.models as models
 from store.exceptions import ClientMessageException
 
 
+def permit_direct_login(request):
+    # User certificates not enforced, permit all clients
+    if config.RESTRICT_CLIENT_CERTS is None:
+        return True
+
+    if request.headers['cert-verify'] != 'SUCCESS':
+        return False
+    if request.headers['cert-cn'] not in config.RESTRICT_CLIENT_CERTS:
+        return False
+
+    return True
+
+
 @require_http_methods(["GET"])
 def index(request):
     """
     GET: Return the rendered index page. Users can login here.
     """
+
+    if not permit_direct_login(request):
+        return redirect_to_login(reverse('buy'), login_url='password_login')
+
     django.contrib.auth.logout(request)
     return render(request, "index.html", {
         "users": backend.UserLogic.getFrequentUsersList(),
@@ -196,6 +214,10 @@ def login(request):
     """
     Login an user.
     """
+
+    if not permit_direct_login(request):
+        return HttpResponse(status=403)
+
     ident = request.POST.get('ident')
     ident_type = int(request.POST.get('ident_type'))
     try:

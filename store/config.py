@@ -1,5 +1,10 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+# List of client CNs which are permitted to use the direct login interface.
+# Clients with a different CN or which send no client certificate must login
+# via username/password. If set to None all clients can use direct logins.
+RESTRICT_CLIENT_CERTS = None
+
 # Number of products to be shown in 'Letzte Einkäufe'
 N_LAST_BOUGHT_PRODUCTS = 100
 # number of products to be shown in 'Häufig gekauft'
