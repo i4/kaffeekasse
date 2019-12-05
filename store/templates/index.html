@@ -92,5 +92,30 @@
 
             login(id, {{ ident_types.ID }});
         }
+
+        function rfid(version, host="localhost", port=8000, icon=undefined) {
+            var ws = new WebSocket("ws://" + host + ":" + port + "/getuid", "getuid");
+            icon = icon ? icon : new Icon("rfid");
+            ws.onopen = function(ev) {
+                icon.enable();
+                ws.send(version);
+            };
+            ws.onerror = function(ev) {
+                icon.disable();
+		if (ev.reason != "")
+		    displayError("RFID: " + ev.reason);
+            };
+            ws.onclose = function(ev) {
+                icon.disable();
+                if (ev.reason != "")
+                    displayError("RFID: " + ev.reason);
+		if (ev.wasClean)
+		    rfid(version, host, port, icon);
+            };
+            ws.onmessage = function(ev) {
+                login(ev.data, {{ ident_types.RFID }});
+            };
+        };
+        rfid("version 1.0");
     </script>
 {% endblock %}
