@@ -27,7 +27,7 @@ pre_save.connect(validate_model)
 
 class UserData(models.Model):
     # "user" is confusing because it creates queries like "user__user__id" and
-    # so one, instead use "auth" because that's its main use
+    # so on, instead use "auth" because that's its main use
     auth = models.OneToOneField(django.contrib.auth.models.User,
             on_delete=models.CASCADE)
     idm = models.CharField(max_length=8, blank=True)
