@@ -209,13 +209,13 @@ class PurchaseLogic:
 
         annullable_time = config.T_ANNULLABLE_PURCHASE_M
 
-        purchase = models.Purchase.objects.get(id=purchase_id)
-
-        time_limit = timezone.now() - timedelta(minutes=annullable_time)
-        if time_limit >= purchase.time_stamp:
-            raise exceptions.PurchaseNotAnnullable()
-
         with transaction.atomic():
+            purchase = models.Purchase.objects.get(id=purchase_id)
+
+            time_limit = timezone.now() - timedelta(minutes=annullable_time)
+            if time_limit >= purchase.time_stamp:
+                raise exceptions.PurchaseNotAnnullable()
+
             user = purchase.user
             user.money += purchase.price
             user.save()
@@ -275,13 +275,13 @@ class ChargeLogic:
 
         annullable_time = config.T_ANNULLABLE_CHARGE_M
 
-        charge = models.Charge.objects.get(id=charge_id)
-
-        time_limit = timezone.now() - timedelta(minutes=annullable_time)
-        if time_limit > charge.time_stamp:
-            raise exceptions.ChargeNotAnnullable()
-
         with transaction.atomic():
+            charge = models.Charge.objects.get(id=charge_id)
+
+            time_limit = timezone.now() - timedelta(minutes=annullable_time)
+            if time_limit > charge.time_stamp:
+                raise exceptions.ChargeNotAnnullable()
+
             user = charge.user
             user.money -= charge.amount
             if user.money < config.MONEY_MIN_LIMIT:
@@ -360,12 +360,12 @@ class TransferLogic:
 
         assert amount > 0
 
-        sender = models.UserData.objects.get(id=user_id)
-        receiver = UserLogic.getUser(ident=receiver_ident, ident_type=receiver_ident_type)
-        if sender.id == receiver.id:
-            raise exceptions.SenderEqualsReceiverError()
-
         with transaction.atomic():
+            sender = models.UserData.objects.get(id=user_id)
+            receiver = UserLogic.getUser(ident=receiver_ident, ident_type=receiver_ident_type)
+            if sender.id == receiver.id:
+                raise exceptions.SenderEqualsReceiverError()
+
             transfer = models.Transfer(sender=sender, receiver=receiver, amount=amount)
             transfer.save()
 
@@ -387,16 +387,16 @@ class TransferLogic:
 
         annullable_time = config.T_ANNULLABLE_TRANSFERS_M
 
-        transfer = models.Transfer.objects.get(id=transfer_id)
-
-        time_limit = timezone.now() - timedelta(minutes=annullable_time)
-        if time_limit > transfer.time_stamp:
-            raise exceptions.TransferNotAnnullable()
-
-        receiver = transfer.receiver
-        sender = transfer.sender
-
         with transaction.atomic():
+            transfer = models.Transfer.objects.get(id=transfer_id)
+
+            time_limit = timezone.now() - timedelta(minutes=annullable_time)
+            if time_limit > transfer.time_stamp:
+                raise exceptions.TransferNotAnnullable()
+
+            receiver = transfer.receiver
+            sender = transfer.sender
+
             transfer.annulled = True
             transfer.save()
             receiver.money -= transfer.amount
