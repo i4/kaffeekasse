@@ -122,8 +122,7 @@ class ProductIdentifier(models.Model):
 class Charge(models.Model):
     user = models.ForeignKey(UserData, on_delete=models.CASCADE)
     time_stamp = models.DateTimeField(auto_now=True)
-    amount = models.DecimalField(max_digits=6, decimal_places=2,
-            validators=[validators.MinValueValidator(0)])
+    amount = models.DecimalField(max_digits=6, decimal_places=2)
     annulled = models.BooleanField(default=False)
 
 
