@@ -57,7 +57,7 @@ class ReadOnlyModelAdmin(AppendOnlyModelAdmin):
 
 @admin.register(models.UserData)
 class UserDataAdmin(admin.ModelAdmin):
-    list_display = ('username', 'money', 'shown_on_login_screen')
+    list_display = ('username', 'idm', 'money', 'shown_on_login_screen')
     def username(self, obj):
         return obj.auth.username
     username.admin_order_field = 'auth__username'
@@ -74,7 +74,8 @@ class UserDataAdmin(admin.ModelAdmin):
 
     # For autocomplete_fields
     ordering = ('auth__username',)
-    search_fields = ('auth__username', 'auth__first_name', 'auth__last_name')
+    search_fields = ('auth__username', 'auth__first_name', 'auth__last_name',
+            'idm')
 
 class UserDataInline(admin.StackedInline):
     model = models.UserData
@@ -84,7 +85,10 @@ class UserDataInline(admin.StackedInline):
     readonly_fields = ('money',)
 
 class UserAdmin(django.contrib.auth.admin.UserAdmin):
-    list_display = ('username', 'money', 'first_name', 'last_name', 'email', 'is_staff')
+    list_display = ('username', 'idm', 'money', 'first_name', 'last_name', 'email', 'is_staff')
+    def idm(self, obj):
+        return obj.userdata.idm
+    idm.admin_order_field = 'userdata__idm'
     def money(self, obj):
         return obj.userdata.money
     money.admin_order_field = 'userdata__money'

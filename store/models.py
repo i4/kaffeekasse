@@ -30,12 +30,13 @@ class UserData(models.Model):
     # so one, instead use "auth" because that's its main use
     auth = models.OneToOneField(django.contrib.auth.models.User,
             on_delete=models.CASCADE)
+    idm = models.CharField(max_length=8, blank=True)
     money = models.DecimalField(max_digits=6, decimal_places=2, default=0.0,
             validators=[validators.MinValueValidator(config.MONEY_MIN_LIMIT)])
     shown_on_login_screen = models.BooleanField(default=True)
 
     def __str__(self):
-        return '{} ({} {})'.format(self.auth.username,
+        return '{} ({} {} {})'.format(self.auth.username, self.idm,
                 self.auth.first_name, self.auth.last_name)
 
 # Automatically create a corresponding UserData object when creating a new
