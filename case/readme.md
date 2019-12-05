@@ -53,7 +53,7 @@ Since the display does not support a software solution to disable the backround 
 * Start `raspi-config`, change in *3 Boot Options* / *B1 Desktop / CLI* to *B4 Desktop Autologin* and perform updates (*8 Updates*)
 * To rotate touch input, copy the file [40-libinput.conf](40-libinput.conf) (originated from `/usr/share/X11/xorg.conf.d/40-libinput.conf`) to `/etc/X11/xorg.conf.d/40-libinput.conf` (create the `xorg.conf.d` directory first)
 * Setup booting directly into X via `sudo raspi-config` and establish your network connection
-* Copy the provided files [backlight.sh](backlight.sh) to `/opt/backlight.sh` and [backlight.service](backlight.serivce) to `/etc/systemd/system/backlight.serivce`, reload *systemd* and enable the service to support LED backlight disabling during power saving
+* Copy the provided files [backlight.sh](backlight.sh) to `/opt/backlight.sh` and [backlight.service](backlight.service) to `/etc/systemd/system/backlight.serivce`, reload *systemd* and enable the service to support LED backlight disabling during power saving
 	```
 	sudo systemctl daemon-reload 
 	sudo systemctl enable backlight.service 
