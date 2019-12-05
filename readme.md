@@ -50,7 +50,7 @@ All configurable parameters are stored in `store/store_config.py`.
 
 ## License
 
-This license covers the project and the logo.<br>
+This license covers the project.<br>
 Copyright (C) 2019  Fabian Krüger<br>
 Copyright (C) 2019  Lukas Schneider<br>
 Copyright (C) 2019  Simon Ruderich<br>
