@@ -4,6 +4,7 @@ import django.contrib.auth.admin
 import django.contrib.auth.models
 import django.urls
 from django.contrib import admin
+from django.db import transaction
 from django.utils.translation import gettext_lazy as _
 
 import store.models as models
@@ -142,8 +143,10 @@ class ChargeAdmin(AppendOnlyModelAdmin):
         assert not obj.annulled
         # TODO: this is hacky and duplicates code from backend.py
         # Update user's money value
-        obj.user.money += obj.amount
-        obj.user.save()
+        with transaction.atomic():
+            user = models.UserData.objects.get(id=obj.user.id)
+            user.money += obj.amount
+            user.save()
         super().save_model(request, obj, form, change)
 
 
@@ -166,10 +169,13 @@ class TransferAdmin(AppendOnlyModelAdmin):
         assert not obj.annulled
         # TODO: this is hacky and duplicates code from backend.py
         # Update users' money value
-        obj.sender.money -= obj.amount
-        obj.sender.save()
-        obj.receiver.money += obj.amount
-        obj.receiver.save()
+        with transaction.atomic():
+            sender = models.UserData.objects.get(id=obj.sender.id)
+            sender.money -= obj.amount
+            sender.save()
+            receiver = models.UserData.objects.get(id=obj.receiver.id)
+            receiver.money += obj.amount
+            receiver.save()
         super().save_model(request, obj, form, change)
 
 
