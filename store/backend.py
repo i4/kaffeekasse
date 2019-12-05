@@ -48,8 +48,7 @@ class UserLogic:
         if ident_type == models.UserIdentifier.PRIMARYKEY and not user.shown_on_login_screen:
             raise exceptions.DisabledIdentifier()
 
-        with transaction.atomic():
-            django.contrib.auth.login(request, user.auth)
+        django.contrib.auth.login(request, user.auth)
 
     @staticmethod
     @typechecked
