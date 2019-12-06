@@ -1,0 +1,13 @@
+[Unit]
+Description=serve %I on ws://127.0.0.1:8000/getuid
+
+[Service]
+Type=simple
+User=pi
+Group=plugdev
+ExecStart=/bin/sh websocketd %I
+Restart=always
+
+[Install]
+DefaultInstance=getuid
+WantedBy=default.target
