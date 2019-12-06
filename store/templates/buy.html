@@ -158,8 +158,6 @@
 
     const max_recently_bought = {{ config.N_LAST_BOUGHT_PRODUCTS }}
 
-    barcode_event = buyBarcode;
-
     updateRecentlyBoughtList();
 
     function buyPK(id) {
@@ -173,9 +171,9 @@
         buy(id, {{ ident_types.PRIMARYKEY }});
     }
 
-    function buyBarcode(ident) {
-        buy(ident, {{ ident_types.BARCODE }})
-    }
+    barcode.handler(function(code){
+        buy(code, {{ ident_types.BARCODE }});
+    });
 
     function buy(ident, ident_type) {
         error = error => {

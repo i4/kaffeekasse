@@ -77,9 +77,9 @@
             $("#login_form").submit();
         }
 
-        barcode_event = function(ident){
+        barcode.handler(function(ident){
             login(ident,{{ ident_types.BARCODE }});
-        };
+        });
 
         function loginID() {
             var id = $("#user_id").val();

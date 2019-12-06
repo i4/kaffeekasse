@@ -191,28 +191,44 @@
             displayError("{{ error }}");
         {% endif %}
     </script>
+
+    {% comment %} Barcode {% endcomment %}
     <script>
-        var barcode_event = null;
-        var barcode_buffer = "";
-
-        // First unbind the event. Otherwise, the event handler is called twice.
-        $(document).unbind('keypress');
-
-        $(document).keypress(function(event){
-            event.preventDefault();
-
-            // Newline. Barcode scanned completly.
-            if (event.which == 13) {
-                if (barcode_event != null) {
-                    barcode_event(barcode_buffer);
+        var barcode = new function() {
+            var handler = undefined;
+            var buffer = ""
+            var icon = undefined;
+            this.handler = function(fn) {
+                $(document).unbind('keypress');
+                if (handler !== undefined) {
+                    displayError("Barcode: only one handler allowed!");
+                    return;
+                } else if (icon === undefined) {
+	                icon = new Icon("barcode");
                 }
-                barcode_buffer = "";
-                return;
-            }
 
-            input = String.fromCharCode(event.which);
-            barcode_buffer = barcode_buffer + input;
-        });
+                if (fn === null || fn === undefined) {
+                    handler = undefined;
+                    icon.disable();
+                } else {
+                    icon.enable();
+                    handler = fn;
+                    buffer = ""
+                    $(document).keypress(function (event) {
+                        event.preventDefault();
+                        // Newline. Barcode scanned completly.
+                        if (event.which == 13) {
+                            handler(buffer);
+                            buffer = "";
+                            return;
+                        }
+
+                        buffer += String.fromCharCode(event.which);
+                    })
+                }
+            }
+            return this;
+        };
     </script>
     {% block script %} {% endblock %}
 </body>
