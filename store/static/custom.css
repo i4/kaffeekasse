@@ -43,3 +43,20 @@
 .font-lg {
     font-size: large;
 }
+
+.iconbar {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    z-index: 2;
+}
+
+.iconbar img {
+    height: 3ex;
+    margin: .5ex;
+}
+
+.iconbar img.disabled {
+    filter: grayscale(100%);
+    opacity: 0.25;
+}
