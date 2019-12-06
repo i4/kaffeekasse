@@ -9,12 +9,15 @@
 {% endblock %}
 
 {% block content %}
+{% comment %} hidden login form {% endcomment %}
+<form style="display: none" action="{% url "login" %}" method="POST" id="login_form">
+    {% csrf_token %}
+    <input type="hidden" name="ident" id="ident" />
+    <input type="hidden" name="ident_type" id="ident_type" />
+</form>
 <div class="row">
-    {% comment %} Numpad {% endcomment %}
-    <div class="col-lg-4 col-md-6 col-12 pb-4">
-        <form action="{% url "login" %}" method="POST" id="loginForm">
-            <input type="hidden" name="ident_type" value="{{ ident_types.ID }}"/>
-            {% csrf_token %}
+     {% comment %} Numpad {% endcomment %}
+     <div class="col-lg-4 col-md-6 col-12 pb-4">
             <div class="btn-group-vertical" role="group">
                 <div class="btn-group">
                     <input readonly="true" class="text-center form-control-lg mb-2" id="user_id" name="ident">
@@ -51,51 +54,32 @@
                     <button type="button" class="btn btn-i4 py-3" onclick="loginID()">Login</button>
                 </div>
             </div>
-        </form>
-    </div>
+     </div>
 
     {% comment %} User list {% endcomment %}
     <div class="col-sm-6 col-12">
         <ul class="list-group scroll-lg">
-            <form action="{% url "login" %}" method="POST" id="pk_login_form">
-                {% csrf_token %}
-                <input type="hidden" id="pk_field" name="ident"/>
-                <input type="hidden" name="ident_type" value="{{ ident_types.PRIMARYKEY }}">
-                {% for user in users %}
-                    <button onclick="loginPK({{ user.userdata__id }})" type="button" class="list-group-item list-group-item-action">{{ user.username }}</button>
-                {% endfor %}
-            </form>
+            {% for user in users %}
+                <button onclick="login({{ user.userdata__id }}, {{ ident_types.PRIMARYKEY }})" type="button" class="list-group-item list-group-item-action">{{ user.username }}</button>
+            {% endfor %}
         </ul>
     </div>
-
-    {% comment %} Hidden form for barcode login {% endcomment %}
-    <form action="{% url "login" %}" method="POST" id="barcode_login_form">
-        {% csrf_token %}
-        <input type="hidden" id="barcode" name="ident">
-        <input type="hidden" name="ident_type" value="{{ ident_types.BARCODE }}">
-    </form>
 </div>
 {% endblock %}
 
 {% block script %}
     <script>
+        "use strict";
 
-        function loginBarcode(ident) {
-            $("#barcode").val(ident);
-            $("#barcode_login_form").submit();
+        function login(ident, type) {
+            $("#ident").val(ident);
+            $("#ident_type").val(type);
+            $("#login_form").submit();
         }
 
-        barcode_event = loginBarcode;
-
-        function loginPK(pk) {
-            pk = parseInt(pk);
-            if (isNaN(pk)) {
-                displayError("Nutzer ist fehlerhaft.");
-            }
-
-            $("#pk_field").val(pk);
-            $("#pk_login_form").submit();
-        }
+        barcode_event = function(ident){
+            login(ident,{{ ident_types.BARCODE }});
+        };
 
         function loginID() {
             var id = $("#user_id").val();
@@ -106,8 +90,7 @@
                 return;
             }
 
-            $("#user_id").val(id);
-            $("#loginForm").submit();
+            login(id, {{ ident_types.ID }});
         }
     </script>
 {% endblock %}
