@@ -100,8 +100,7 @@
         function loginID() {
             var id = $("#user_id").val();
 
-            id = parseInt(id);
-            if (isNaN(id)) {
+            if (isNaN(parseInt(id))) {
                 $("#user_id").val(null);
                 displayError("ID ist ungültig.");
                 return;
