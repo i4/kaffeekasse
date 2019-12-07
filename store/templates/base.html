@@ -25,7 +25,7 @@
                 </span>
                 <span class="navbar-text text-light font-xl" id="money">
                 </span>
-                <a class="nav-link" href="{% url 'logout' %}">
+                <a class="nav-link" id="logout" href="{% url 'logout' %}">
                     <img src="{% static "logout.svg" %}" width="60" height="40"/>
                 </a>
             {% endif %}
@@ -105,28 +105,47 @@
     {% comment %} Auto logout {% endcomment %}
     {% if user.is_authenticated %}
     <script>
-        const auth_timeout = 10; // Timeout in seconds
-        var timer;
+	var auth = new function(timeout) {
+		var ival  = undefined;
+		var self  = this;
+		var timer = timeout;
+		var node  = $(document.createElement("tt"));
+		node.addClass("timeout navbar-text font-weight-bold text-monospace");
+		$("#logout").append(node);
+		node.css("margin-left", "-12px");
+		console.log(node.css);
+		var reset = function() { self.reset(); }
+		window.onmousemove = reset;
+		window.onmousedown = reset;
+		window.onclick     = reset;
+		window.onscroll    = reset;
+		window.onkeypress  = reset;
 
-        // Start timer, after the page finished loading
-        window.onload = resetTimer;
+		// public interface
+		this.logout = function() {
+			window.location.href = "{% url "logout" %}";
+			clearInterval(ival);
+		};
+		this.reset  = function() {
+			this.set(timeout);
+		};
+		this.set    = function(seconds) {
+			if (seconds === 0)
+				this.logout();
+			timer = seconds;
+			if (seconds < 10)
+				node.html('&nbsp;' + String(seconds));
+			else
+				node.text(seconds);
+		};
 
-        // Reset timer on any user input
-        window.onmousemove = resetTimer; // catches mouse movements
-        window.onmousedown = resetTimer; // catches mouse movements
-        window.onclick = resetTimer;     // catches mouse clicks
-        window.onscroll = resetTimer;    // catches scrolling
-        window.onkeypress = resetTimer;  //catches keyboard actions
-
-        function logout() {
-            window.location.href = '{% url "logout" %}';
-        }
-
-        // Cancel the previous timer and start a new one
-        function resetTimer() {
-            clearTimeout(timer);
-            timer = setTimeout(logout, 1000 * auth_timeout);
-        }
+		// initalize timer
+		$(document).ready(function() {
+			ival = setInterval(function() { self.set(timer-1); }, 1000);
+		});
+		this.set(timeout);
+		return this;
+	} (10);
     </script>
     {% endif %}
 
