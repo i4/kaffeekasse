@@ -21,7 +21,7 @@ type Request struct {
 
 func dpms(mode string) {
 	xset := exec.Command("xset", "dpms", "force", mode)
-	xset.Env = append(os.Environ, "DISPLAY=:0")
+	xset.Env = append(os.Environ(), "DISPLAY=:0")
 	err := xset.Run()
 	if err != nil {
 		log.Print(err)
