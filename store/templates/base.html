@@ -113,13 +113,19 @@
 		node.addClass("timeout navbar-text font-weight-bold text-monospace");
 		$("#logout").append(node);
 		node.css("margin-left", "-12px");
-		console.log(node.css);
-		var reset = function() { self.reset(); }
-		window.onmousemove = reset;
-		window.onmousedown = reset;
-		window.onclick     = reset;
-		window.onscroll    = reset;
-		window.onkeypress  = reset;
+		var reset = function(ev) {
+			self.reset()
+		};
+		var disable = function(ev) {
+			var x = ival
+			ival = undefined
+			clearInterval(x)
+		};
+		var enable = function(ev) {
+			if (ival === undefined)
+				ival = setInterval(function() { self.set(timer-1); }, 1000);
+			self.reset()
+		};
 
 		// public interface
 		this.logout = function() {
@@ -139,13 +145,30 @@
 				node.text(seconds);
 		};
 
+		// initialize default handlers
+		$(window).on('touchstart', function(ev) {
+			// we have to disable the mouse event
+			// otherwise it would trigger together
+			// with the touchend device
+			$(window).off('mousemove')
+			disable(ev)
+		})
+		$(window).on('touchend', function(ev) {
+			enable(ev)
+			$(window).on('mousemove', reset)
+		})
+		$(window).on('wheel', reset)
+		$(window).on('click', reset)
+		$(window).on('scroll', reset)
+		$(window).on('keypress', reset)
+		$(window).on('mousedown', reset)
+		$(window).on('mousemove', reset)
+
 		// initalize timer
-		$(document).ready(function() {
-			ival = setInterval(function() { self.set(timer-1); }, 1000);
-		});
+		$(document).ready(enable);
 		this.set(timeout);
 		return this;
-	} (10);
+	} (12);
     </script>
     {% endif %}
 
