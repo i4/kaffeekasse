@@ -1,11 +1,11 @@
 [Unit]
 Description=Backlight Daemon
+BindsTo=graphical-session.target
 
 [Service]
 ExecStart=/opt/backlight.sh
 Restart=always
 RestartSec=3
-User=pi
 
 [Install]
 WantedBy=default.target
