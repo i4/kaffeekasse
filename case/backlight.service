@@ -5,6 +5,7 @@ Description=Backlight Daemon
 ExecStart=/opt/backlight.sh
 Restart=always
 RestartSec=3
+User=pi
 
 [Install]
 WantedBy=default.target
