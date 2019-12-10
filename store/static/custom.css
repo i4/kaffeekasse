@@ -4,6 +4,11 @@ html {
 	font-size: 125%;
 }
 
+.price-tag::after {
+	margin-left:.4ex;
+	content: "€";
+}
+
 .btn-i4 {
     background-color: #003865;
     color: white;

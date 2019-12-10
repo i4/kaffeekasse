@@ -27,7 +27,7 @@
                 <button onclick="buyPK({{ product.product_id }})" type="button" class="list-group-item list-group-item-action">
                     <div class="d-flex w-100 justify-content-between">
                         <div class="mb-1">{{ product.product__name }}</div>
-                        <div>{{ product.product__price }} €</div>
+			<div class="price-tag">{{ product.product__price }}</div>
                     </div>
                 </button>
                 {% endfor %}
@@ -45,7 +45,7 @@
                 <label class="list-group-item">
                     <div class="d-flex w-100 justify-content-between">
                         <div class="mb-1" id="recent_product_name">test</div>
-                        <div id="recent_product_price">test</div>
+                        <div class="price-tag" id="recent_product_price">test</div>
                     </div>
                     <div class="text-right">
                         <button class="btn btn-i4" id="recent_bought_revert">
@@ -58,7 +58,7 @@
                 <label class="list-group-item">
                     <div class="d-flex w-100 justify-content-between">
                         <div class="mb-1" id="recent_product_name">test</div>
-                        <div id="recent_product_price">test</div>
+                        <div class="price-tag" id="recent_product_price">test</div>
                     </div>
                 </label>
             </template>
@@ -66,7 +66,7 @@
                 <label class="list-group-item">
                     <div class="d-flex w-100 justify-content-between">
                         <s><div class="mb-1 text-muted" id="recent_product_name"></div></s>
-                        <div class="text-muted" id="recent_product_price"></div>
+                        <div class="text-muted price-tag" id="recent_product_price"></div>
                     </div>
                 </label>
             </template>
@@ -89,7 +89,7 @@
                                     <button onclick="buyPK({{ prod.id }})" type="button" class="list-group-item list-group-item-action">
                                         <div class="d-flex w-100 justify-content-between">
                                             <div class="mb-1">{{ prod.name }}</div>
-                                            <div> {{ prod.price }} €</div>
+                                            <div class="price-tag">{{ prod.price }}</div>
                                         </div>
                                     </button>
                                 {% endfor %}
@@ -117,7 +117,7 @@
                                     <button onclick="buyPK({{ prod.id }})" type="button" class="list-group-item list-group-item-action">
                                         <div class="d-flex w-100 justify-content-between">
                                             <div class="mb-1">{{ prod.name }}</div>
-                                            <div> {{ prod.price }} €</div>
+					    <div class="price-tag">{{ prod.price }}</div>
                                         </div>
                                     </button>
                                 {% endfor %}
@@ -255,7 +255,7 @@
             $("#recently_bought_list").append(template);
 
             // Set template values
-            $("#recent_product_price").html(product.price.toFixed(2) + " €").attr("id", "");
+            $("#recent_product_price").html(product.price.toFixed(2)).attr("id", "");
             $("#recent_product_name").html(product.name).attr("id", "");
             if (product.annullable) {
                 $("#recent_bought_revert").click(revert(product.purchase_id)).attr("id", "");
