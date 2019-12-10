@@ -85,7 +85,7 @@ class UserDataInline(admin.StackedInline):
     readonly_fields = ('money',)
 
 class UserAdmin(django.contrib.auth.admin.UserAdmin):
-    list_display = ('username', 'idm', 'money', 'first_name', 'last_name', 'email', 'is_staff')
+    list_display = ('username', 'idm', 'money', 'first_name', 'last_name', 'email', 'is_staff', 'is_superuser')
     def idm(self, obj):
         return obj.userdata.idm
     idm.admin_order_field = 'userdata__idm'
@@ -96,7 +96,7 @@ class UserAdmin(django.contrib.auth.admin.UserAdmin):
     # Hide unimportant fields; copied from django.contrib.auth.admin.UserAdmin
     # and modified
     fieldsets = (
-        (None, {'fields': ('username', 'password', 'last_login', 'is_staff')}),
+        (None, {'fields': ('username', 'password', 'last_login', 'is_staff', 'is_superuser')}),
         (_('Personal info'), {'fields': ('first_name', 'last_name', 'email')}),
     )
 
