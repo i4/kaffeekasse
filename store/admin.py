@@ -150,6 +150,8 @@ class ProductIdentifierAdmin(admin.ModelAdmin):
 
     search_fields = ('product__name', 'ident')
 
+    autocomplete_fields = ('product',)
+
 
 @admin.register(models.Charge)
 class ChargeAdmin(AppendOnlyModelAdmin):
