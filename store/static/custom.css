@@ -1,12 +1,12 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later */
 
 html {
-	font-size: 125%;
+    font-size: 125%;
 }
 
 .price-tag::after {
-	margin-left:.4ex;
-	content: "€";
+    margin-left:.4ex;
+    content: "€";
 }
 
 .btn-i4 {
@@ -22,7 +22,7 @@ html {
 
 /* TODO: adjust for (other) webfrontends */
 .container {
-	max-width: 1260px!important;
+    max-width: 1260px!important;
 }
 
 .navbar-i4 {
