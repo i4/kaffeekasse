@@ -58,7 +58,7 @@ def buy(request):
 
     if request.method == 'GET':  # Return the rendered page
         return render(request, "buy.html", {
-            "most_bought": backend.ProductLogic.getMostBoughtProductsList(),
+            "most_bought": backend.ProductLogic.getMostBoughtProductsList(user_id),
             "recently_bought": backend.ProductLogic.getLastBoughtProductsList(user_id),
             "drinks": backend.ProductLogic.getDrinks(),
             "candies": backend.ProductLogic.getCandies(),
