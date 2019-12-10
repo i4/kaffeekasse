@@ -139,7 +139,7 @@ class Charge(models.Model):
     time_stamp = models.DateTimeField(auto_now=True)
     amount = models.DecimalField(max_digits=6, decimal_places=2)
     annulled = models.BooleanField(default=False)
-    comment = models.TextField()
+    comment = models.TextField(blank=True)
 
 
 class Purchase(models.Model):
