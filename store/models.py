@@ -76,6 +76,12 @@ class UserIdentifier(models.Model):
             fields=['ident_type', 'ident'])]
 
 
+class UnknownUserIdentifier(models.Model):
+    ident_type = models.IntegerField(choices=UserIdentifier.choices)
+    ident = models.TextField()
+    time_stamp = models.DateTimeField(auto_now=True)
+
+
 class Product(models.Model):
     name = models.TextField()
     category = models.ForeignKey('productcategory', on_delete=models.CASCADE,

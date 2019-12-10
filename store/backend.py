@@ -33,6 +33,8 @@ class UserLogic:
                 .select_related('user') \
                 .first()
         if x is None:
+            i = models.UnknownUserIdentifier(ident=ident, ident_type=ident_type)
+            i.save()
             raise exceptions.UserIdentifierNotExists()
         return x.user
 

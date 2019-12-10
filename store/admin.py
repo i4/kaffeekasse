@@ -118,6 +118,11 @@ class UserIdentifierAdmin(admin.ModelAdmin):
     autocomplete_fields = ('user',)
 
 
+@admin.register(models.UnknownUserIdentifier)
+class UserIdentifierAdmin(admin.ModelAdmin):
+    list_display = ('time_stamp', 'ident_type', 'ident')
+
+
 @admin.register(models.Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('name', 'category', 'price', 'stock')
