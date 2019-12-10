@@ -72,7 +72,7 @@ class UserIdentifier(models.Model):
     ident = models.TextField()
 
     class Meta:
-        constraints = [models.UniqueConstraint(name='unique_ident',
+        constraints = [models.UniqueConstraint(name='unique_user_ident',
             fields=['ident_type', 'ident'])]
 
 
@@ -124,7 +124,7 @@ class ProductIdentifier(models.Model):
     ident = models.TextField()
 
     class Meta:
-        constraints = [models.UniqueConstraint(name='unique_ident',
+        constraints = [models.UniqueConstraint(name='unique_product_ident',
             fields=['ident_type', 'ident'])]
 
 
