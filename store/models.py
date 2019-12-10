@@ -71,6 +71,10 @@ class UserIdentifier(models.Model):
     ident_type = models.IntegerField(choices=choices)
     ident = models.TextField()
 
+    class Meta:
+        constraints = [models.UniqueConstraint(name='unique_ident',
+            fields=['ident_type', 'ident'])]
+
 
 class Product(models.Model):
     name = models.TextField()
@@ -118,6 +122,10 @@ class ProductIdentifier(models.Model):
     product = models.ForeignKey('product', on_delete=models.CASCADE)
     ident_type = models.IntegerField(choices=choices)
     ident = models.TextField()
+
+    class Meta:
+        constraints = [models.UniqueConstraint(name='unique_ident',
+            fields=['ident_type', 'ident'])]
 
 
 class Charge(models.Model):
