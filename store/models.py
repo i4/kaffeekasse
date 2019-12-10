@@ -161,3 +161,4 @@ class Transfer(models.Model):
     amount = models.DecimalField(max_digits=6, decimal_places=2,
             validators=[validators.MinValueValidator(0)])
     annulled = models.BooleanField(default=False)
+    comment = models.TextField(blank=True)

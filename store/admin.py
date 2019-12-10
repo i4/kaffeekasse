@@ -167,7 +167,7 @@ class PurchaseAdmin(ReadOnlyModelAdmin):
 
 @admin.register(models.Transfer)
 class TransferAdmin(AppendOnlyModelAdmin):
-    list_display = ('time_stamp', 'sender', 'receiver', 'amount', 'annulled')
+    list_display = ('time_stamp', 'sender', 'receiver', 'amount', 'comment', 'annulled')
     # "annulled" to prevent enabling it when adding new objects
     readonly_fields = ('time_stamp', 'annulled')
 
