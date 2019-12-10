@@ -119,7 +119,7 @@ class UserIdentifierAdmin(admin.ModelAdmin):
 
 
 @admin.register(models.UnknownUserIdentifier)
-class UserIdentifierAdmin(admin.ModelAdmin):
+class UnknownUserIdentifierAdmin(admin.ModelAdmin):
     list_display = ('time_stamp', 'ident_type', 'ident')
 
 
