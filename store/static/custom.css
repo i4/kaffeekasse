@@ -5,7 +5,7 @@ html {
 }
 
 .price-tag::after {
-    margin-left:.4ex;
+    margin-left: .4ex;
     content: "€";
 }
 
