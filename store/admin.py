@@ -75,7 +75,7 @@ class UserDataAdmin(admin.ModelAdmin):
     # For autocomplete_fields
     ordering = ('auth__username',)
     search_fields = ('auth__username', 'auth__first_name', 'auth__last_name',
-            'idm')
+                     'idm')
 
 class UserDataInline(admin.StackedInline):
     model = models.UserData
@@ -100,6 +100,9 @@ class UserAdmin(django.contrib.auth.admin.UserAdmin):
         (_('Personal info'), {'fields': ('first_name', 'last_name', 'email')}),
     )
 
+    search_fields = ('username', 'first_name', 'last_name', 'email',
+                     'userdata__idm')
+
     readonly_fields = ('last_login',)
 
     inlines = (UserDataInline,)
@@ -115,6 +118,11 @@ admin.site.register(django.contrib.auth.models.User, UserAdmin)
 class UserIdentifierAdmin(admin.ModelAdmin):
     list_display = ('user', 'ident_type', 'ident')
 
+    search_fields = ('user__auth__username', 'user__auth__first_name',
+                     'user__auth__last_name', 'user__auth__email',
+                     'user__idm',
+                     'ident')
+
     autocomplete_fields = ('user',)
 
 
@@ -127,6 +135,8 @@ class UnknownUserIdentifierAdmin(admin.ModelAdmin):
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('name', 'category', 'price', 'stock')
 
+    search_fields = ('name',)
+
 
 @admin.register(models.ProductCategory)
 class ProductCategoryAdmin(admin.ModelAdmin):
@@ -138,12 +148,19 @@ class ProductCategoryAdmin(admin.ModelAdmin):
 class ProductIdentifierAdmin(admin.ModelAdmin):
     list_display = ('product', 'ident_type', 'ident')
 
+    search_fields = ('product__name', 'ident')
+
 
 @admin.register(models.Charge)
 class ChargeAdmin(AppendOnlyModelAdmin):
     list_display = ('time_stamp', 'user', 'amount', 'annulled', 'comment')
     # "annulled" to prevent enabling it when adding new objects
     readonly_fields = ('time_stamp', 'annulled')
+
+    search_fields = ('user__auth__username', 'user__auth__first_name',
+                     'user__auth__last_name', 'user__auth__email',
+                     'user__idm',
+                     'comment')
 
     autocomplete_fields = ('user',)
 
@@ -164,12 +181,25 @@ class PurchaseAdmin(ReadOnlyModelAdmin):
     list_display = ('time_stamp', 'user', 'product', 'price', 'annulled')
     readonly_fields = ('time_stamp',)
 
+    search_fields = ('user__auth__username', 'user__auth__first_name',
+                     'user__auth__last_name', 'user__auth__email',
+                     'user__idm',
+                     'product__name')
+
 
 @admin.register(models.Transfer)
 class TransferAdmin(AppendOnlyModelAdmin):
     list_display = ('time_stamp', 'sender', 'receiver', 'amount', 'comment', 'annulled')
     # "annulled" to prevent enabling it when adding new objects
     readonly_fields = ('time_stamp', 'annulled')
+
+    search_fields = ('sender__auth__username', 'sender__auth__first_name',
+                     'sender__auth__last_name', 'sender__auth__email',
+                     'sender__idm',
+                     'receiver__auth__username', 'receiver__auth__first_name',
+                     'receiver__auth__last_name', 'receiver__auth__email',
+                     'receiver__idm',
+                     'comment')
 
     autocomplete_fields = ('sender', 'receiver')
 
