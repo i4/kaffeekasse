@@ -219,6 +219,9 @@ class PurchaseLogic:
             user = purchase.user
             user.money += purchase.price
             user.save()
+            product = purchase.product
+            product.stock += 1
+            product.save()
             purchase.annulled = True
             purchase.save()
 
