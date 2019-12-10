@@ -50,6 +50,10 @@ Since the display does not support a software solution to disable the backround 
 	sudo apt install chromium-browser lightdm xserver-xorg-input-libinput
 	```
 * Enable autostart of the browser in kiosk mode by copying the provided file [Xsession](Xsession) to `/home/pi/.Xsession` (mind the dot). Adjust the URL and monitor timeouts (30s) to your needs.
+* Disable the mouse cursor in lightDM config `/etc/lightdm/lightdm.conf` by uncommenting and modifing the `xserver-command` line in the `[Seat:*]` section to
+    ```
+    xserver-command=X -nocursor
+	```
 * Start `raspi-config`, change in *3 Boot Options* / *B1 Desktop / CLI* to *B4 Desktop Autologin* and perform updates (*8 Updates*)
 * To rotate touch input, copy the file [40-libinput.conf](40-libinput.conf) (originated from `/usr/share/X11/xorg.conf.d/40-libinput.conf`) to `/etc/X11/xorg.conf.d/40-libinput.conf` (create the `xorg.conf.d` directory first)
 * Setup booting directly into X via `sudo raspi-config` and establish your network connection
