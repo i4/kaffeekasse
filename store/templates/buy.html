@@ -79,10 +79,10 @@
         <div class="accordion" id="accordionDrinks">
             {% for sublevel_cat, prods in drinks.items %}
                 <div class="card">
-                    <button class="btn card-header collapsed text-left" type="button" data-toggle="collapse" data-target="#collapse{{ sublevel_cat }}" aria-expanded="false" aria-controls="collapse{{ sublevel_cat }}">
+                    <button class="btn card-header collapsed text-left" type="button" data-toggle="collapse" data-target="#collapse-drink-{{ forloop.counter }}" aria-expanded="false" aria-controls="collapse-drink-{{ forloop.counter }}">
                         {{ sublevel_cat }}
                     </button>
-                    <div id="collapse{{ sublevel_cat }}" class="collapse" aria-labelledby="heading{{ sublevel_cat }}" data-parent="#accordionDrinks">
+                    <div id="collapse-drink-{{ forloop.counter }}" class="collapse" aria-labelledby="heading-drink-{{ forloop.counter }}" data-parent="#accordionDrinks">
                         <div class="card-body">
                             <ul class="list-group">
                                 {% for prod in prods %}
@@ -107,10 +107,10 @@
         <div class="accordion" id="accordionCandies">
             {% for sublevel_cat, prods in candies.items %}
                 <div class="card">
-                    <button class="btn card-header collapsed text-left" type="button" data-toggle="collapse" data-target="#collapse{{ sublevel_cat }}" aria-expanded="false" aria-controls="collapse{{ sublevel_cat }}">
+                    <button class="btn card-header collapsed text-left" type="button" data-toggle="collapse" data-target="#collapse-candies-{{ forloop.counter }}" aria-expanded="false" aria-controls="collapse-candies-{{ forloop.counter }}">
                         {{ sublevel_cat }}
                     </button>
-                    <div id="collapse{{ sublevel_cat }}" class="collapse" aria-labelledby="heading{{ sublevel_cat }}" data-parent="#accordionCandies">
+                    <div id="collapse-candies-{{ forloop.counter }}" class="collapse" aria-labelledby="heading-candies-{{ forloop.counter }}" data-parent="#accordionCandies">
                         <div class="card-body">
                             <ul class="list-group">
                                 {% for prod in prods %}
