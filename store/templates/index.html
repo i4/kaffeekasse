@@ -99,12 +99,11 @@
             icon = icon ? icon : new Icon('rfid');
             ws.onopen = function(ev) {
                 icon.enable();
+                ws.onerror = function(ev) {
+                    icon.disable();
+                    displayError('RFID: ' + ev.reason);
+                };
                 ws.send(version);
-            };
-            ws.onerror = function(ev) {
-                icon.disable();
-		if (ev.reason != '')
-		    displayError('RFID: ' + ev.reason);
             };
             ws.onclose = function(ev) {
                 icon.disable();
