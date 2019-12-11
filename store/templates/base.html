@@ -103,7 +103,7 @@
     {% endif %}
 
     {% comment %} Auto logout {% endcomment %}
-    {% if user.is_authenticated %}
+    {% if user.is_authenticated and direct_login %}
     <script>
 	var auth = new function(timeout) {
 		var ival  = undefined;

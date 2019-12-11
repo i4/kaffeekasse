@@ -58,6 +58,7 @@ def buy(request):
 
     if request.method == 'GET':  # Return the rendered page
         return render(request, 'buy.html', {
+            'direct_login': permit_direct_login(request),
             'most_bought': backend.ProductLogic.getMostBoughtProductsList(user_id),
             'recently_bought': backend.ProductLogic.getLastBoughtProductsList(user_id),
             'drinks': backend.ProductLogic.getDrinks(),
@@ -121,6 +122,7 @@ def charge(request):
 
     if request.method == 'GET':
         return render(request, 'charge.html', {
+            'direct_login': permit_direct_login(request),
             'recent_charges': backend.ChargeLogic.getLastChargesList(user_id),
             'config': config,
         })
@@ -168,6 +170,7 @@ def transfer(request):
 
     if request.method == 'GET':
         return render(request, 'transfer.html', {
+            'direct_login': permit_direct_login(request),
             'users': backend.TransferLogic.getFrequentTransferTargets(user_id),
             'recent_transfers': backend.TransferLogic.getLastTransfers(user_id),
             'ident_types': models.UserIdentifier,
