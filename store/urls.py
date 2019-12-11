@@ -11,7 +11,7 @@ urlpatterns = [
     path('buy_revert', views.buy_revert, name='buy_revert'),
     path('transfer', views.transfer, name='transfer'),
     path('transfer_revert', views.transfer_revert, name='transfer_revert'),
-    path('charge', views.charge, name="charge"),
+    path('charge', views.charge, name='charge'),
     path('charge_revert', views.charge_revert, name='charge_revert'),
 
     # Auth

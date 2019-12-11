@@ -44,27 +44,27 @@
 
     {% comment %} Icon {% endcomment %}
     <script>
-        var Icon = function (name, extension="svg") {
+        var Icon = function (name, extension='svg') {
             if (Icon.prototype.bar === undefined) {
-                var bar = document.createElement("div");
+                var bar = document.createElement('div');
                 Icon.prototype.bar = $(bar);
-                Icon.prototype.bar.addClass("iconbar");
+                Icon.prototype.bar.addClass('iconbar');
                 Icon.prototype.bar.appendTo(document.body);
             }
-            var path = "{% static "icon/" %}" + name;
+            var path = '{% static "icon/" %}' + name;
             if (extension !== null && extension !== undefined)
-                path += "." + extension;
-            var img = document.createElement("img");
+                path += '.' + extension;
+            var img = document.createElement('img');
             img.src = path;
-            img.classList.add("disabled");
+            img.classList.add('disabled');
             $(img).load(function(ev) {
                 Icon.prototype.bar.append(img)
             });
             this.disable = function() {
-                $(img).addClass("disabled");
+                $(img).addClass('disabled');
             };
             this.enable = function() {
-                $(img).removeClass("disabled");
+                $(img).removeClass('disabled');
             };
             return this;
         }
@@ -92,11 +92,11 @@
 
         // Update the displayed money information
         function updateMoney() {
-            $("#money").html(parseFloat(money).toFixed(2) + " €");
+            $('#money').html(parseFloat(money).toFixed(2) + ' €');
             if (money < 0) {
-                $("#navbar").addClass("navbar-i4-negative-money");
+                $('#navbar').addClass('navbar-i4-negative-money');
             } else {
-                $("#navbar").removeClass("navbar-i4-negative-money");
+                $('#navbar').removeClass('navbar-i4-negative-money');
             }
         }
     </script>
@@ -109,10 +109,10 @@
 		var ival  = undefined;
 		var self  = this;
 		var timer = timeout;
-		var node  = $(document.createElement("tt"));
-		node.addClass("timeout navbar-text font-weight-bold text-monospace");
-		$("#logout").append(node);
-		node.css("margin-left", "-12px");
+		var node  = $(document.createElement('tt'));
+		node.addClass('timeout navbar-text font-weight-bold text-monospace');
+		$('#logout').append(node);
+		node.css('margin-left', '-12px');
 		var reset = function(ev) {
 			self.reset()
 		};
@@ -129,7 +129,7 @@
 
 		// public interface
 		this.logout = function() {
-			window.location.href = "{% url "logout" %}";
+			window.location.href = '{% url "logout" %}';
 			clearInterval(ival);
 		};
 		this.reset  = function() {
@@ -199,7 +199,7 @@
         $.ajaxSetup({
             beforeSend: function(xhr, settings) {
                 if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                    xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+                    xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
                 }
             }
         });
@@ -212,7 +212,7 @@
         // Try to extract an error message from error.
         // Otherwise use def.
         function showError(error, def) {
-            if (error && "responseJSON" in error && "error" in error.responseJSON) {
+            if (error && 'responseJSON' in error && 'error' in error.responseJSON) {
                 displayError(error.responseJSON.error);
             } else {
                 displayError(def)
@@ -221,16 +221,16 @@
 
         // Clear alert div
         function clearError() {
-            $("#alertDiv").html("");
+            $('#alertDiv').html('');
         }
 
         // Display the message in alertDiv as an bootstrap danger alert
         function displayError(message) {
-            $("#alertDiv").html('<div class="alert alert-danger" role="alert">' + message + '</div>');
+            $('#alertDiv').html('<div class="alert alert-danger" role="alert">' + message + '</div>');
         }
 
         {% if error %}
-            displayError("{{ error }}");
+            displayError('{{ error }}');
         {% endif %}
     </script>
 
@@ -238,15 +238,15 @@
     <script>
         var barcode = new function() {
             var handler = undefined;
-            var buffer = ""
+            var buffer = ''
             var icon = undefined;
             this.handler = function(fn) {
                 $(document).unbind('keypress');
                 if (handler !== undefined) {
-                    displayError("Barcode: only one handler allowed!");
+                    displayError('Barcode: only one handler allowed!');
                     return;
                 } else if (icon === undefined) {
-	                icon = new Icon("barcode");
+	                icon = new Icon('barcode');
                 }
 
                 if (fn === null || fn === undefined) {
@@ -255,13 +255,13 @@
                 } else {
                     icon.enable();
                     handler = fn;
-                    buffer = ""
+                    buffer = ''
                     $(document).keypress(function (event) {
                         event.preventDefault();
                         // Newline. Barcode scanned completly.
                         if (event.which == 13) {
                             handler(buffer);
-                            buffer = "";
+                            buffer = '';
                             return;
                         }
 

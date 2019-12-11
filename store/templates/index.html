@@ -69,12 +69,12 @@
 
 {% block script %}
     <script>
-        "use strict";
+        'use strict';
 
         function login(ident, type) {
-            $("#ident").val(ident);
-            $("#ident_type").val(type);
-            $("#login_form").submit();
+            $('#ident').val(ident);
+            $('#ident_type').val(type);
+            $('#login_form').submit();
         }
 
         barcode.handler(function(ident){
@@ -82,33 +82,33 @@
         });
 
         function loginID() {
-            var id = $("#user_id").val();
+            var id = $('#user_id').val();
 
             if (isNaN(parseInt(id))) {
-                $("#user_id").val(null);
-                displayError("ID ist ungültig.");
+                $('#user_id').val(null);
+                displayError('ID ist ungültig.');
                 return;
             }
 
             login(id, {{ ident_types.ID }});
         }
 
-        function rfid(version, host="localhost", port=8000, icon=undefined) {
-            var ws = new WebSocket("ws://" + host + ":" + port + "/getuid", "getuid");
-            icon = icon ? icon : new Icon("rfid");
+        function rfid(version, host='localhost', port=8000, icon=undefined) {
+            var ws = new WebSocket('ws://' + host + ':' + port + '/getuid', 'getuid');
+            icon = icon ? icon : new Icon('rfid');
             ws.onopen = function(ev) {
                 icon.enable();
                 ws.send(version);
             };
             ws.onerror = function(ev) {
                 icon.disable();
-		if (ev.reason != "")
-		    displayError("RFID: " + ev.reason);
+		if (ev.reason != '')
+		    displayError('RFID: ' + ev.reason);
             };
             ws.onclose = function(ev) {
                 icon.disable();
-                if (ev.reason != "")
-                    displayError("RFID: " + ev.reason);
+                if (ev.reason != '')
+                    displayError('RFID: ' + ev.reason);
 		if (ev.wasClean)
 		    rfid(version, host, port, icon);
             };
@@ -116,6 +116,6 @@
                 login(ev.data, {{ ident_types.RFID }});
             };
         };
-        rfid("version 1.0");
+        rfid('version 1.0');
     </script>
 {% endblock %}

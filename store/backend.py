@@ -149,7 +149,7 @@ class ProductLogic:
         products = {}
         for sublevel in sublevels:
             # Get product for sublevel
-            sublevel = sublevel["sublevel"]
+            sublevel = sublevel['sublevel']
             ps = models.ProductCategory.objects.filter(toplevel=category, sublevel=sublevel) \
                     .prefetch_related('products') \
                     .values('products__id', 'products__name', 'products__price') \

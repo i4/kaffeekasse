@@ -154,7 +154,7 @@
     var users = {
         {% for user in users %}
             {{ user.id }}: {
-                username: "{{ user.username }}"
+                username: '{{ user.username }}'
             },
         {% endfor %}
     };
@@ -162,7 +162,7 @@
     var recent_transfers = [
         {% for transfer in recent_transfers %} {
             id: {{ transfer.id }},
-            receiver_username: "{{ transfer.receiver_username }}",
+            receiver_username: '{{ transfer.receiver_username }}',
             amount: {{ transfer.amount }},
             annullable: {% if transfer.annullable %} true {% else %} false {% endif %},
             annulled: {% if transfer.annulled %} true {% else %} false {% endif %},
@@ -177,10 +177,10 @@
 
     function numpadTransfer() {
         // Convert receiver to int
-        var id = parseInt($("#user_id").val());
+        var id = parseInt($('#user_id').val());
         if (isNaN(id)) {
-            $("#user_id").val("");
-            displayError("Ungültiger Empfänger");
+            $('#user_id').val('');
+            displayError('Ungültiger Empfänger');
             return;
         }
 
@@ -193,21 +193,21 @@
 
     function transfer(receiver_ident, ident_type) {
         error = error => {
-            showError(error, "Fehler beim Überweisen");
+            showError(error, 'Fehler beim Überweisen');
         }
 
         // Get amount from text field
-        var amount = $("#amount").val().replace(',', '.');
+        var amount = $('#amount').val().replace(',', '.');
         amount = parseFloat(amount);
         if (isNaN(amount)) {
-            $("#amount").val("");
-            displayError("Ungültiger Betrag");
+            $('#amount').val('');
+            displayError('Ungültiger Betrag');
             return;
         }
 
         $.ajax({
-            url: "{% url "transfer" %}",
-            method: "POST",
+            url: '{% url "transfer" %}',
+            method: 'POST',
             data: {
                 amount: amount,
                 receiver_ident: receiver_ident,
@@ -216,8 +216,8 @@
             success: data => {
                 clearError();
                 reduceMoney(amount);
-                $("#amount").val("");
-                $("#user_id").val("");
+                $('#amount').val('');
+                $('#user_id').val('');
                 addNewTransfer(data.transfer_id, data.receiver_id, amount);
             },
             error: error,
@@ -242,13 +242,13 @@
     // Returns a function that can be called to revert the transfer where transfer.id == id
     function revert(id) {
         error = error => {
-            showError(error, "Fehler beim Rückgängig machen einer Überweisung");
+            showError(error, 'Fehler beim Rückgängig machen einer Überweisung');
         }
 
         return function() {
             $.ajax({
-                url: "{% url "transfer_revert" %}",
-                method: "POST",
+                url: '{% url "transfer_revert" %}',
+                method: 'POST',
                 data: {
                     transfer_id: id,
                 },
@@ -270,24 +270,24 @@
     // Update the list of recent transfers with the values from recent_transfers
     function updateRecentTransfers() {
         // Remove old values from list
-        $("#recent_transfers").empty();
+        $('#recent_transfers').empty();
         for (var transfer of recent_transfers) {
             // Get and clone correct template
             var template = transfer.annulled ?
-                $("#recent_transfer_annulled_template") :
+                $('#recent_transfer_annulled_template') :
                 (transfer.annullable ?
-                    $("#recent_transfer_annullable_template") :
-                    $("#recent_transfer_template"));
+                    $('#recent_transfer_annullable_template') :
+                    $('#recent_transfer_template'));
             template = template.clone().prop('content');
 
             // Append template
-            $("#recent_transfers").append(template);
+            $('#recent_transfers').append(template);
 
             // Set template values
-            $("#recent_transfer_recipient").html(transfer.receiver_username).attr("id", "");
-            $("#recent_transfer_amount").html(transfer.amount.toFixed(2) + " €").attr("id", "");
+            $('#recent_transfer_recipient').html(transfer.receiver_username).attr('id', '');
+            $('#recent_transfer_amount').html(transfer.amount.toFixed(2) + ' €').attr('id', '');
             if (transfer.annullable) {
-                $("#recent_transfer_revert").click(revert(transfer.id)).attr("id", "");
+                $('#recent_transfer_revert').click(revert(transfer.id)).attr('id', '');
             }
         }
 

@@ -117,27 +117,27 @@
 
     function charge() {
         error = error => {
-            showError(error, "Fehler beim Aufladen");
+            showError(error, 'Fehler beim Aufladen');
         }
 
         // Get amount from text field
-        var amount = $("#amount").val().replace(',', '.');
+        var amount = $('#amount').val().replace(',', '.');
         amount = parseFloat(amount);
         if (isNaN(amount)) {
-            displayError("Ungültiger Betrag");
+            displayError('Ungültiger Betrag');
             return;
         }
 
         $.ajax({
-            url: "{% url "charge" %}",
-            method: "POST",
+            url: '{% url "charge" %}',
+            method: 'POST',
             data: {
                 amount: amount,
             },
             success: data => {
                 clearError();
                 increaseMoney(amount);
-                $("#amount").val("");
+                $('#amount').val('');
                 addNewCharge(data.charge_id, amount);
             },
             error: error,
@@ -161,13 +161,13 @@
     // Returns a function that can be called to revert the charge where charge.id == id
     function revert(id) {
         error = error => {
-            showError(error, "Fehler beim Rückgängig machen einer Aufladung");
+            showError(error, 'Fehler beim Rückgängig machen einer Aufladung');
         };
 
         return function() {
             $.ajax({
-                url: "{% url "charge_revert" %}",
-                method: "POST",
+                url: '{% url "charge_revert" %}',
+                method: 'POST',
                 data: {
                     charge_id: id,
                 },
@@ -189,23 +189,23 @@
     // Update the list of recent charges with the values from recent_charges
     function updateRecentCharges() {
         // Remove old values from list
-        $("#recent_charges").empty();
+        $('#recent_charges').empty();
         for (var charge of recent_charges) {
             // Clone template
             var template = charge.annulled ?
-                $("#recent_charge_annulled_template") :
+                $('#recent_charge_annulled_template') :
                 (charge.annullable ?
-                    $("#recent_charge_annullable_template") :
-                    $("#recent_charge_template"));
+                    $('#recent_charge_annullable_template') :
+                    $('#recent_charge_template'));
             template = template.clone().prop('content');
 
             // Append template
-            $("#recent_charges").append(template);
+            $('#recent_charges').append(template);
 
             // Set template values
-            $("#recent_charge_amount").html(charge.amount.toFixed(2) + " €").attr("id", "");
+            $('#recent_charge_amount').html(charge.amount.toFixed(2) + ' €').attr('id', '');
             if (charge.annullable) {
-                $("#recent_charge_revert").click(revert(charge.id)).attr("id", "");
+                $('#recent_charge_revert').click(revert(charge.id)).attr('id', '');
             }
         }
 

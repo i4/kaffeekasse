@@ -138,7 +138,7 @@
         {% for product in products %}
         {{ product.id }}: {
             price: {{ product.price }},
-            name: "{{ product.name }}",
+            name: '{{ product.name }}',
         },
         {% endfor %}
     };
@@ -148,7 +148,7 @@
         {% for product in recently_bought %}{
             id: {{ product.product_id }},
             price: {{ product.product__price }},
-            name: "{{ product.product__name }}",
+            name: '{{ product.product__name }}',
             annullable: {% if product.annullable %} true {% else %} false {% endif %},
             annulled: {% if product.annulled %} true {% else %} false {% endif %},
             purchase_id: {{ product.purchase__id }},
@@ -164,7 +164,7 @@
         // Check if id is a valid integer
         id = parseInt(id);
         if (isNaN(id)) {
-            displayError("Ungültiges Produkt");
+            displayError('Ungültiges Produkt');
             return;
         }
 
@@ -177,12 +177,12 @@
 
     function buy(ident, ident_type) {
         error = error => {
-            showError(error, "Fehler beim Einkaufen");
+            showError(error, 'Fehler beim Einkaufen');
         }
 
         $.ajax({
-            url: "{% url "buy" %}",
-            method: "POST",
+            url: '{% url "buy" %}',
+            method: 'POST',
             data: {
                 ident: ident,
                 ident_type: ident_type,
@@ -213,13 +213,13 @@
 
     function revert(id) {
         error = error => {
-            showError(error, "Fehler beim Rückgängig machen eines Einkaufes.");
+            showError(error, 'Fehler beim Rückgängig machen eines Einkaufes.');
         }
 
         return function() {
             $.ajax({
-                url: "{% url "buy_revert" %}",
-                method: "POST",
+                url: '{% url "buy_revert" %}',
+                method: 'POST',
                 data: {
                     purchase_id: id,
                 },
@@ -240,25 +240,25 @@
 
     function updateRecentlyBoughtList() {
         // Remove old values from list
-        $("#recently_bought_list").empty();
+        $('#recently_bought_list').empty();
 
         for (var product of recently_bought) {
             // Get and clone correct template
             var template = product.annulled ?
-                $("#recently_bought_annulled_template") :
+                $('#recently_bought_annulled_template') :
                 (product.annullable ?
-                    $("#recently_bought_annullable_template") :
-                    $("#recently_bought_template"));
+                    $('#recently_bought_annullable_template') :
+                    $('#recently_bought_template'));
             template = template.clone().prop('content');
 
             // Append template
-            $("#recently_bought_list").append(template);
+            $('#recently_bought_list').append(template);
 
             // Set template values
-            $("#recent_product_price").html(product.price.toFixed(2)).attr("id", "");
-            $("#recent_product_name").html(product.name).attr("id", "");
+            $('#recent_product_price').html(product.price.toFixed(2)).attr('id', '');
+            $('#recent_product_name').html(product.name).attr('id', '');
             if (product.annullable) {
-                $("#recent_bought_revert").click(revert(product.purchase_id)).attr("id", "");
+                $('#recent_bought_revert').click(revert(product.purchase_id)).attr('id', '');
             }
         }
     }
