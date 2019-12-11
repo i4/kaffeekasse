@@ -40,6 +40,7 @@ def index(request):
 
     django.contrib.auth.logout(request)
     return render(request, 'index.html', {
+        'direct_login': permit_direct_login(request),
         'users': backend.UserLogic.getFrequentUsersList(),
         'ident_types': models.UserIdentifier,
     })

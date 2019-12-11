@@ -236,6 +236,7 @@
 
     {% comment %} Barcode {% endcomment %}
     <script>
+        {% if direct_login %}
         var barcode = new function() {
             var handler = undefined;
             var buffer = ''
@@ -271,6 +272,15 @@
             }
             return this;
         };
+        {% else %}
+        var barcode = new function() {
+            this.handler = function(fn) {
+                // barcode reader disabled
+                console.log("ignore barcode handler", fn)
+            }
+            return this
+        }
+        {% endif %}
     </script>
     {% block script %} {% endblock %}
 </body>

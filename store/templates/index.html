@@ -93,6 +93,7 @@
             login(id, {{ ident_types.ID }});
         }
 
+        {% if direct_login %}
         function rfid(version, host='localhost', port=8000, icon=undefined) {
             var ws = new WebSocket('ws://' + host + ':' + port + '/getuid', 'getuid');
             icon = icon ? icon : new Icon('rfid');
@@ -117,5 +118,6 @@
             };
         };
         rfid('version 1.0');
+        {% endif %}
     </script>
 {% endblock %}
