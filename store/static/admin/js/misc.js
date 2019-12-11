@@ -33,6 +33,4 @@ $(document).ready(function() {
     const pw = 'x' + crypto.getRandomValues(new Uint8Array(40)).join('');
     pw1.value = pw;
     pw2.value = pw;
-
-    console.log("setting random pw", pw);
 });
