@@ -19,6 +19,11 @@ apt install python3-django python3-psycopg2
 ```
 
 
+### Config
+
+All configurable parameters are stored in `store/store_config.py`.
+
+
 ## Setup
 
 * Create a PostgreSQL database for the current user
@@ -34,11 +39,6 @@ apt install python3-django python3-psycopg2
 
 Login at http://localhost:8000/admin/ with the super user and start creating
 products, categories, users, etc.
-
-
-### Config
-
-All configurable parameters are stored in `store/store_config.py`.
 
 
 ## Authors
