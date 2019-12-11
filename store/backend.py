@@ -127,11 +127,7 @@ class ProductLogic:
         time_limit = timezone.now() - timedelta(minutes=annullable_time)
         for product in products:
             product['purchase__id'] = product.pop('id')
-            purchase_time = product['time_stamp']
-            if time_limit >= purchase_time:
-                product.update({'annullable': False})
-            else:
-                product.update({'annullable': True})
+            product['annullable'] = time_limit <= product['time_stamp']
 
         return list(products)
 
@@ -247,10 +243,7 @@ class ChargeLogic:
 
         time_limit = timezone.now() - timedelta(minutes=annullable_time)
         for charge in charges:
-            if time_limit > charge['time_stamp']:
-                charge.update({'annullable': False})
-            else:
-                charge.update({'annullable': True})
+            charge['annullable'] = time_limit <= charge['time_stamp']
 
         return list(charges)
 
@@ -347,10 +340,7 @@ class TransferLogic:
 
         time_limit = timezone.now() - timedelta(minutes=annullable_time)
         for transfer in transfers:
-            if time_limit > transfer['time_stamp']:
-                transfer.update({'annullable': False})
-            else:
-                transfer.update({'annullable': True})
+            transfer['annullable'] = time_limit <= transfer['time_stamp']
             transfer['receiver_username'] = transfer.pop('receiver__auth__username')
 
         return list(transfers)
