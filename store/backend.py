@@ -128,7 +128,7 @@ class ProductLogic:
         for product in products:
             product['purchase__id'] = product.pop('id')
             purchase_time = product['time_stamp']
-            if time_limit >= purchase_time or product['annulled']:
+            if time_limit >= purchase_time:
                 product.update({'annullable': False})
             else:
                 product.update({'annullable': True})
