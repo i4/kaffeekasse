@@ -62,8 +62,15 @@ def buy(request):
             'direct_login': permit_direct_login(request),
             'most_bought': backend.ProductLogic.getMostBoughtProductsList(user_id),
             'recently_bought': backend.ProductLogic.getLastBoughtProductsList(user_id),
-            'drinks': backend.ProductLogic.getDrinks(),
-            'candies': backend.ProductLogic.getCandies(),
+            'categories': [{
+                'name': 'Getränke',
+                'id': 'drinks',
+                'products': backend.ProductLogic.getDrinks(),
+            }, {
+                'name': 'Nahrung',
+                'id': 'candies',
+                'products': backend.ProductLogic.getCandies(),
+            }],
             'products': models.Product.objects.all(),
             'ident_types': models.ProductIdentifier,
             'config': config,

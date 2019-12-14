@@ -73,16 +73,17 @@
         </div>
     </div>
 
-    {% comment %} Drinks {% endcomment %}
+    {% comment %} Product categories, e.g. drinks, snacks {% endcomment %}
+    {% for category in categories %}
     <div class="col-lg-4 col-md-6 col-12 mb-4">
-        <h4>Getränke</h4>
-        <div class="accordion" id="accordionDrinks">
-            {% for sublevel_cat, prods in drinks.items %}
+        <h4>{{category.name}}</h4>
+        <div class="accordion" id="accordion{{category.id}}">
+            {% for sublevel_cat, prods in category.products.items %}
                 <div class="card">
-                    <button class="btn card-header collapsed text-left" type="button" data-toggle="collapse" data-target="#collapse-drink-{{ forloop.counter }}" aria-expanded="false" aria-controls="collapse-drink-{{ forloop.counter }}">
+                    <button class="btn card-header collapsed text-left" type="button" data-toggle="collapse" data-target="#collapse-{{category.id}}-{{ forloop.counter }}" aria-expanded="false" aria-controls="collapse-{{category.id}}-{{ forloop.counter }}">
                         {{ sublevel_cat }}
                     </button>
-                    <div id="collapse-drink-{{ forloop.counter }}" class="collapse" aria-labelledby="heading-drink-{{ forloop.counter }}" data-parent="#accordionDrinks">
+                    <div id="collapse-{{category.id}}-{{ forloop.counter }}" class="collapse" aria-labelledby="heading-{{category.id}}-{{ forloop.counter }}" data-parent="#accordion{{category.id}}">
                         <div class="card-body">
                             <ul class="list-group">
                                 {% for prod in prods %}
@@ -100,34 +101,7 @@
             {% endfor %}
         </div>
     </div>
-
-    {% comment %} Snacks {% endcomment %}
-    <div class="col-lg-4 col-md-6 col-12 mb-4">
-        <h4>Nahrung</h4>
-        <div class="accordion" id="accordionCandies">
-            {% for sublevel_cat, prods in candies.items %}
-                <div class="card">
-                    <button class="btn card-header collapsed text-left" type="button" data-toggle="collapse" data-target="#collapse-candies-{{ forloop.counter }}" aria-expanded="false" aria-controls="collapse-candies-{{ forloop.counter }}">
-                        {{ sublevel_cat }}
-                    </button>
-                    <div id="collapse-candies-{{ forloop.counter }}" class="collapse" aria-labelledby="heading-candies-{{ forloop.counter }}" data-parent="#accordionCandies">
-                        <div class="card-body">
-                            <ul class="list-group">
-                                {% for prod in prods %}
-                                    <button onclick="buyPK({{ prod.id }})" type="button" class="list-group-item list-group-item-action">
-                                        <div class="d-flex w-100 justify-content-between">
-                                            <div class="mb-1">{{ prod.name }}</div>
-					    <div class="price-tag">{{ prod.price }}</div>
-                                        </div>
-                                    </button>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-    </div>
+    {% endfor %}
 </div>
 {% endblock %}
 
