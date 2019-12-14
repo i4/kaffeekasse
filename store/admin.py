@@ -70,7 +70,7 @@ class UserDataAdmin(admin.ModelAdmin):
             return True
         return False
 
-    readonly_fields = ('auth', 'money')
+    readonly_fields = ('auth', 'money', 'last_mail')
 
     # For autocomplete_fields
     ordering = ('auth__username',)

@@ -34,6 +34,7 @@ class UserData(models.Model):
     money = models.DecimalField(max_digits=6, decimal_places=2, default=0.0,
             validators=[validators.MinValueValidator(config.MONEY_MIN_LIMIT)])
     shown_on_login_screen = models.BooleanField(default=True)
+    last_mail = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return '{} ({} {} {})'.format(self.auth.username, self.idm,
