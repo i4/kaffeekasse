@@ -35,6 +35,12 @@ class UserLogic:
         if x is None:
             i = models.UnknownUserIdentifier(ident=ident, ident_type=ident_type)
             i.save()
+            # Expire old entries
+            time_stamp = timezone.now() - timedelta(days=1)
+            models.UnknownUserIdentifier.objects \
+                    .filter(time_stamp__lt=time_stamp) \
+                    .delete()
+
             raise exceptions.UserIdentifierNotExists()
         return x.user
 
