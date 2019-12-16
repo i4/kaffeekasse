@@ -17,6 +17,8 @@ import store.config as config
 import store.exceptions as exceptions
 import store.models as models
 
+import smtplib
+from email.message import EmailMessage
 
 class UserLogic:
     @staticmethod
@@ -237,6 +239,42 @@ class PurchaseLogic:
             purchase.save()
 
 
+@typechecked
+def notification(user: models.UserData, subject: str, message: str):
+    """
+    Send a notification about an transaction to an user
+    """
+    name = user.auth.first_name if user.auth.first_name else user.auth.username
+    body = f'''Hallo {name},
+
+{message}
+Dein neuer Kontostand beträgt: {user.money} €
+'''
+    if user.money < 0:
+        body += '''
+   ***************************************************
+   * Dein Kontostand ist negativ. Bitte ausgleichen! *
+   ***************************************************
+'''
+    body += '''
+Deine Kaffeekasse 2020NT
+'''
+
+    msg = EmailMessage()
+    msg.set_content(body)
+    msg['To'] = user.auth.email
+    msg['From'] = 'i4kaffee@cs.fau.de'
+    msg['Subject'] = f'Kaffeekasse: {subject}'
+
+    try:
+        s = smtplib.SMTP('localhost')
+        s.send_message(msg)
+        s.quit()
+    except Exception as e:
+        # only log the notification failure but do not abort
+        # the transaction with an exception
+        print(e)
+
 class ChargeLogic:
     @staticmethod
     @typechecked
@@ -275,6 +313,8 @@ class ChargeLogic:
             user.save()
             charge = models.Charge(amount=amount, user=user)
             charge.save()
+            money = format(amount, '.2f')
+            notification(user, f'Aufladung {money} €', f'deinem Konto wurden {money} € gutgechrieben')
             return charge.id
 
     @staticmethod
@@ -300,6 +340,8 @@ class ChargeLogic:
             user.save()
             charge.annulled = True
             charge.save()
+            money = format(charge.amount, '.2f')
+            notification(user, 'Aufladung annulliert', f'die Aufladung deines Kontos mit {money} € wurde annuliert')
 
 
 class TransferLogic:
@@ -384,6 +426,10 @@ class TransferLogic:
             receiver.money += amount
             receiver.save()
 
+            money = format(amount, '.2f')
+            notification(receiver, f'Überweisung (+{money} €)', f'dir wurden {money} € von {sender.auth.username} überwiesen')
+            notification(sender, f'Überweisung (-{money} €)', f'du hast {money} € an {receiver.auth.username} überwiesen')
+
             return transfer.id, receiver.id
 
     @staticmethod
@@ -413,3 +459,7 @@ class TransferLogic:
             receiver.save()
             sender.money += transfer.amount
             sender.save()
+
+            money = format(transfer.amount, '.2f')
+            notification(receiver, 'Überweisung annulliert', f'die Überweisung von {sender.auth.username} über {money} € wurde annulliert.')
+            notification(sender, 'Überweisung annuliert', f'deine Überweisung an {receiver.auth.username} über {money} € wurde annuliert.')
