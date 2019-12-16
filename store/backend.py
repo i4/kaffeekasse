@@ -107,7 +107,10 @@ class ProductLogic:
 
         time_stamp = timezone.now() - timedelta(days=max_days)
         products = models.Purchase.objects \
-                .filter(user=user_id, time_stamp__gte=time_stamp, product__isnull=False) \
+                .filter(user=user_id,
+                        time_stamp__gte=time_stamp,
+                        product__isnull=False,
+                        annulled=False) \
                 .select_related('product') \
                 .values('product__name', 'product_id', 'product__price') \
                 .annotate(total=Count('product_id')) \
