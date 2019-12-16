@@ -28,7 +28,10 @@ html {
 .navbar-i4 {
     background-color: #003865 !important;
 }
-.navbar-i4-negative-money {
+.navbar-i4-negative-money-warning {
+    background-color: #ff8217 !important;
+}
+.navbar-i4-negative-money-critical {
     background-color: #e92626 !important;
 }
 

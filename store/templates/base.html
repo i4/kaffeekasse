@@ -93,10 +93,13 @@
         // Update the displayed money information
         function updateMoney() {
             $('#money').html(parseFloat(money).toFixed(2) + ' €');
-            if (money < 0) {
-                $('#navbar').addClass('navbar-i4-negative-money');
+            if (money < -5) {
+                $('#navbar').addClass('navbar-i4-negative-money-critical');
+            } else if (money < 0) {
+                $('#navbar').addClass('navbar-i4-negative-money-warning');
             } else {
-                $('#navbar').removeClass('navbar-i4-negative-money');
+                $('#navbar').removeClass('navbar-i4-negative-money-warning');
+                $('#navbar').removeClass('navbar-i4-negative-money-critical');
             }
         }
     </script>
