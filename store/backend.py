@@ -33,8 +33,12 @@ class UserLogic:
                 .select_related('user') \
                 .first()
         if x is None:
-            i = models.UnknownUserIdentifier(ident=ident, ident_type=ident_type)
-            i.save()
+            # Remeber failed RFID/Barcode logins
+            if ident_type == models.UserIdentifier.RFID or \
+               ident_type == models.UserIdentifier.BARCODE:
+                i = models.UnknownUserIdentifier(ident=ident, ident_type=ident_type)
+                i.save()
+
             # Expire old entries
             time_stamp = timezone.now() - timedelta(days=1)
             models.UnknownUserIdentifier.objects \
