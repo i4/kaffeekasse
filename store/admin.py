@@ -155,9 +155,9 @@ class ProductIdentifierAdmin(admin.ModelAdmin):
 
 @admin.register(models.Charge)
 class ChargeAdmin(AppendOnlyModelAdmin):
-    list_display = ('time_stamp', 'user', 'amount', 'comment', 'annulled')
+    list_display = ('time_stamp', 'user', 'amount', 'admin', 'comment', 'annulled')
     # "annulled" to prevent enabling it when adding new objects
-    readonly_fields = ('time_stamp', 'annulled')
+    readonly_fields = ('time_stamp', 'admin', 'annulled')
 
     search_fields = ('user__auth__username', 'user__auth__first_name',
                      'user__auth__last_name', 'user__auth__email',
@@ -175,6 +175,7 @@ class ChargeAdmin(AppendOnlyModelAdmin):
             user = models.UserData.objects.get(id=obj.user.id)
             user.money += obj.amount
             user.save()
+        obj.admin = request.user.userdata
         super().save_model(request, obj, form, change)
 
 
@@ -191,9 +192,9 @@ class PurchaseAdmin(ReadOnlyModelAdmin):
 
 @admin.register(models.Transfer)
 class TransferAdmin(AppendOnlyModelAdmin):
-    list_display = ('time_stamp', 'sender', 'receiver', 'amount', 'comment', 'annulled')
+    list_display = ('time_stamp', 'sender', 'receiver', 'amount', 'admin', 'comment', 'annulled')
     # "annulled" to prevent enabling it when adding new objects
-    readonly_fields = ('time_stamp', 'annulled')
+    readonly_fields = ('time_stamp', 'admin', 'annulled')
 
     search_fields = ('sender__auth__username', 'sender__auth__first_name',
                      'sender__auth__last_name', 'sender__auth__email',
@@ -217,6 +218,7 @@ class TransferAdmin(AppendOnlyModelAdmin):
             receiver = models.UserData.objects.get(id=obj.receiver.id)
             receiver.money += obj.amount
             receiver.save()
+        obj.admin = request.user.userdata
         super().save_model(request, obj, form, change)
 
 

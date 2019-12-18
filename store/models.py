@@ -140,6 +140,9 @@ class Charge(models.Model):
     time_stamp = models.DateTimeField(auto_now=True)
     amount = models.DecimalField(max_digits=6, decimal_places=2)
     annulled = models.BooleanField(default=False)
+    admin = models.ForeignKey(UserData, on_delete=models.SET_NULL,
+                              null=True, blank=True,
+                              related_name='charge_admin')
     comment = models.TextField(blank=True)
 
 
@@ -162,4 +165,7 @@ class Transfer(models.Model):
     amount = models.DecimalField(max_digits=6, decimal_places=2,
             validators=[validators.MinValueValidator(0)])
     annulled = models.BooleanField(default=False)
+    admin = models.ForeignKey(UserData, on_delete=models.SET_NULL,
+                              null=True, blank=True,
+                              related_name='transfer_admin')
     comment = models.TextField(blank=True)
