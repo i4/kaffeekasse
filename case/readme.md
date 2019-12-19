@@ -64,3 +64,5 @@ Since the display does not support a software solution to disable the backround 
 	systemctl --user start backlight.service 
 	```
 * Reboot. You are good to go.
+* To avoid the SD-Card to be worn out, enable [Overlay FS](https://en.wikipedia.org/wiki/OverlayFS) by executing `sudo raspi-config` and selecting *7 Advanced Options* / *AA Overlay FS*. Probably easier if the `boot` partition is kept writeable. You can remove the chromium directory (`rm -rf ~/.config/chromium`) and reboot.
+
