@@ -42,7 +42,7 @@
             <ul class="list-group scroll-sm" id="recently_bought_list">
             </ul>
             <template id="recently_bought_annullable_template">
-                <label class="list-group-item">
+                <label class="list-group-item" id="recent_product_label">
                     <div class="d-flex w-100 justify-content-between">
                         <div class="mb-1" id="recent_product_name">test</div>
                         <div class="price-tag" id="recent_product_price">test</div>
@@ -181,6 +181,7 @@
             annullable: true,
             annulled: false,
             purchase_id: purchase_id,
+            highlight: true,
         });
         updateRecentlyBoughtList();
     }
@@ -228,7 +229,13 @@
             // Append template
             $('#recently_bought_list').append(template);
 
+            if (product.highlight === true) {
+                product.highlight = false;
+                $('#recent_product_label').addClass('new-purchase');
+            }
+
             // Set template values
+            $('#recent_product_label').attr('id', '');
             $('#recent_product_price').html(product.price.toFixed(2)).attr('id', '');
             $('#recent_product_name').html(product.name).attr('id', '');
             if (product.annullable) {

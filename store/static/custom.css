@@ -77,3 +77,12 @@ html {
     filter: grayscale(100%);
     opacity: 0.25;
 }
+
+/* "fade-out" effect for new purchases */
+.new-purchase {
+    animation: fadeout 2s forwards;
+}
+@keyframes fadeout {
+    from { background-color: rgba(0, 56, 101, 0.5); color: white; }
+    to   { background-color: #ffffff; color: black; }
+}
