@@ -8,6 +8,7 @@ from django.db import transaction
 from django.utils.translation import gettext_lazy as _
 
 import store.models as models
+import store.notify as notify
 
 
 def is_delete_for_different_object(admin, request):
@@ -171,11 +172,17 @@ class ChargeAdmin(AppendOnlyModelAdmin):
         assert not obj.annulled
         # TODO: this is hacky and duplicates code from backend.py
         # Update user's money value
+        obj.admin = request.user.userdata
+        notification = None
         with transaction.atomic():
             user = models.UserData.objects.get(id=obj.user.id)
             user.money += obj.amount
             user.save()
-        obj.admin = request.user.userdata
+            notification = notify.Charge(obj)
+        try:
+            notification.execute()
+        except:
+            pass
         super().save_model(request, obj, form, change)
 
 
@@ -211,6 +218,8 @@ class TransferAdmin(AppendOnlyModelAdmin):
         assert not obj.annulled
         # TODO: this is hacky and duplicates code from backend.py
         # Update users' money value
+        obj.admin = request.user.userdata
+        notification = None
         with transaction.atomic():
             sender = models.UserData.objects.get(id=obj.sender.id)
             sender.money -= obj.amount
@@ -218,7 +227,11 @@ class TransferAdmin(AppendOnlyModelAdmin):
             receiver = models.UserData.objects.get(id=obj.receiver.id)
             receiver.money += obj.amount
             receiver.save()
-        obj.admin = request.user.userdata
+            notification = notify.Transfer(obj)
+        try:
+            notification.execute()
+        except:
+            pass
         super().save_model(request, obj, form, change)
 
 

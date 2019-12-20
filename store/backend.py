@@ -16,9 +16,7 @@ from typeguard import typechecked
 import store.config as config
 import store.exceptions as exceptions
 import store.models as models
-
-import smtplib
-from email.message import EmailMessage
+import store.notify as notify
 
 class UserLogic:
     @staticmethod
@@ -197,6 +195,7 @@ class PurchaseLogic:
         and product.
         """
 
+        notification = None
         with transaction.atomic():
             product = ProductLogic.getProduct(product_ident, product_ident_type)
             product.stock -= 1
@@ -210,8 +209,13 @@ class PurchaseLogic:
 
             purchase = models.Purchase(user=user, product=product, price=product.price)
             purchase.save()
+            notification = notify.Purchase(purchase)
+        try:
+            notification.execute()
+        except:
+            pass
 
-            return purchase.id, product.id
+        return purchase.id, product.id
 
     @staticmethod
     @typechecked
@@ -222,6 +226,7 @@ class PurchaseLogic:
 
         annullable_time = config.T_ANNULLABLE_PURCHASE_M
 
+        notification = None
         with transaction.atomic():
             purchase = models.Purchase.objects.get(id=purchase_id)
 
@@ -237,43 +242,12 @@ class PurchaseLogic:
             product.save()
             purchase.annulled = True
             purchase.save()
+            notification = notify.Purchase(purchase)
+        try:
+            notification.execute()
+        except:
+            pass
 
-
-@typechecked
-def notification(user: models.UserData, subject: str, message: str):
-    """
-    Send a notification about an transaction to an user
-    """
-    name = user.auth.first_name if user.auth.first_name else user.auth.username
-    body = f'''Hallo {name},
-
-{message}
-Dein neuer Kontostand beträgt: {user.money} €
-'''
-    if user.money < 0:
-        body += '''
-   ***************************************************
-   * Dein Kontostand ist negativ. Bitte ausgleichen! *
-   ***************************************************
-'''
-    body += '''
-Deine Kaffeekasse 2020NT
-'''
-
-    msg = EmailMessage()
-    msg.set_content(body)
-    msg['To'] = user.auth.email
-    msg['From'] = 'i4kaffee@cs.fau.de'
-    msg['Subject'] = f'Kaffeekasse: {subject}'
-
-    try:
-        s = smtplib.SMTP('localhost')
-        s.send_message(msg)
-        s.quit()
-    except Exception as e:
-        # only log the notification failure but do not abort
-        # the transaction with an exception
-        print(e)
 
 class ChargeLogic:
     @staticmethod
@@ -307,15 +281,19 @@ class ChargeLogic:
 
         assert amount > 0
 
+        notification = None
         with transaction.atomic():
             user = models.UserData.objects.get(id=user_id)
             user.money += amount
             user.save()
             charge = models.Charge(amount=amount, user=user)
             charge.save()
-            money = format(amount, '.2f')
-            notification(user, f'Aufladung {money} €', f'deinem Konto wurden {money} € gutgechrieben')
-            return charge.id
+            notification = notify.Charge(charge)
+        try:
+            notification.execute()
+        except:
+            pass
+        return charge.id
 
     @staticmethod
     @typechecked
@@ -326,6 +304,7 @@ class ChargeLogic:
 
         annullable_time = config.T_ANNULLABLE_CHARGE_M
 
+        notification = None
         with transaction.atomic():
             charge = models.Charge.objects.get(id=charge_id)
 
@@ -340,9 +319,11 @@ class ChargeLogic:
             user.save()
             charge.annulled = True
             charge.save()
-            money = format(charge.amount, '.2f')
-            notification(user, 'Aufladung annulliert', f'die Aufladung deines Kontos mit {money} € wurde annuliert')
-
+            notification = notify.Charge(charge)
+        try:
+            notification.execute()
+        except:
+            pass
 
 class TransferLogic:
     @staticmethod
@@ -410,6 +391,7 @@ class TransferLogic:
 
         assert amount > 0
 
+        notification = None
         with transaction.atomic():
             sender = models.UserData.objects.get(id=user_id)
             receiver = UserLogic.getUser(ident=receiver_ident, ident_type=receiver_ident_type)
@@ -425,12 +407,13 @@ class TransferLogic:
             sender.save()
             receiver.money += amount
             receiver.save()
+            notification = notify.Transfer(transfer)
+        try:
+            notification.execute()
+        except:
+            pass
 
-            money = format(amount, '.2f')
-            notification(receiver, f'Überweisung (+{money} €)', f'dir wurden {money} € von {sender.auth.username} überwiesen')
-            notification(sender, f'Überweisung (-{money} €)', f'du hast {money} € an {receiver.auth.username} überwiesen')
-
-            return transfer.id, receiver.id
+        return transfer.id, receiver.id
 
     @staticmethod
     @typechecked
@@ -441,6 +424,7 @@ class TransferLogic:
 
         annullable_time = config.T_ANNULLABLE_TRANSFERS_M
 
+        notification = None
         with transaction.atomic():
             transfer = models.Transfer.objects.get(id=transfer_id)
 
@@ -459,7 +443,8 @@ class TransferLogic:
             receiver.save()
             sender.money += transfer.amount
             sender.save()
-
-            money = format(transfer.amount, '.2f')
-            notification(receiver, 'Überweisung annulliert', f'die Überweisung von {sender.auth.username} über {money} € wurde annulliert.')
-            notification(sender, 'Überweisung annuliert', f'deine Überweisung an {receiver.auth.username} über {money} € wurde annuliert.')
+            notification = notify.Transfer(transfer)
+        try:
+            notification.execute()
+        except:
+            pass

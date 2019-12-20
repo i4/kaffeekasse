@@ -19,9 +19,11 @@ from django.db.models import Count, Sum
 from django.utils import timezone
 
 import store.models as models
+import store.notify as notify
 
 
 for user in models.UserData.objects.all().order_by('pk'):
+    notification = None
     with transaction.atomic():
         # Fetch current version inside transaction
         user = models.UserData.objects.get(id=user.id)
@@ -38,43 +40,29 @@ for user in models.UserData.objects.all().order_by('pk'):
                 .values('product__name') \
                 .annotate(count=Count('product__name'), sum=Sum('price'))
 
-        # Don't send mails if the user didn't purchase anything; except for
-        # users with negative money
-        if len(purchases) == 0 and user.money >= 0:
-            continue
+        charges   = models.Charge.objects \
+                .filter(user=user,
+                        time_stamp__gte=last_mail,
+                        time_stamp__lt=user.last_mail,
+                        annulled=False) \
+                .annotate(count=Count('comment'), sum=Sum('amount'))
 
-        body = '''\
-Hallo {},
+        outgoing = models.Transfer.objects \
+                .filter(sender=user,
+                        time_stamp__gte=last_mail,
+                        time_stamp__lt=user.last_mail,
+                        annulled=False) \
+                .annotate(count=Count('receiver'), sum=Sum('amount'))
 
-Aktueller Kontostand: {} €
-'''.format(user.auth.username, user.money)
-        if user.money < 0:
-            body += '''
-       ***************************************************
-       * Dein Kontostand ist negativ. Bitte ausgleichen! *
-       ***************************************************
-'''
+        incoming = models.Transfer.objects \
+                .filter(receiver=user,
+                        time_stamp__gte=last_mail,
+                        time_stamp__lt=user.last_mail,
+                        annulled=False) \
+                .annotate(count=Count('sender'), sum=Sum('amount'))
 
-        if len(purchases) > 0:
-            body += '''
-Du hattest im letzten Monat:
-
-   Menge | Artikel                                      |  Summe
-  -------+----------------------------------------------+--------
-'''
-            for x in purchases:
-                body += '   {:5} | {:44} | {:6}\n'.format(
-                        x['count'], x['product__name'], x['sum'])
-        body += '''
-Deine Kaffekasse 2020NT
-'''
-
-        msg = EmailMessage()
-        msg.set_content(body)
-        msg['To'] = user.auth.email
-        msg['From'] = 'i4kaffee@cs.fau.de'
-        msg['Subject'] = 'Kaffeekasse: Monatsabrechnung'
-
-        s = smtplib.SMTP('localhost')
-        s.send_message(msg)
-        s.quit()
+        notification = notify.Bill(user, "Monatsabrechnung", purchases, charges, outgoing, incoming)
+    try:
+        notification.execute()
+    except:
+        pass
