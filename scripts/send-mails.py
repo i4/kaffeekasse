@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Send mails to all active users with purchases since the last run.
 
 
