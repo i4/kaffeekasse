@@ -169,3 +169,5 @@ class Transfer(models.Model):
                               null=True, blank=True,
                               related_name='transfer_admin')
     comment = models.TextField(blank=True)
+    class Meta:
+        constraints = [models.CheckConstraint(name='different_users', check=~models.Q(sender=models.F('receiver')))]
