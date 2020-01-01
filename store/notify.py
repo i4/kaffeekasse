@@ -172,7 +172,7 @@ def notify(user: User, subject: str, message: str, admin: Optional[models.UserDa
     name = user.data.auth.first_name if user.data.auth.first_name else user.data.auth.username
     if len(message) and not message[-1] == '\n':
         message += '\n'
-    message += f"Dein aktueller Kontotstand beträgt: {user.money} €\n"
+    message += f"Dein aktueller Kontostand beträgt: {user.money} €\n"
 
     if user.money < 0:
         message += '''
