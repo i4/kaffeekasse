@@ -178,6 +178,7 @@ class ChargeAdmin(AppendOnlyModelAdmin):
             user = models.UserData.objects.get(id=obj.user.id)
             user.money += obj.amount
             user.save()
+            obj.user = user
             notification = notify.Charge(obj)
         try:
             notification.execute()
