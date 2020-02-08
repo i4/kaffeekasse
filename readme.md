@@ -30,7 +30,7 @@ All configurable parameters are stored in `store/store_config.py`.
 * Configure database access via `DATABASES` in `kaffeekasse/settings.py`
 * Setup Django with:
 ```
-./manage.py makemigratations
+./manage.py makemigrations
 ./manage.py migrate
 ./manage.py createsuperuser
 
