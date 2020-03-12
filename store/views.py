@@ -60,6 +60,7 @@ def buy(request):
     if request.method == 'GET':  # Return the rendered page
         return render(request, 'buy.html', {
             'direct_login': permit_direct_login(request),
+            'logout_barcodes': [ "4804700" ],
             'most_bought': backend.ProductLogic.getMostBoughtProductsList(user_id),
             'recently_bought': backend.ProductLogic.getLastBoughtProductsList(user_id),
             'categories': [{

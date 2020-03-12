@@ -146,6 +146,12 @@
     }
 
     barcode.handler(function(code){
+        {% for code in logout_barcodes %}
+        if (code == "{{ code|escapejs }}") {
+            auth.logout()
+            return
+        }
+        {% endfor %}
         buy(code, {{ ident_types.BARCODE }});
     });
 
