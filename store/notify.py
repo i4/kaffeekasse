@@ -89,9 +89,12 @@ class Bill:
 
     class Purchase:
         def __init__(self, purchase: dict):
-            self.count   = purchase['count']
             self.product = purchase['product__name']
-            self.sum     = purchase['sum']
+            if self.product is None:
+                self.product = '/unknown/'
+
+            self.count = purchase['count']
+            self.sum   = purchase['sum']
 
     class Charge:
         def __init__(self, charge: Charge):
@@ -102,14 +105,20 @@ class Bill:
     class Outgoing:
         def __init__(self, transfer: Transfer):
             self.receiver = transfer.receiver.auth.username
-            self.count    = transfer.count
-            self.sum      = transfer.sum
+            if self.receiver is None:
+                self.receiver = '/unknown/'
+
+            self.count = transfer.count
+            self.sum   = transfer.sum
 
     class Incoming:
         def __init__(self, transfer: Transfer):
-            self.sender   = transfer.sender.auth.username
-            self.count    = transfer.count
-            self.sum      = transfer.sum
+            self.sender = transfer.sender.auth.username
+            if self.sender is None:
+                self.sender = '/unknown/'
+
+            self.count = transfer.count
+            self.sum   = transfer.sum
 
     def __init__(self, user: models.UserData, subject: str, purchases: QuerySet, \
                  charges: QuerySet, outgoing: QuerySet, incoming: QuerySet):
