@@ -99,7 +99,7 @@ func main() {
 
 	/* use default filter */
 	if len(os.Args) <= 1 {
-		log.Fatal("usage: %s <command...>", os.Args[0])
+		log.Fatalf("usage: %s <command...>", os.Args[0])
 	}
 	/* remaining arguments are used as filter command */
 	cmd := os.Args[1:]
