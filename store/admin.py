@@ -228,6 +228,9 @@ class TransferAdmin(AppendOnlyModelAdmin):
             receiver = models.UserData.objects.get(id=obj.receiver.id)
             receiver.money += obj.amount
             receiver.save()
+            # update users of transfer object for updated money values
+            obj.sender = sender
+            obj.receiver = receiver
             notification = notify.Transfer(obj)
         try:
             notification.execute()
