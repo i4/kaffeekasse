@@ -15,7 +15,7 @@ terminal.
 
 On a Debian-like system you can install the required packages with
 ```
-apt install python3-django python3-psycopg2
+apt install python3-django python3-psycopg2 python3-typeguard libjs-jquery
 ```
 
 

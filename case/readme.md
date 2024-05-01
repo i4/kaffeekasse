@@ -27,42 +27,70 @@ Since the display does not support a software solution to disable the backround 
 ## Software
 
 * [Raspbian (Buster) Lite](https://www.raspberrypi.org/downloads/raspbian/) as base, boot it and update all packages
-	```
-	sudo apt update
-	sudo apt dist-upgrade
-	```
+    ```
+    sudo apt update
+    sudo apt dist-upgrade
+    ```
 * Setup HDMI Display according to the [Waveshare Wiki](https://www.waveshare.com/wiki/10.1inch_HDMI_LCD_(B)_(with_case)): Add the following lines to `/boot/config.txt`
-	```
-	hdmi_group=2
-	hdmi_mode=87
-	hdmi_cvt 1280 800 60 6 0 0 0
-	hdmi_drive=1
-	display_rotate=2
-	```
+    ```
+    hdmi_group=2
+    hdmi_mode=87
+    hdmi_cvt 1280 800 60 6 0 0 0
+    hdmi_drive=1
+    display_hdmi_rotate=2
+    ```
 * For faster startup, change/add following lines in `/boot/config.txt`
-	```
-	disable_splash=1
-	boot_delay=0
-	dtoverlay=pi3-disable-bt
-	```
+    ```
+    disable_splash=1
+    boot_delay=0
+    dtoverlay=pi3-disable-bt
+    ```
 * Install the [Chromium Browser](https://www.chromium.org/), [LightDM](https://github.com/canonical/lightdm) and [libinput](https://www.freedesktop.org/wiki/Software/libinput/) with
-	```
-	sudo apt install chromium-browser lightdm xserver-xorg-input-libinput
-	```
+    ```
+    sudo apt install chromium-browser lightdm xserver-xorg-input-libinput
+    ```
 * Enable autostart of the browser in kiosk mode by copying the provided file [Xsession](Xsession) to `/home/pi/.Xsession` (mind the dot). Adjust the URL and monitor timeouts (30s) to your needs.
 * Disable the mouse cursor in lightDM config `/etc/lightdm/lightdm.conf` by uncommenting and modifing the `xserver-command` line in the `[Seat:*]` section to
     ```
     xserver-command=X -nocursor
-	```
+    ```
 * Start `raspi-config`, change in *3 Boot Options* / *B1 Desktop / CLI* to *B4 Desktop Autologin* and perform updates (*8 Updates*)
 * To rotate touch input, copy the file [40-libinput.conf](40-libinput.conf) (originated from `/usr/share/X11/xorg.conf.d/40-libinput.conf`) to `/etc/X11/xorg.conf.d/40-libinput.conf` (create the `xorg.conf.d` directory first)
 * Setup booting directly into X via `sudo raspi-config` and establish your network connection
 * Copy the provided files [backlight.sh](backlight.sh) and [backlight.py](backlight.py) to `/opt/backlight.sh` and [backlight.service](backlight.service) to `/etc/systemd/user/backlight.serivce`, reload (as user pi) *systemd* and enable the service to support LED backlight disabling during power saving
-	```
-	systemctl --user daemon-reload 
-	systemctl --user enable backlight.service 
-	systemctl --user start backlight.service 
-	```
+    ```
+    systemctl --user daemon-reload
+    systemctl --user enable backlight.service
+    systemctl --user start backlight.service
+    ```
 * Reboot. You are good to go.
 * To avoid the SD-Card to be worn out, enable [Overlay FS](https://en.wikipedia.org/wiki/OverlayFS) by executing `sudo raspi-config` and selecting *7 Advanced Options* / *AA Overlay FS*. Probably easier if the `boot` partition is kept writeable. You can remove the chromium directory (`rm -rf ~/.config/chromium`) and reboot.
 
+
+## Troubleshooting
+
+### Screen is not rotated
+
+Disable the kms driver in `/boot/config.txt`:
+
+```
+#dtoverlay=vc4-kms-v3d
+```
+
+
+### Chromium does not load the first tab (second tab works)
+
+Issue: https://github.com/RPi-Distro/chromium-browser/issues/28
+
+```
+echo 'export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-gl=egl"' | sudo tee /etc/chromium.d/egl
+```
+
+
+### Backlight service: No access to /dev/mem. Try running as root!
+
+Add the user to the `gpio` group:
+
+```
+sudo adduser kaffeekasse gpio
+```
