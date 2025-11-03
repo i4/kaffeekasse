@@ -104,7 +104,11 @@ class Bill:
 
     class Outgoing:
         def __init__(self, transfer: Transfer):
-            self.receiver = transfer.receiver.auth.username
+            try:
+                self.receiver = transfer.receiver.auth.username
+            except AttributeError:
+                self.receiver = None
+
             if self.receiver is None:
                 self.receiver = '/unknown/'
 
@@ -113,7 +117,11 @@ class Bill:
 
     class Incoming:
         def __init__(self, transfer: Transfer):
-            self.sender = transfer.sender.auth.username
+            try:
+                self.sender = transfer.sender.auth.username
+            except AttributeError:
+                self.sender = None
+
             if self.sender is None:
                 self.sender = '/unknown/'
 
